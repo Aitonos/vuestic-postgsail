@@ -63,7 +63,7 @@
 
   import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
   import PostgSail from '../../services/api-client'
-  import mooragesGeoJSON from '../../data/moorages_map.json'
+  import mooragesGeoJSON from '../../data/moorages_geojson.json'
 
   import { dateFormatUTC, durationFormatHours } from '../../utils/dateFormatter.js'
   import { distanceFormatMiles } from '../../utils/distanceFormatter.js'
@@ -76,7 +76,7 @@
     apiError = ref(null),
     mapContainer = ref(),
     map = ref(),
-    moorages_map = ref(),
+    moorages_geojson = ref(),
     outbound_logs_map = ref(),
     inbound_logs_map = ref(),
     markersMap = ref([])
@@ -116,10 +116,10 @@
     try {
       const response = await api.moorages_export_geojson()
       if (response && response.geojson?.features) {
-        moorages_map.value = response.geojson
+        moorages_geojson.value = response.geojson
         map_setup()
       } else {
-        console.warn('error moorages_map', response)
+        console.warn('error no data moorages_geojson', response)
         // If empty data, display a world map.
         if (!response.geojson?.features) {
           console.warn('no data')
@@ -133,7 +133,7 @@
       apiError.value = e
       if (!import.meta.env.PROD) {
         console.warn('Get sample data from local json...', apiError.value)
-        moorages_map.value = mooragesGeoJSON
+        moorages_geojson.value = mooragesGeoJSON
         map_setup()
       }
     } finally {
@@ -142,7 +142,7 @@
   })
 
   const map_setup = () => {
-    const geojson = moorages_map.value
+    const geojson = moorages_geojson.value
     let coord = geojson.features[0].geometry.coordinates
     if (props.moorageMapId != 0) {
       coord = geojson.features.filter((geog) => geog.properties.id == props.moorageMapId)[0].geometry.coordinates
@@ -360,8 +360,10 @@
   }
 
   const mooragesList = computed(() => {
-    if (!moorages_map.value?.features) return []
-    return moorages_map.value.features.filter((feature) => feature.geometry.type === 'Point').map((feature) => feature)
+    if (!moorages_geojson.value?.features) return []
+    return moorages_geojson.value.features
+      .filter((feature) => feature.geometry.type === 'Point')
+      .map((feature) => feature)
   })
   const navigateMoorage = (coordinates, index) => {
     function openPopupClick() {

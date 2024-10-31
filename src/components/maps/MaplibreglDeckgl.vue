@@ -1,5 +1,5 @@
 <script setup>
-  import { onMounted, ref } from 'vue'
+  import { onMounted, ref, onBeforeUnmount } from 'vue'
   import maplibregl from 'maplibre-gl'
   import 'maplibre-gl/dist/maplibre-gl.css'
   import { GeoJsonLayer } from '@deck.gl/layers'
@@ -10,11 +10,11 @@
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
   import { stayed_at_options } from '../../utils/PostgSail.ts'
 
-  const isBusy = ref(false)
-  const apiError = ref(null)
-  const mapgl_geojson = ref({})
-  const mapContainer = ref()
-  const map = ref()
+  const isBusy = ref(false),
+    apiError = ref(null),
+    mapgl_geojson = ref({}),
+    mapContainer = ref(),
+    map = ref()
   let popup = null // Popup instance
   const customIconUrl = '/dock_icon.png'
 
@@ -78,7 +78,7 @@
 
           // Set the icon based on feature properties
           getIcon: (f) => {
-            console.log(f)
+            //console.log(f)
             if (!f.properties.stay_code) return null
             if (f.properties.stay_code == 3) {
               return { id: 'mooring', url: '/mooring_icon.png', width: 32, height: 32 }
@@ -245,6 +245,12 @@
       return text
     }
   }
+
+  onBeforeUnmount(async () => {
+    if (map.value) {
+      map.value.remove()
+    }
+  })
 </script>
 
 <template>

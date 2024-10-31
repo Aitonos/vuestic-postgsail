@@ -1,6 +1,6 @@
 <script setup>
   /* eslint-disable */
-  import { onMounted, ref } from 'vue'
+  import { onMounted, ref, onBeforeUnmount } from 'vue'
   import * as L from 'leaflet'
   import 'leaflet/dist/leaflet.css'
   import { LeafletLayer } from 'deck.gl-leaflet'
@@ -13,10 +13,11 @@
   import { stayed_at_options } from '../../utils/PostgSail.ts'
   import { baseMaps, overlayMaps } from './leafletHelpers.js'
 
-  const isBusy = ref(false)
-  const apiError = ref(null)
-  const mapgl_geojson = ref({})
-  const currentZoom = ref(6) // Track zoom level
+  const isBusy = ref(false),
+    apiError = ref(null),
+    mapgl_geojson = ref({}),
+    map = ref(),
+    currentZoom = ref(6) // Track zoom level
 
   onMounted(async () => {
     isBusy.value = true
@@ -40,21 +41,21 @@
     }
     // Extract the first coordinates as a center
     const coords = mapgl_geojson.value.features[0].geometry.coordinates[0]
-    const map = L.map(document.getElementById('logs-map-gl'), {
+    map.value = L.map(document.getElementById('logs-map-gl'), {
       center: [coords[1], coords[0]],
       zoom: currentZoom.value,
       zoomControl: false,
     })
     // Track zoom level and hide/show labels based on zoom
-    map.on('zoomend', () => {
+    map.value.on('zoomend', () => {
       currentZoom.value = map.getZoom()
     })
     const bMaps = baseMaps()
     const oMaps = overlayMaps()
-    bMaps['CartoDB.Positron'].addTo(map)
-    L.control.layers(bMaps, oMaps).addTo(map)
+    bMaps['CartoDB.Positron'].addTo(map.value)
+    L.control.layers(bMaps, oMaps).addTo(map.value)
     // Zoom to bottomright
-    L.control.zoom({ position: 'bottomright' }).addTo(map)
+    L.control.zoom({ position: 'bottomright' }).addTo(map.value)
 
     const deckLayer = new LeafletLayer({
       views: [
@@ -127,14 +128,14 @@
               const popup = L.popup({ autoClose: false, closeOnClick: false })
                 .setLatLng([lat, lng])
                 .setContent(description)
-                .openOn(map)
+                .openOn(map.value)
             }
           },
         }),
       ],
       getTooltip: ({ object }) => object && getTooltip(object),
     })
-    map.addLayer(deckLayer)
+    map.value.addLayer(deckLayer)
 
     //const featureGroup = L.featureGroup()
     //featureGroup.addLayer(L.marker([51.4709959, -0.4531566]))
@@ -239,6 +240,12 @@
       return text
     }
   }
+
+  onBeforeUnmount(async () => {
+    if (map.value) {
+      map.value.remove()
+    }
+  })
 </script>
 
 <template>
