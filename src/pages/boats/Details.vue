@@ -18,9 +18,9 @@
           <template v-if="item">
             <dl class="dl-details row">
               <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.name') }}</dt>
-              <dd class="flex xs12 md6 pa-2">{{ item.name }}</dd>
+              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.name }}</dd>
               <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.mmsi') }}</dt>
-              <dd class="flex xs12 md6 pa-2">{{ item.mmsi }}</dd>
+              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.mmsi }}</dd>
               <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.last_contact') }}</dt>
               <dd class="flex xs12 md6 pa-2">{{ item.lastContact }}</dd>
               <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.first_contact') }}</dt>
@@ -28,11 +28,11 @@
               <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.created_at') }}</dt>
               <dd class="flex xs12 md6 pa-2">{{ item.createdAt }}</dd>
               <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.beam') }}</dt>
-              <dd class="flex xs12 md6 pa-2">{{ item.beam }}</dd>
+              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.beam }}</dd>
               <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.height') }}</dt>
-              <dd class="flex xs12 md6 pa-2">{{ item.height }}</dd>
+              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.height }}</dd>
               <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.length') }}</dt>
-              <dd class="flex xs12 md6 pa-2">{{ item.length }}</dd>
+              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.length }}</dd>
               <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.country') }}</dt>
               <template v-if="item.country">
                 <dd class="flex xs12 md6 pa-2">
@@ -41,10 +41,10 @@
                 </dd>
               </template>
               <template v-else>
-                <dd class="flex xs12 md6 pa-2"></dd>
+                <dd class="flex xs12 md6 pa-2 empty-field"></dd>
               </template>
               <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.ship_type') }}</dt>
-              <dd class="flex xs12 md6 pa-2">{{ item.ship_type }}</dd>
+              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.ship_type }}</dd>
               <template v-if="item.plugin_version">
                 <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.plugin_version') }}</dt>
                 <dd class="flex">
@@ -63,7 +63,7 @@
               </template>
               <template v-if="item.platform">
                 <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.platform') }}</dt>
-                <dd class="flex">
+                <dd class="flex empty-field">
                   {{ item.platform }}
                 </dd>
               </template>
@@ -210,5 +210,10 @@
     //background: #dd0;
     padding: 0;
     margin: 0;
+  }
+  /* Ensure empty fields don't collapse */
+  dd.empty-field {
+    min-height: 1.5em; /* Sets a minimum height */
+    //color: grey; /* Optional: set a placeholder color */
   }
 </style>
