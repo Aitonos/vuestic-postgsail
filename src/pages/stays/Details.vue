@@ -263,15 +263,23 @@
     if (update_stayed_at && update_stayed_at > 0) {
       new PostgSail()
         .stay_update(id, { stay_code: update_stayed_at })
-        .then((response) => {
+        .then(async (response) => {
           console.log('updateStayedAt success', response)
           // Clean CacheStore and force refresh
-          CacheStore.resetCache()
-          CacheStore.getAPI('stay_get', id)
+          await CacheStore.resetCache()
+          await CacheStore.getAPI('stay_get', id)
         })
         .catch((err) => {
           console.log('updateStayedAt failed', err.message ?? err)
-          //throw err.message ?? err
+          updateError.value = err
+        })
+        .finally(() => {
+          initToast({
+            message: updateError.value ? `Error updating stay entry` : `Successfully updated stay entry`,
+            position: 'top-right',
+            color: updateError.value ? 'warning' : 'success',
+          })
+          isBusy.value = false
         })
     }
   }

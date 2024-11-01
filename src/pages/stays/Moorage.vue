@@ -268,7 +268,7 @@
         if (response) {
           console.log('updateDefaultStay success', response)
           // Clean CacheStore and force refresh
-          CacheStore.resetCache()
+          await CacheStore.resetCache()
         } else {
           throw { response }
         }

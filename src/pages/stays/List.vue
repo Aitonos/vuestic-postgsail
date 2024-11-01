@@ -10,7 +10,6 @@
           <va-input v-model="filter.name" :clearable="true" placeholder="Filter by name..." />
           <va-date-input
             v-model="filter.dateRange"
-            style="width: 100%"
             :clearable="true"
             placeholder="Filter by date range..."
             mode="range"
@@ -271,10 +270,18 @@
     if (update_stayed_at && update_stayed_at > 0) {
       new PostgSail()
         .stay_update(id, { stay_code: update_stayed_at })
-        .then((response) => {
+        .then(async (response) => {
           console.log('updateStayedAt success', response)
           // Clean CacheStore and force refresh
-          CacheStore.resetCache()
+          await CacheStore.resetCache()
+          response = await CacheStore.getAPI('stays')
+          if (Array.isArray(response)) {
+            rowsData.value.splice(0, rowsData.value.length || [])
+            rowsData.value.push(...response)
+            console.log('Stays List rowsData:', rowsData.value)
+          } else {
+            throw { response }
+          }
         })
         .catch((err) => {
           console.log('updateStayedAt failed', err.message ?? err)
