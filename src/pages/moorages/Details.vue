@@ -206,8 +206,10 @@
       if (response) {
         console.log('moorage_update success', response)
         // Clean CacheStore and force refresh
-        CacheStore.resetCache()
-        CacheStore.getAPI('moorage_get', id)
+        await CacheStore.resetCache()
+        CacheStore.refresh = 'true'
+        await CacheStore.getAPI('moorage_get', id)
+        CacheStore.refresh = 'false'
         return true
       } else {
         throw { response }
@@ -236,12 +238,12 @@
     if (update_default_stay && update_default_stay > 0) {
       new PostgSail()
         .moorage_update(id, { stay_code: update_default_stay })
-        .then((response) => {
+        .then(async (response) => {
           console.log('updateDefaultStay success', response)
           // Clean CacheStore and force refresh
-          CacheStore.resetCache()
-          CacheStore.getAPI('moorage_get', id)
-          return true
+          await CacheStore.resetCache()
+          await CacheStore.getAPI('moorage_get', id)
+          //return true
         })
         .catch((err) => {
           console.log('updateDefaultStay failed', err.message ?? err)
@@ -264,16 +266,24 @@
     const id = route.params.id
     new PostgSail()
       .moorage_update(id, { home_flag: new_home })
-      .then((response) => {
+      .then(async (response) => {
         console.log('updateHome success', response)
         // Clean CacheStore and force refresh
-        CacheStore.resetCache()
-        CacheStore.getAPI('moorage_get', id)
-        return true
+        await CacheStore.resetCache()
+        await CacheStore.getAPI('moorage_get', id)
+        //return true
       })
       .catch((err) => {
         console.log('updateHome failed', err.message ?? err)
         updateError.value = err
+      })
+      .finally(() => {
+        initToast({
+          message: updateError.value ? `Error updating moorage entry` : `Successfully updated moorage entry`,
+          position: 'top-right',
+          color: updateError.value ? 'warning' : 'success',
+        })
+        isBusy.value = false
       })
   }
 
@@ -313,8 +323,8 @@
       if (response) {
         console.log('moorage_delete success', response)
         // Clean CacheStore and force refresh
-        CacheStore.resetCache()
-        CacheStore.getAPI('moorage_get', id)
+        await CacheStore.resetCache()
+        await CacheStore.getAPI('moorage_get', id)
       } else {
         throw { response }
       }

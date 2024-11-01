@@ -253,11 +253,19 @@
         stay_code: update_default_stay,
       }
       try {
-        const response = api.moorage_update(id, payload)
+        const response = await api.moorage_update(id, payload)
         if (response) {
           console.log('updateDefaultStay success', response)
           // Clean CacheStore and force refresh
-          CacheStore.resetCache()
+          await CacheStore.resetCache()
+          const resp = await CacheStore.getAPI('moorages')
+          if (Array.isArray(resp)) {
+            rowsData.value.splice(0, rowsData.value.length || [])
+            rowsData.value.push(...resp)
+            console.log('Moorages List rowsData:', rowsData.value)
+          } else {
+            throw { resp }
+          }
         } else {
           throw { response }
         }
