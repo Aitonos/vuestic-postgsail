@@ -68,10 +68,10 @@
     const id = route.params.id
     new PostgSail()
       .update_observations({ _id: id, observations: { observations: new_obs } })
-      .then((response) => {
+      .then(async (response) => {
         console.log('updateObservations success', response)
         // Clean CacheStore and force refresh
-        CacheStore.resetCache()
+        await CacheStore.resetCache()
       })
       .catch((err) => {
         console.log('updateObservations failed', err.message ?? err)

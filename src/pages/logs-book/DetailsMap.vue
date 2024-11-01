@@ -69,7 +69,7 @@
 
 <script setup>
   import { computed, ref, reactive, onMounted } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { setAppTitle } from '../../utils/app.js'
   import PostgSail from '../../services/api-client'
@@ -95,6 +95,7 @@
   import tripExport from './sidebars/Export.vue'
 
   const CacheStore = useCacheStore()
+  const router = useRouter()
   const route = useRoute()
   const isBusy = ref(false)
   const apiError = ref(null)
@@ -215,7 +216,7 @@
       title: 'Are you sure?',
       okText: 'Yes, I agree',
       cancelText: 'No, keep my data',
-      zIndex: -9999,
+      //zIndex: -9999,
     })
     if (modal_result) {
       canDelete = true
@@ -340,9 +341,10 @@
         console.log('log_update success', response)
         // Clean CacheStore and force refresh
         logMap.value.refreshLayers()
-        CacheStore.logs = []
-        CacheStore.logs_get = []
-        CacheStore.store_ttl = null
+        await CacheStore.resetCache()
+        CacheStore.refresh = 'true'
+        CacheStore.getAPI('log_get', id)
+        CacheStore.refresh = 'false'
         return true
       } else {
         throw { response }
@@ -373,7 +375,7 @@
       title: 'Are you sure?',
       okText: 'Yes, I agree',
       cancelText: 'No, keep my data',
-      zIndex: -9999,
+      //zIndex: -9999,
     })
     if (modal_result) {
       canDelete = true
@@ -395,6 +397,7 @@
         CacheStore.logs = []
         CacheStore.logs_get = []
         CacheStore.store_ttl = null
+        await CacheStore.resetCache()
       } else {
         throw { response }
       }
@@ -403,7 +406,13 @@
       console.log('log_delete failed', response)
       updateError.value = response.message
     } finally {
+      initToast({
+        message: updateError.value ? `Error deleting log entry` : `Successfully deleting log entry`,
+        position: 'top-right',
+        color: updateError.value ? 'warning' : 'success',
+      })
       isBusy.value = false
+      router.push({ name: 'logs' })
     }
   }
 
@@ -432,12 +441,12 @@
     const id = route.params.id
     new PostgSail()
       .update_observations({ _id: id, observations: { tags: tags } })
-      .then((response) => {
+      .then(async (response) => {
         console.log('updateAPITags success', response)
         // Clean CacheStore and force refresh
-        CacheStore.resetCache()
+        await CacheStore.resetCache()
         CacheStore.refresh = 'true'
-        CacheStore.getAPI('log_get', id)
+        await CacheStore.getAPI('log_get', id)
         CacheStore.refresh = 'false'
         return true
       })
