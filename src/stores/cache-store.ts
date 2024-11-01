@@ -39,7 +39,7 @@ export const useCacheStore = defineAPIStore('cache', {
       param && addr.push(param)
       return await this.getCached(addr, assertion, this.refresh)
     },
-    resetCache() {
+    async resetCache() {
       /* There is 2 layers of cache which can lead to confusion.
        * - Application cache using the store
        * - Network cache from browser cache, default 5min from api cache-control headers.
