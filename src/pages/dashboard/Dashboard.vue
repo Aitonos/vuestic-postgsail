@@ -1,5 +1,4 @@
 <template>
-  <!--
   <div class="dashboard flex flex-wrap p-2 gap-4">
     <va-card v-if="monitoring && status" class="flex card-width">
       <va-card-content>
@@ -21,25 +20,47 @@
         </table>
       </va-card-content>
     </va-card>
-    <va-card class="flex card-width">
-      <template v-if="LogsImage">
-        <va-card-content v-if="LogsImage">
-          <img style="margin: auto" src="https://gis.openplotter.cloud/logs_06b6d311ccfe_11429_thumb.png" />
+    <template v-if="monitoring.geojson">
+      <va-card v-if="currentWeather.temp" class="flex card-width">
+        <va-card-content class="grid grid-cols-12">
+          <div class="col-span-6 flex flex-col va-text-center">
+            <p style="font-size: 3rem; line-height: 54px">
+              {{ currentWeather.temp }}
+              <span style="font-size: 1rem; line-height: 32px; vertical-align: super; opacity: 0.8; top: 15px">°C</span>
+            </p>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <va-icon style="display: inline-block" name="icon-sunrise" outline :size="48"></va-icon>
+                <div>{{ currentWeather.sunriseTime }}</div>
+              </div>
+              <div>
+                <va-icon style="display: inline-block" name="icon-sunset" outline :size="48"></va-icon>
+                <div>{{ currentWeather.sunsetTime }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-6 flex flex-col va-text-center">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <img class="" :src="currentWeather.img" :width="96" :height="96" />
+                <div>{{ currentWeather.description }}</div>
+              </div>
+              <div>
+                <img class="" :src="Lunar.src" :width="96" :height="96" style="padding: 20%" />
+                <div>{{ Lunar.text }}</div>
+              </div>
+            </div>
+          </div>
         </va-card-content>
-      </template>
-      <template v-else>
-        <va-card-content>{{ t('nodata.nodata') }}</va-card-content>
-      </template>
-    </va-card>
-    <va-card v-if="monitoring.geojson && mapGeoJsonFeatures" class="flex card-width">
-      <va-card-content style="width: 100%">
-        <template v-if="monitoring.geojson && mapGeoJsonFeatures">
+      </va-card>
+      <va-card v-if="monitoring.geojson" class="flex card-width">
+        <va-card-content style="width: 100%">
           <l-map id="dashboard-map" :geo-json-feature="mapGeoJsonFeatures" :control-layer="false" :map-zoom="10" />
-        </template>
-      </va-card-content>
-    </va-card>
+        </va-card-content>
+      </va-card>
+    </template>
   </div>
--->
+
   <div class="dashboard grid grid-cols-12 items-start p-2 gap-4">
     <template v-if="Monitoring2">
       <va-card v-if="Monitoring2" class="col-span-12">
@@ -130,11 +151,22 @@
   const lMapgl = defineAsyncComponent(() => import('../../components/maps/leafletMapgl.vue'))
   import PostgSail from '../../services/api-client'
   import { fromNow, localTime } from '../../utils/dateFormatter.js'
+  import { Moon } from 'lunarphase-js'
+  const moon_phases = [
+    'New',
+    'Waxing Crescent',
+    'First Quarter',
+    'Waxing Gibbous',
+    'Full',
+    'Waning Gibbous',
+    'Last Quarter',
+    'Waning Crescent',
+  ]
   const { t } = useI18n()
 
   const GlobalStore = useGlobalStore()
   const { userName, versions, currentWeather, Monitoring2, stats_logs, stats_moorages } = storeToRefs(GlobalStore)
-  const { fetchVersions, fetchMonitoring2, fetchStats } = GlobalStore
+  const { fetchVersions, fetchWeatherForecast, fetchMonitoring2, fetchStats } = GlobalStore
 
   const CacheStore = useCacheStore()
   const { getInfoTiles, GetLastLogId } = storeToRefs(CacheStore)
@@ -266,6 +298,15 @@
     return obj
   })
 
+  const Lunar = computed(() => {
+    if (!Array.isArray(moon_phases)) return { src: '', text: '' }
+    const text = Moon.lunarPhase()
+    const isPhase = (element) => element === text
+    const index = moon_phases.findIndex(isPhase)
+    //console.log(`/moon_phase_${index}.svg`)
+    return { src: `/moon_phase_${index}.svg`, text: text.toLowerCase() }
+  })
+
   const LogsImage = computed(() => {
     //console.log(GetLastLogId.value)
     //console.log(vesselId.value)
@@ -283,7 +324,12 @@
     const mystays = await getAPI('stays')
     const mymoorages = await getAPI('moorages')
     if (!(mylogs && mylogs[0] && mystays && mystays[0] && mymoorages && mymoorages[0])) {
-      console.warn('no metrics, new vessel?')
+      console.warn('Warning, no metrics, new vessel?')
+    }
+    // Do we have inconsistent data from cache?
+    if (Array.isArray(mylogs) && mylogs.length > 1 && Array.isArray(mymoorages) && mymoorages.length == 0) {
+      console.warn('Warning, invalid cache data, resetting cache.')
+      await CacheStore.resetCache()
     }
     // Load Charts Dashboard
     getTags()
@@ -311,6 +357,19 @@
       // If exit as we need coordinates
       console.log('monitoring failed', err)
       return
+      //updateError.value = response.message
+    } finally {
+      //isBusy.value = false
+    }
+
+    // WeatherForecast - OpenMeteo
+    try {
+      // Duplicate json ref to keep origin geojson valid
+      const geojson = monitoring.value.geojson.geometry.coordinates.map((x) => x)
+      await fetchWeatherForecast(geojson.reverse())
+      console.log('Dashboard onMounted currentWeather.value', currentWeather.value)
+    } catch (err) {
+      console.log('fetchWeatherForecast failed', err)
       //updateError.value = response.message
     } finally {
       //isBusy.value = false
