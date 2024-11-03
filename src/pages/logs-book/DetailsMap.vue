@@ -77,6 +77,7 @@
   import { dateFormatUTC, durationFormatHours, durationI18nHours, dateFormatTime } from '../../utils/dateFormatter.js'
   import { distanceFormatMiles } from '../../utils/distanceFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
+  import * as turf from '@turf/turf'
   import { useModal, useToast } from 'vuestic-ui'
   const { confirm } = useModal()
   const { init: initToast } = useToast()
@@ -273,8 +274,31 @@
     const toDelete = await confirmDeleteTrackpoint()
     if (toDelete) {
       console.log('deletePoint confirmed continue')
+      // Calculate new max speed, and average speed and new wind max speed, and wind average speed
+      let maxSpeed = 0,
+        maxWindSpeed = 0,
+        maxWindSpeedApp = 0,
+        segmentSpeeds = [],
+        segmentWindSpeeds = [],
+        sumSpeeds = 0,
+        sumWindSpeeds = 0,
+        sumWindSpeedsApp = 0
+      // Remove the coordinates from the geojson geometry LineString and geometry Point
       GeoJSONfeatures.value = GeoJSONfeatures.value.filter(function (geofeature) {
         if (geofeature.geometry.type === 'Point') {
+          if (JSON.stringify(geofeature.geometry.coordinates) !== JSON.stringify(coordinates)) {
+            // Track maximum speed
+            if (geofeature.properties.speedoverground > maxSpeed) maxSpeed = geofeature.properties.speedoverground
+            // Track maximum wind speed
+            if (geofeature.properties.truewindspeed > maxWindSpeed) maxWindSpeed = geofeature.properties.truewindspeed
+            if (geofeature.properties.windspeedapparent > maxWindSpeedApp)
+              maxWindSpeedApp = geofeature.properties.windspeedapparent
+            segmentSpeeds.push(geofeature.properties.speedoverground)
+            segmentWindSpeeds.push(geofeature.properties.truewindspeed)
+            sumSpeeds += geofeature.properties.speedoverground
+            sumWindSpeeds += geofeature.properties.truewindspeed
+            sumWindSpeedsApp += geofeature.properties.windspeedapparent
+          }
           return JSON.stringify(geofeature.geometry.coordinates) !== JSON.stringify(coordinates)
         } else if (geofeature.geometry.type === 'LineString') {
           geofeature.geometry.coordinates = geofeature.geometry.coordinates.filter(function (lineStringCoords) {
@@ -289,6 +313,29 @@
         type: 'FeatureCollection',
         features: GeoJSONfeatures.value,
       }
+      // Update geojson LineString with new stats
+      track_geojson['features'][0]['properties']['distance'] = turf.length(track_geojson['features'][0]['geometry'], {
+        units: 'nauticalmiles',
+      })
+      //track_geojson['features'][0]['properties']['duration'] = metrics.totalDurationInterval
+      console.log('deletePoint previous geojson linestring properties', track_geojson['features'][0]['properties'])
+      track_geojson['features'][0]['properties']['avg_speed'] = sumSpeeds / segmentSpeeds.length
+      track_geojson['features'][0]['properties']['max_speed'] = maxSpeed
+      if (sumWindSpeeds != 0) {
+        track_geojson['features'][0]['properties']['avg_wind_speed'] = sumWindSpeeds / segmentWindSpeeds.length
+      } else {
+        track_geojson['features'][0]['properties']['avg_wind_speed'] = sumWindSpeedsApp / segmentWindSpeeds.length
+      }
+      track_geojson['features'][0]['properties']['max_wind_speed'] = maxWindSpeed || maxWindSpeedApp
+      track_geojson['features'][0]['properties']['x-update'] = new Date().toUTCString()
+      track_geojson['features'][0]['properties']['name'] = formData.name
+      track_geojson['features'][0]['properties']['notes'] = formData.notes
+      console.log('deletePoint new geojson linestring properties', track_geojson['features'][0]['properties'])
+      track_geojson['features'][1]['properties']['trip']['name'] = formData.name
+      track_geojson['features'][1]['properties']['trip']['distance'] =
+        track_geojson['features'][0]['properties']['distance']
+      //track_geojson['features'][1]['properties']['trip']['duration'] = formData.notes
+
       // Save change the new GeoJSON to the DB
       const isSaved = await handleSubmit(track_geojson)
       if (isSaved) {
@@ -452,7 +499,7 @@
       })
       .catch((err) => {
         console.log('updateAPITags failed', err.message ?? err)
-        //throw err.message ?? err
+        updateError.value = err.message ?? err
       })
   }
 </script>
