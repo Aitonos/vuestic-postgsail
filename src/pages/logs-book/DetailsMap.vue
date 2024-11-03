@@ -501,6 +501,14 @@
         console.log('updateAPITags failed', err.message ?? err)
         updateError.value = err.message ?? err
       })
+      .finally(() => {
+        initToast({
+          message: updateError.value ? `Error updating log tag entry` : `Successfully updating log tag entry`,
+          position: 'top-right',
+          color: updateError.value ? 'warning' : 'success',
+        })
+        isBusy.value = false
+      })
   }
 </script>
 
