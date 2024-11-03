@@ -107,6 +107,16 @@
     await getAPI('logs')
     await getAPI('stays')
     await getAPI('moorages')
+    // Check cache, do we have inconsistent data from cache.
+    if (
+      Array.isArray(CacheStore.logs) &&
+      CacheStore.logs.length > 1 &&
+      Array.isArray(CacheStore.moorages) &&
+      CacheStore.moorages.length == 0
+    ) {
+      console.warn('Warning, invalid cache data, resetting cache.')
+      await CacheStore.resetCache()
+    }
     // Load dynamic data for graph and dashboard
     getTags()
     InfoTiles()
