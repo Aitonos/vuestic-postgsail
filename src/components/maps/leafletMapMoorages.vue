@@ -11,7 +11,7 @@
               <ul class="sidepanel-tabs">
                 <li v-for="(tab, index) in tabs" :key="index" class="sidepanel-tab">
                   <a :href="'#' + tab" class="sidebar-tab-link" role="tab" :data-tab-link="'tab-' + (index + 1)">
-                    {{ $t('moorages.list.title') }}
+                    {{ title }}
                   </a>
                 </li>
               </ul>
@@ -72,6 +72,9 @@
   import { useI18n } from 'vue-i18n'
   const { t } = useI18n()
 
+  import { useVesselStore } from '../../stores/vessel-store'
+  const { vesselName, vesselType } = useVesselStore()
+
   const isBusy = ref(false),
     apiError = ref(null),
     mapContainer = ref(),
@@ -108,6 +111,8 @@
     props.mapType,
   )
   const tabs = ['moorages']
+
+  const title = t('moorages.list.title') + ' ' + vesselName
 
   onMounted(async () => {
     isBusy.value = true
