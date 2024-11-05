@@ -206,7 +206,6 @@
           '<a href="/stays/moorage/' + feature.properties.id + '">' + (feature?.properties?.total_stay || 0) + ' day'
         if ((feature?.properties?.total_stay || 0) > 1) popup = popup + 's'
         popup = popup + '</a></td></tr>'
-        //popup += `Preference: ${feature.properties.stay_code}`
         popup += '<tr><th>Preference</th><td>' + stayed_at_options[feature.properties.stay_code - 1].text + '</td></tr>'
         if (feature?.properties?.notes) {
           popup += '<tr><th>Notes</th><td>' + feature?.properties?.notes + '</td></tr>'
@@ -265,11 +264,11 @@
       let text = `<div class='mpopup'>
                         <h4><a href="/log/${feature.properties.id}">${feature.properties.name}</a></h4><br/>
                         <table class='data'><tbody>
-                          <tr><td>Time</td><td>${time}</td></tr>
-                          <tr><td>Distance</td><td>${distance}</td></tr>
-                          <tr><td>Duration</td><td>${duration} hours</td></tr>
-                          <tr><td>Speed</td><td>avg ${avg_speed} / max ${max_speed}</td></tr>
-                          <tr><td>Wind</td><td>max ${max_wind}</td></tr>
+                          <tr><th>Time</th><td>${time}</td></tr>
+                          <tr><th>Distance</th><td>${distance}</td></tr>
+                          <tr><th>Duration</th><td>${duration} hours</td></tr>
+                          <tr><th>Speed</th><td>avg ${avg_speed} / max ${max_speed}</td></tr>
+                          <tr><th>Wind</th><td>max ${max_wind}</td></tr>
                           <tr><th>Notes</th><td>${notes}</td></tr>'
                         </tbody></table></br>
                         <a href="/timelapse/${feature.properties.id}">Replay</a>
@@ -385,15 +384,19 @@
 
 <style lang="scss">
   .mpopup {
-    td:nth-child(1) {
+    th {
       text-align: right;
       padding-right: 5px;
+      font-weight: normal;
     }
-    td:nth-child(2) {
+    td {
       font-weight: bold;
     }
     a {
       cursor: pointer;
+    }
+    h4 {
+      font-weight: bold;
     }
   }
 </style>

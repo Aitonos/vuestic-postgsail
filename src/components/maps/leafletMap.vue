@@ -167,24 +167,24 @@
         let longitude = parseFloat(feature.properties.longitude).toFixed(3)
         let text = `<div class='mpopup'><h4>${vesselName}: ${status}</h4><br/>
                           <table class='data'><tbody>
-                            <tr><td>Time</td><td>${time}</td></tr>
-                            <tr><td>Position</td><td>${latitude} ${longitude}</td></tr>`
+                            <tr><th>Time</th><td>${time}</td></tr>
+                            <tr><th>Position</th><td>${latitude} ${longitude}</td></tr>`
         if (feature.properties.speedoverground) {
-          text += `<tr><td>Speed</td><td>${sog}`
+          text += `<tr><th>Speed</th><td>${sog}`
           if (feature.properties.courseovergroundtrue) {
             text += ` / ${cog}`
           }
           text += `</td></tr>`
         }
         if (feature.properties.windspeedapparent) {
-          text += `<tr><td>Wind</td><td>${aws}`
+          text += `<tr><th>Wind</th><td>${aws}`
           if (feature.properties.truewinddirection) {
             text += ` / ${twd}`
           }
           text += `</td></tr>`
         }
         if (feature.properties.truewinddirection && feature.properties.courseovergroundtrue) {
-          text += `<tr><td>AWA</td><td>${awa}</td></tr>`
+          text += `<tr><th>AWA</th><td>${awa}</td></tr>`
         }
         text += `</tbody></table></div>`
 
@@ -216,12 +216,12 @@
         let text = `<div class='mpopup'>
                         <h4><a href="/log/${feature.properties.id}">${feature.properties.name}</a></h4><br/>
                         <table class='data'><tbody>
-                          <tr><td>Time</td><td>${time}</td></tr>
-                          <tr><td>Distance</td><td>${distance}</td></tr>
-                          <tr><td>Duration</td><td>${duration} hours</td></tr>
-                          <tr><td>Speed</td><td>avg ${avg_speed} / max ${max_speed}</td></tr>
-                          <tr><td>Wind</td><td>avg ${avg_wind} / max ${max_wind}</td></tr>
-                          <tr><td>Notes</td><td>${notes}</td></tr>
+                          <tr><th>Time</th><td>${time}</td></tr>
+                          <tr><th>Distance</th><td>${distance}</td></tr>
+                          <tr><th>Duration</th><td>${duration} hours</td></tr>
+                          <tr><th>Speed</th><td>avg ${avg_speed} / max ${max_speed}</td></tr>
+                          <tr><th>Wind</th><td>avg ${avg_wind} / max ${max_wind}</td></tr>
+                          <tr><th>Notes</th><td>${notes}</td></tr>
                         </tbody></table></br>
                         <a href="/timelapse/${feature.properties.id}">Replay</a>
                       </div>`
@@ -415,11 +415,12 @@
 
 <style lang="scss">
   .mpopup {
-    td:nth-child(1) {
+    th {
       text-align: right;
       padding-right: 5px;
+      font-weight: normal;
     }
-    td:nth-child(2) {
+    td {
       font-weight: bold;
     }
     a {
