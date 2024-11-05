@@ -404,4 +404,9 @@
       font-weight: bold;
     }
   }
+  .sidebar-tab-link.active,
+  .sidebar-tab-link:hover {
+    color: var(--va-primary) !important;
+    border-bottom-color: var(--va-primary) !important;
+  }
 </style>
