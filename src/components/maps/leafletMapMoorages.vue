@@ -28,7 +28,7 @@
                     <ol>
                       <li v-for="(moorage, index) in mooragesList" :key="index">
                         {{ index + 1 }}.
-                        <a class="va-link" @click="navigateMoorage(moorage.geometry.coordinates, index)">{{
+                        <a class="va-link" @click="navigateMoorage(moorage.geometry.coordinates)">{{
                           moorage.properties.name
                         }}</a>
                       </li>
@@ -82,7 +82,7 @@
     moorages_geojson = ref(),
     outbound_logs_map = ref(),
     inbound_logs_map = ref(),
-    markersMap = ref([])
+    markersMap = ref({})
 
   const props = defineProps({
     moorageMapId: {
@@ -113,6 +113,18 @@
   const tabs = ['moorages']
 
   const title = t('moorages.list.title') + ' ' + vesselName
+
+  const addMarker = function (coords, layer) {
+    const [lon, lat] = coords
+    const key = `[${lon},${lat}]`
+    markersMap.value[key] = layer
+  }
+
+  const openPopupMarker = function (coords) {
+    const [lon, lat] = coords
+    const key = `[${lon},${lat}]`
+    markersMap.value[key].fire('click')
+  }
 
   onMounted(async () => {
     isBusy.value = true
@@ -220,7 +232,7 @@
       }
       layer.bindPopup(popupContent)
       layer.on({ click: whenClicked })
-      markersMap.value.push(layer)
+      addMarker(feature.geometry.coordinates, layer)
     }
 
     const layer = L.geoJSON(geojson, {
@@ -367,12 +379,13 @@
     if (!moorages_geojson.value?.features) return []
     return moorages_geojson.value.features
       .filter((feature) => feature.geometry.type === 'Point')
+      .sort((a, b) => b.geometry.coordinates[1] - a.geometry.coordinates[1]) // north to south
       .map((feature) => feature)
   })
-  const navigateMoorage = (coordinates, index) => {
+  const navigateMoorage = (coordinates) => {
     function openPopupClick() {
       //markersMap.value[index].openPopup()
-      markersMap.value[index].fire('click', index)
+      openPopupMarker(coordinates)
       map.value.off('moveend', openPopupClick)
     }
     console.log(`navigate to Moorage: ${coordinates}`)
