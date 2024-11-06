@@ -366,7 +366,7 @@
     try {
       // Duplicate json ref to keep origin geojson valid
       const geojson = monitoring.value.geojson.geometry.coordinates.map((x) => x)
-      await fetchWeatherForecast(...geojson.reverse())
+      await fetchWeatherForecast([...geojson].reverse())
       console.log('Dashboard onMounted currentWeather.value', currentWeather.value)
     } catch (err) {
       console.log('fetchWeatherForecast failed', err)

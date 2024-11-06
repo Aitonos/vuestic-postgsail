@@ -58,7 +58,7 @@
       console.log('Event Logs', response)
       if (Array.isArray(response)) {
         rowsData.value.splice(0, rowsData.value.length || [])
-        rowsData.value.push(...response.reverse())
+        rowsData.value.push([...response].reverse())
         console.log('Event Logs', rowsData.value)
       } else {
         throw { response }

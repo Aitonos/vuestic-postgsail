@@ -230,7 +230,7 @@
 
     map.value.fitBounds(layer.getBounds(), { maxZoom: 17 })
     if (props.moorageMapId != 0) {
-      map.value.flyTo(...coord.reverse(), props.mapZoom)
+      map.value.flyTo([...coord].reverse(), props.mapZoom)
     }
     // only for moorages maps
     if (props.moorageMapId == 0) {
@@ -376,7 +376,7 @@
       map.value.off('moveend', openPopupClick)
     }
     console.log(`navigate to Moorage: ${coordinates}`)
-    map.value.flyTo(...coordinates.reverse(), 15)
+    map.value.flyTo([...coordinates].reverse(), 15)
     map.value.on('moveend', openPopupClick)
   }
 
