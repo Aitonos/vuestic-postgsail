@@ -376,7 +376,7 @@
       map.value.off('moveend', openPopupClick)
     }
     console.log(`navigate to Moorage: ${coordinates}`)
-    map.value.flyTo(coordinates.reverse(), 15)
+    map.value.flyTo([...coordinates].reverse(), 15)
     map.value.on('moveend', openPopupClick)
   }
 
