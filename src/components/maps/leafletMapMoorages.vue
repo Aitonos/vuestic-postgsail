@@ -26,8 +26,8 @@
                 >
                   <div>
                     <ol>
-                      <li v-for="(moorage, index) in mooragesList" :key="index">
-                        {{ index + 1 }}.
+                      <li v-for="(moorage, mIdx) in mooragesList" :key="mIdx">
+                        {{ mIdx + 1 }}.
                         <a class="va-link" @click="navigateMoorage(moorage.geometry.coordinates)">{{
                           moorage.properties.name
                         }}</a>
