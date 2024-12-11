@@ -124,7 +124,8 @@
     agreedToTermsErrors.value = formData.agreedToTerms ? [] : [t('auth.errors.agreed_to_terms')]
 
     console.log(formReady.value, formData.email, emailErrors.value.length, validate())
-    if (!validate()) return
+    //if (!validate()) return
+    if (validate() == false) return
     if (!formReady.value) return
     if (formData.email.indexOf('+') > -1) {
       emailErrors.value = ['invalid email format']
