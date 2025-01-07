@@ -332,6 +332,7 @@
     },
     "name": "Name",
     "website": "Website",
+    "windy_station": "Windy Station",
     "public_profile": "Public Profile",
     "public_name": "Name",
     "public_logs": "Log Details",
@@ -369,6 +370,7 @@
     "msg": {
       "website": "Website displayed alongside your stats, please enter the full URL starting with http:// or https://",
       "instagram_handle": "Instagram link displayed alongside your stats, please enter without a leading {'@'} sign",
+      "windy_station": "Windy station identifier as displayed in Windy URL after /station/pws- (e.g. d06efc48)",
       "public_profile": "When enabled, corresponding pages like stats, timelapse and others can be accessed by anyone without being required to login.",
       "public_logs": "When enabled, your individual log details will be publicly accessible at https://iot.openplotter.cloud/{0}{1}/log/{0}",
       "public_stats": "When enabled, your statistics will be publicly accessible at https://iot.openplotter.cloud/{0}/stats",
