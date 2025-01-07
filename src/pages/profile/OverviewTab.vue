@@ -61,6 +61,21 @@
           </tr>
           <tr>
             <td>
+              <va-popover class="mr-2 mb-2" icon="info" :message="$t('profile.msg.windy_station')">
+                {{ t('profile.windy_station') }}
+              </va-popover>
+            </td>
+            <td class="centerContainer">
+              <VaInput
+                v-model="localpref.windy"
+                outline
+                placeholder="(e.g. d06efc48)"
+                @change="UpdatePref('windy', settings.preferences.windy)"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
               <va-popover
                 class="mr-2 mb-2"
                 icon="info"
@@ -234,7 +249,7 @@
             <tr class="sub-setting">
               <td>
                 <va-popover class="mr-2 mb-2" icon="info" :message="$t('profile.msg.public_windy')">
-                  Windy Station
+                  {{ t('profile.windy_station') }}
                 </va-popover>
               </td>
               <td class="">
