@@ -114,7 +114,17 @@
       Array.isArray(CacheStore.moorages) &&
       CacheStore.moorages.length == 0
     ) {
-      console.warn('Warning, invalid cache data, resetting cache.')
+      console.warn('Warning, invalid cache data (moorages), resetting cache.')
+      await CacheStore.resetCache()
+    }
+    // Check cache, do we have inconsistent data from cache.
+    if (
+      Array.isArray(CacheStore.logs) &&
+      CacheStore.logs.length == 0 &&
+      Array.isArray(CacheStore.moorages) &&
+      CacheStore.moorages.length > 1
+    ) {
+      console.warn('Warning, invalid cache data (logs), resetting cache.')
       await CacheStore.resetCache()
     }
     // Load dynamic data for graph and dashboard
@@ -128,7 +138,7 @@
   onBeforeMount(async () => {
     console.log('AppLayout onBeforeMount')
     if (!GlobalStore.isLoggedIn && GlobalStore.isPublic) {
-      console.log('AppLayout anonymous access isPublic', GlobalStore.isPublic)
+      console.log('AppLayout onBeforeMount anonymous access isPublic', GlobalStore.isPublic)
       return
     }
     await fetchSettings(true)
