@@ -131,7 +131,8 @@
       <va-card-content>
         Frontend version: {{ versions.web_version }}, VueJS: {{ version }}, Vite: {{ vite_version }}<br />
         Backend version: {{ versions.api_version }}, {{ versions.sys_version }}, TimescaleDB:
-        {{ versions.timescaledb }}, PostGIS: {{ versions.postgis }}, {{ versions.postgrest }}<br />
+        {{ versions.timescaledb }}, PostGIS: {{ versions.postgis }}, {{ versions.postgrest }}, MobilityDB:
+        {{ versions.mobilitydb }}<br />
       </va-card-content>
     </va-card>
   </div>
