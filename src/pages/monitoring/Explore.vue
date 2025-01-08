@@ -6,9 +6,9 @@
     <Offline />
   </template>
   <template v-if="!offline && apiSuccess">
-    <va-card class="mb-3">
+    <va-card class="">
       <va-card-content>
-        <div class="layout gutter--md">
+        <div class="box w-full">
           <div class="py-2 grid grid-cols-12 gap-6">
             <div class="col-span-12 md:col-span-6 flex flex-col">
               <va-input v-model="filter.name" :clearable="true" placeholder="Filter by name..." />
@@ -17,10 +17,10 @@
         </div>
       </va-card-content>
     </va-card>
-    <va-card class="mb-3">
+    <va-card class="">
       <va-card-title>{{ $t('monitoring.explore.title') }}</va-card-title>
       <va-card-content>
-        <h1 class="box layout gutter--md">{{ $t('monitoring.explore.msg') }}</h1>
+        <h1 class="box w-full" style="width: 100%">{{ $t('monitoring.explore.msg') }}</h1>
         <table class="va-table va-table--hoverable va-table--striped" style="width: 100%">
           <thead>
             <tr>
