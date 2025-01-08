@@ -78,6 +78,18 @@
                     {{ item.arrivals_departures }}
                   </router-link>
                 </dd>
+                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.visits') }}</dt>
+                <dd class="flex xs12 md6 pa-2">
+                  {{ item.visits }}
+                </dd>
+                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.first_seen') }}</dt>
+                <dd class="flex xs12 md6 pa-2">
+                  {{ item.first_seen }}
+                </dd>
+                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.last_seen') }}</dt>
+                <dd class="flex xs12 md6 pa-2">
+                  {{ item.last_seen }}
+                </dd>
                 <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.note') }}</dt>
                 <dd class="flex xs12 md6 pa-1">
                   <VaTextarea v-model="formData.notes" outline placeholder="Note" @change="handleSubmit" />
@@ -106,7 +118,7 @@
 
 <script setup>
   import { computed, ref, reactive, onMounted } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { setAppTitle } from '../../utils/app.js'
   import PostgSail from '../../services/api-client'
@@ -123,6 +135,7 @@
 
   import moorages from '../../data/moorages.json'
 
+  const router = useRouter()
   const route = useRoute()
   const CacheStore = useCacheStore()
   const GlobalStore = useGlobalStore()
@@ -143,11 +156,15 @@
           name: apiData.row.name,
           default_stay: apiData.row.default_stay,
           home: apiData.row.home,
-          total_stay: apiData.row.total_stay,
-          total_duration: apiData.row.total_duration,
-          arrivals_departures: apiData.row.arrivals_departures,
+          visits: apiData.row.stays_count,
+          total_duration: apiData.row.stays_sum_duration,
+          arrivals_departures: apiData.row.logs_count,
           notes: apiData.row.notes,
           default_stay_id: apiData.row.default_stay_id,
+          first_seen: apiData.row.stay_first_seen,
+          last_seen: apiData.row.stay_last_seen,
+          first_seen_id: apiData.row.stay_first_seen_id,
+          last_seen_id: apiData.row.stay_last_seen_id,
         }
       : {}
   })
@@ -334,6 +351,7 @@
       updateError.value = response.message
     } finally {
       isBusy.value = false
+      router.push({ name: 'logs' })
     }
   }
 </script>
