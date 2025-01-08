@@ -235,6 +235,9 @@
       "home": "Zuhause",
       "stayed_at": "Gesamtdauer des Aufenthalts",
       "arrivals": "Anzahl der Ankünfte & Abreisen",
+      "visits": "Number of Visits",
+      "first_seen": "Moorage first seen",
+      "last_seen": "Moorage last seen",
       "note": "Notizen"
     }
   },
