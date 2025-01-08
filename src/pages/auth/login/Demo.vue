@@ -61,14 +61,14 @@
   const { init } = useToast()
 
   const formData = reactive({
-    email: '',
-    password: '',
+    email: 'demo@openplotter.cloud',
+    password: 'demo',
     keepLoggedIn: false,
   })
 
   const isBusy = ref(false)
-  const email = ref(GlobalStore.settings?.email || '')
-  const password = ref('')
+  const email = ref('demo@openplotter.cloud')
+  const password = ref('demo')
   const keepLoggedIn = ref(false)
   const emailErrors = ref([])
   const passwordErrors = ref([])
@@ -87,7 +87,7 @@
     emailErrors.value = formData.email ? [] : [t('auth.errors.email')]
     passwordErrors.value = formData.password ? [] : [t('auth.errors.password')]
 
-    if (!validate()) return
+    if (validate() == false) return
     if (!formReady.value) return
 
     loginError.value = null
