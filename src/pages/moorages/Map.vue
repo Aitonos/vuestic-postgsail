@@ -1,6 +1,6 @@
 <template>
   <div class="leaflet-map__full">
-    <Map style="width: 100%; height: calc(100vh - 4.5rem)" :map-zoom="8" :moorage-map-id="0" />
+    <Map id="moorages-map-full" style="width: 100%; height: calc(100vh - 4.5rem)" :map-zoom="8" :moorage-map-id="0" />
   </div>
 </template>
 

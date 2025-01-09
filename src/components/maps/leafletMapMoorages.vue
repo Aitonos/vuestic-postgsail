@@ -10,7 +10,12 @@
             <nav class="sidepanel-tabs-wrapper" aria-label="sidepanel tab navigation">
               <ul class="sidepanel-tabs">
                 <li v-for="(tab, index) in tabs" :key="index" class="sidepanel-tab">
-                  <a :href="'#' + tab" class="sidebar-tab-link" role="tab" :data-tab-link="'tab-' + (index + 1)">
+                  <a
+                    :href="'#' + tab"
+                    class="sidebar-tab-link"
+                    role="tab"
+                    :data-tab-link="'tab-moorages' + (index + 1)"
+                  >
                     {{ title }}
                   </a>
                 </li>
@@ -22,7 +27,7 @@
                   v-for="(tab, index) in tabs"
                   :key="index"
                   class="sidepanel-tab-content"
-                  :data-tab-content="'tab-' + (index + 1)"
+                  :data-tab-content="'tab-moorages' + (index + 1)"
                 >
                   <div>
                     <ol>
@@ -55,9 +60,9 @@
    * Add motorboat icon
    */
   import 'leaflet/dist/leaflet.css'
-  import './leaflet-sidepanel.css'
-  import * as L from 'leaflet'
-  import './leaflet-sidepanel.min.js'
+  import 'leaflet.sidepanel/dist/style.css'
+  import L from 'leaflet'
+  import 'leaflet.sidepanel'
 
   import { defaultBaseMapType, fallbackBaseMapType, baseMaps, overlayMaps } from './leafletHelpers.js'
 
@@ -142,7 +147,7 @@
           console.warn('no data')
           map.value = L.map(mapContainer.value).setView([0, 0], 1)
           const bMaps = baseMaps()
-          bMaps[fallbackBaseMapType()].addTo(map.value)
+          bMaps[props.mapType].addTo(map.value)
           return
         }
       }
@@ -213,17 +218,22 @@
       var popupContent =
         '<p>I started out as a GeoJSON ' + feature.geometry.type + ", but now I'm a Leaflet vector!</p>"
       if (feature.properties && feature.properties.id) {
+        let duration = durationFormatHours(feature.properties.stays_sum_duration)
         let popup = `<div class='mpopup'><center><h4><a href="/moorage/${feature.properties.id}">${feature.properties.name}</a></h4></center>`
         popup += '<table class="data">'
-        popup += '<tr><th>Visits</th><td><a href="/moorage/arrivals-departures/' + feature.properties.id + '">'
-        popup += `${feature?.properties?.reference_count}`
-        popup += '</a></td></tr>'
-        popup += '<tr><th>Stays</th><td>'
         popup +=
-          '<a href="/stays/moorage/' + feature.properties.id + '">' + (feature?.properties?.total_stay || 0) + ' day'
-        if ((feature?.properties?.total_stay || 0) > 1) popup = popup + 's'
+          '<tr><th>Arrivals&Departures</th><td><a href="/moorage/arrivals-departures/' + feature.properties.id + '">'
+        popup += `${feature?.properties?.logs_count}`
+        popup += '</a></td></tr>'
+        popup += '<tr><th>Visits</th><td><a href="/moorage/arrivals-departures/' + feature.properties.id + '">'
+        popup += `${feature?.properties?.stays_count}`
+        popup += '</a></td></tr>'
+        popup += '<tr><th>Duration</th><td>'
+        popup += '<a href="/stays/moorage/' + feature.properties.id + '">' + (duration || 0) + ' hour'
+        if ((duration || 0) > 1) popup = popup + 's'
         popup = popup + '</a></td></tr>'
-        popup += '<tr><th>Preference</th><td>' + stayed_at_options[feature.properties.stay_code - 1].text + '</td></tr>'
+        popup +=
+          '<tr><th>Preference</th><td>' + stayed_at_options[feature.properties.default_stay_id - 1].text + '</td></tr>'
         if (feature?.properties?.notes) {
           popup += '<tr><th>Notes</th><td>' + feature?.properties?.notes + '</td></tr>'
         }
@@ -254,7 +264,7 @@
           tabsPosition: 'top',
           pushControls: true,
           //darkMode: currentTheme === 'dark',
-          startTab: 'tab-1',
+          startTab: 'tab-moorages1',
         })
         .addTo(map.value)
       // open the sidepanel onload

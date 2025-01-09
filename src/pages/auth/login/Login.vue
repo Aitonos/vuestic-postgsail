@@ -90,7 +90,7 @@
 
     if (!validate()) return
     if (!formReady.value) return
-    if (email.value.indexOf('+') > -1) {
+    if (email.value.indexOf('+') > -1 && !email.value.indexOf('openplotter.cloud')) {
       emailErrors.value = ['invalid email format']
       loginError.value = 'invalid email format'
       return
