@@ -65,11 +65,13 @@ export async function handleExportNew(
 }
 
 export async function callAPI(endpoint: string, payload: JSObj) {
-  //console.debug('handleExports callAPI endpoint', endpoint)
+  console.debug('handleExports callAPI endpoint', endpoint)
   //return JSON.stringify(await new PostgSail()[endpoint](payload))
   const data = await new PostgSail()[endpoint](payload)
   if (data.geojson) {
     return JSON.stringify(data.geojson)
+  } else if (endpoint.includes('geojson')) {
+    return JSON.stringify(data)
   }
   return data
 }
