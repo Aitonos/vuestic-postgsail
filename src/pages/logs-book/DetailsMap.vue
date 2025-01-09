@@ -94,6 +94,7 @@
   import tripPerformance from './sidebars/Performance.vue'
   import tripObservations from './sidebars/Observations.vue'
   import tripExport from './sidebars/Export.vue'
+  import moment from 'moment'
 
   const CacheStore = useCacheStore()
   const router = useRouter()
@@ -238,116 +239,87 @@
     return canDelete
   }
 
-  const saveNote = async function (coordinates, note) {
-    console.log('saveNote to update:', coordinates, note)
+  // Add a note to GeoJSON feature point - Mobilitydb
+  const saveNote = async function (timestamp, note) {
+    //console.log('saveNote to update:', timestamp, note)
+    // '["notes"@2024-11-07T18:40:45+00, ""@2024-11-07T18:41:45+00]'
+    const plusone = moment.utc(timestamp).add(1, 'minutes').format()
+    // to be clean we need the next timestamp
+    const update_string = `["${note}"@${timestamp}, ""@${plusone}]`
+    console.log('saveNote update_string:', update_string)
 
-    // Save the note to the GeoJSON
-    for (let i = 0; i < GeoJSONfeatures.value.length; i++) {
-      const geofeature = GeoJSONfeatures.value[i]
-      // Check if the feature is a point
-      if (geofeature.geometry.type === 'Point') {
-        // Get the coordinates of the point
-        const pointCoordinates = geofeature.geometry.coordinates
-        // Check if the coordinates match the target coordinates
-        if (pointCoordinates[0] === coordinates[0] && pointCoordinates[1] === coordinates[1]) {
-          console.log('GeoJSONfeatures found index:', i)
-          GeoJSONfeatures.value[i].properties.notes = note
-          break // Exit loop if the point is found
-        }
+    const api = new PostgSail()
+    const id = route.params.id
+    try {
+      const response = await api.log_update_trip_notes({ _id: parseInt(id), update_string: update_string })
+      if (response) {
+        console.log('log_update_trip_notes success', response)
+        // Clean CacheStore and force refresh
+        CacheStore.logs = []
+        CacheStore.logs_get = []
+        CacheStore.store_ttl = null
+        await CacheStore.resetCache()
+      } else {
+        throw { response }
       }
-    }
-
-    const track_geojson = {
-      type: 'FeatureCollection',
-      features: GeoJSONfeatures.value,
-    }
-    // Save change the new GeoJSON to the DB
-    const isSaved = await handleSubmit(track_geojson)
-    if (isSaved) {
-      console.log('saveNote saved')
+    } catch (err) {
+      const { response } = err
+      console.log('log_update_trip_notes failed', response)
+      updateError.value = response.message
+    } finally {
+      initToast({
+        message: updateError.value ? `Error updating log note entry` : `Successfully updating log note entry`,
+        position: 'top-right',
+        color: updateError.value ? 'warning' : 'success',
+      })
+      isBusy.value = false
+      router.push({ name: 'logs' })
     }
   }
 
-  // Delete point from GeoJSON features
-  const deletePoint = async function (coordinates) {
-    console.log('deletePoint to delete:', coordinates)
+  // Delete point from GeoJSON feature point - Mobilitydb
+  const deletePoint = async function (timestamp) {
+    //console.log('deletePoint to delete:', timestamp)
     const toDelete = await confirmDeleteTrackpoint()
+    // '[2024-11-07T18:40:45+00:00, 2024-11-07T18:41:45+00:00]'
+    const plusone = moment.utc(timestamp).add(1, 'minutes').format()
+    // to be clean we need the next timestamp
+    const update_string = `[${timestamp}, ${plusone}]`
+    console.log('deletePoint update_string:', update_string)
     if (toDelete) {
-      console.log('deletePoint confirmed continue')
-      // Calculate new max speed, and average speed and new wind max speed, and wind average speed
-      let maxSpeed = 0,
-        maxWindSpeed = 0,
-        maxWindSpeedApp = 0,
-        segmentSpeeds = [],
-        segmentWindSpeeds = [],
-        sumSpeeds = 0,
-        sumWindSpeeds = 0,
-        sumWindSpeedsApp = 0
-      // Remove the coordinates from the geojson geometry LineString and geometry Point
-      GeoJSONfeatures.value = GeoJSONfeatures.value.filter(function (geofeature) {
-        if (geofeature.geometry.type === 'Point') {
-          if (JSON.stringify(geofeature.geometry.coordinates) !== JSON.stringify(coordinates)) {
-            // Track maximum speed
-            if (geofeature.properties.speedoverground > maxSpeed) maxSpeed = geofeature.properties.speedoverground
-            // Track maximum wind speed
-            if (geofeature.properties.truewindspeed > maxWindSpeed) maxWindSpeed = geofeature.properties.truewindspeed
-            if (geofeature.properties.windspeedapparent > maxWindSpeedApp)
-              maxWindSpeedApp = geofeature.properties.windspeedapparent
-            segmentSpeeds.push(geofeature.properties.speedoverground)
-            segmentWindSpeeds.push(geofeature.properties.truewindspeed)
-            sumSpeeds += geofeature.properties.speedoverground
-            sumWindSpeeds += geofeature.properties.truewindspeed
-            sumWindSpeedsApp += geofeature.properties.windspeedapparent
-          }
-          return JSON.stringify(geofeature.geometry.coordinates) !== JSON.stringify(coordinates)
-        } else if (geofeature.geometry.type === 'LineString') {
-          geofeature.geometry.coordinates = geofeature.geometry.coordinates.filter(function (lineStringCoords) {
-            return JSON.stringify(lineStringCoords) !== JSON.stringify(coordinates)
-          })
-          return geofeature.geometry.coordinates.length > 0
+      const api = new PostgSail()
+      const id = route.params.id
+      try {
+        const response = await api.log_delete_trip_entry_fn({ _id: parseInt(id), update_string: update_string })
+        if (response) {
+          console.log('log_delete_trip_entry_fn success', response)
+          // Clean CacheStore and force refresh
+          CacheStore.logs = []
+          CacheStore.logs_get = []
+          CacheStore.store_ttl = null
+          await CacheStore.resetCache()
+        } else {
+          throw { response }
         }
-        return true
-      })
-
-      const track_geojson = {
-        type: 'FeatureCollection',
-        features: GeoJSONfeatures.value,
-      }
-      // Update geojson LineString with new stats
-      track_geojson['features'][0]['properties']['distance'] = turf.length(track_geojson['features'][0]['geometry'], {
-        units: 'nauticalmiles',
-      })
-      //track_geojson['features'][0]['properties']['duration'] = metrics.totalDurationInterval
-      console.log('deletePoint previous geojson linestring properties', track_geojson['features'][0]['properties'])
-      track_geojson['features'][0]['properties']['avg_speed'] = sumSpeeds / segmentSpeeds.length
-      track_geojson['features'][0]['properties']['max_speed'] = maxSpeed
-      if (sumWindSpeeds != 0) {
-        track_geojson['features'][0]['properties']['avg_wind_speed'] = sumWindSpeeds / segmentWindSpeeds.length
-      } else {
-        track_geojson['features'][0]['properties']['avg_wind_speed'] = sumWindSpeedsApp / segmentWindSpeeds.length
-      }
-      track_geojson['features'][0]['properties']['max_wind_speed'] = maxWindSpeed || maxWindSpeedApp
-      track_geojson['features'][0]['properties']['x-update'] = new Date().toUTCString()
-      track_geojson['features'][0]['properties']['name'] = formData.name
-      track_geojson['features'][0]['properties']['notes'] = formData.notes
-      console.log('deletePoint new geojson linestring properties', track_geojson['features'][0]['properties'])
-      track_geojson['features'][1]['properties']['trip']['name'] = formData.name
-      track_geojson['features'][1]['properties']['trip']['distance'] =
-        track_geojson['features'][0]['properties']['distance']
-      //track_geojson['features'][1]['properties']['trip']['duration'] = formData.notes
-
-      // Save change the new GeoJSON to the DB
-      const isSaved = await handleSubmit(track_geojson)
-      if (isSaved) {
-        console.log('deletePoint removed')
+      } catch (err) {
+        const { response } = err
+        console.log('log_delete_trip_entry_fn failed', response)
+        updateError.value = response.message
+      } finally {
+        initToast({
+          message: updateError.value ? `Error deleting log note entry` : `Successfully deleting log note entry`,
+          position: 'top-right',
+          color: updateError.value ? 'warning' : 'success',
+        })
+        isBusy.value = false
+        router.push({ name: 'logs' })
       }
     }
-    isBusy.value = false
     document.getElementById('logbook-map').style.display = ''
     console.log('deletePoint done')
   }
 
-  const handleSubmit = async (local_geojson) => {
+  const handleSubmit = async () => {
     isBusy.value = true
     updateError.value = null
 
@@ -360,27 +332,11 @@
       isBusy.value = false
       return true
     }
-    /* From the emit we received a logbook trip entry
-      From the leaflet map we received a valid geojson */
-    //console.debug(local_geojson.geoJson.features[0].properties)
-    let geojson = {}
-    if (local_geojson.name) {
-      // If we have a log entry object, then update the geojson name in linestring geometry
-      local_geojson.geoJson.features[0].properties.name = formData.name
-      geojson = local_geojson.geoJson
-      // Update the corresponding geojson display on the map.
-      GeoJSONfeatures.value[0].properties.name = formData.name
-      GeoJSONfeatures.value[0].properties.notes = formData.notes
-    } else {
-      geojson = local_geojson
-    }
-    console.debug(geojson)
     const api = new PostgSail()
     const id = route.params.id
     const payload = {
       name: formData.name,
       notes: formData.notes,
-      track_geojson: geojson,
     }
     try {
       const response = await api.log_update(id, payload)

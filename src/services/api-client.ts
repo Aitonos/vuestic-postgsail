@@ -130,30 +130,50 @@ class ApiClient extends HttpClient {
     return this.post(`rpc/delete_logbook_fn`, { _id: id })
   }
 
+  async log_update_trip_notes(payload: JSObj) {
+    // _id INT,
+    // update_string TTEXT -- ttext '["notes"@2024-11-07T18:40:45+00, ""@2024-11-07T18:41:45+00]'
+    return this.post(`rpc/update_trip_notes_fn`, payload)
+  }
+
+  async log_delete_trip_entry_fn(payload: JSObj) {
+    // _id INT,
+    // update_string tstzspan -- tstzspan '[2024-11-07T18:40:45+00, 2024-11-07T18:41:45+00]'
+    return this.post(`rpc/delete_trip_entry_fn`, payload)
+  }
+
   async log_export_gpx(payload: JSObj) {
     this.setHeader('Accept', 'text/xml')
-    const data = this.post(`rpc/export_logbook_gpx_fn`, payload)
+    const data = this.post(`rpc/export_logbook_gpx_trip_fn`, payload)
     this.setHeader('Accept', 'application/json')
     return data
   }
 
   async log_export_kml(payload: JSObj) {
     this.setHeader('Accept', 'text/xml')
-    const data = this.post(`rpc/export_logbook_kml_fn`, payload)
+    const data = this.post(`rpc/export_logbook_kml_trip_fn`, payload)
     this.setHeader('Accept', 'application/json')
     return data
   }
 
   async log_export_geojson(payload: JSObj) {
-    return this.post(`rpc/export_logbook_geojson_fn`, payload)
+    return this.post(`rpc/export_logbook_geojson_trip_fn`, payload)
   }
 
   async timelapse(payload: JSObj) {
     return this.post(`rpc/timelapse_fn`, payload)
   }
 
+  async timelapse_trips_by_linestring(payload: JSObj) {
+    return this.get(`rpc/export_logbooks_geojson_linestring_trips_fn?${payload}`)
+  }
+
   async timelapse_by_points(payload: JSObj) {
     return this.post(`rpc/timelapse2_fn`, payload)
+  }
+
+  async timelapse_trips_by_points(payload: JSObj) {
+    return this.get(`rpc/export_logbooks_geojson_point_trips_fn?${payload}`)
   }
 
   async timelapse_record(payload: JSObj) {
@@ -162,20 +182,20 @@ class ApiClient extends HttpClient {
 
   async logs_export_gpx(payload: JSObj) {
     this.setHeader('Accept', 'text/xml')
-    const data = this.post(`rpc/export_logbooks_gpx_fn`, payload)
+    const data = this.post(`rpc/export_logbooks_gpx_trips_fn`, payload)
     this.setHeader('Accept', 'application/json')
     return data
   }
 
   async logs_export_kml(payload: JSObj) {
     this.setHeader('Accept', 'text/xml')
-    const data = this.post(`rpc/export_logbooks_kml_fn`, payload)
+    const data = this.post(`rpc/export_logbooks_kml_trips_fn`, payload)
     this.setHeader('Accept', 'application/json')
     return data
   }
 
   async logs_export_geojson(payload: JSObj) {
-    return this.post(`rpc/timelapse_fn`, payload)
+    return this.post(`rpc/export_logbooks_geojson_linestring_trips_fn`, payload)
   }
 
   async update_observations(payload: JSObj) {
@@ -183,7 +203,7 @@ class ApiClient extends HttpClient {
   }
 
   async logs_geojson() {
-    return this.get(`logbook?select=track_geojson&track_geojson=not.is.null&order=_from_time.desc&limit=10`)
+    return this.get(`log_view?select=geojson&geojson=not.is.null&order=started.desc&limit=10`)
   }
 
   async logs_merge(payload: JSObj) {

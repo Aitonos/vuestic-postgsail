@@ -34,10 +34,10 @@
 
 <script>
   import 'leaflet/dist/leaflet.css'
-  import './leaflet-sidepanel.css'
+  import 'leaflet.sidepanel/dist/style.css'
   import L from 'leaflet'
   import 'leaflet-rotatedmarker'
-  import './leaflet-sidepanel.min.js'
+  import 'leaflet.sidepanel'
 
   import { ref } from 'vue'
 
@@ -138,11 +138,11 @@
 
       if (this.geoJsonFeatures && this.geoJsonFeatures.length > 0) {
         const midPoint = Math.round(this.geoJsonFeatures.length / 2)
-        console.debug('leght,midPoint', `${this.geoJsonFeatures.length} ${midPoint}`)
+        console.debug('length,midPoint', `${this.geoJsonFeatures.length} ${midPoint}`)
         console.debug('geoJsonFeatures', this.geoJsonFeatures)
         if (this.multigeojson) {
-          centerLat = parseFloat(this.geoJsonFeatures[midPoint].track_geojson.features[0].geometry.coordinates[1])
-          centerLng = parseFloat(this.geoJsonFeatures[midPoint].track_geojson.features[0].geometry.coordinates[0])
+          centerLat = parseFloat(this.geoJsonFeatures[midPoint].geojson.features[0].geometry.coordinates[1])
+          centerLng = parseFloat(this.geoJsonFeatures[midPoint].geojson.features[0].geometry.coordinates[0])
         } else {
           centerLat = this.geoJsonFeatures[midPoint].geometry.coordinates[1]
           centerLng = this.geoJsonFeatures[midPoint].geometry.coordinates[0]
@@ -163,8 +163,8 @@
         let twd = angleFormat(feature.properties.truewinddirection)
         let aws = speedFormatKnots(feature.properties.windspeedapparent)
         let awa = awaFormat(feature.properties.truewinddirection, feature.properties.courseovergroundtrue)
-        let latitude = parseFloat(feature.properties.latitude).toFixed(3)
-        let longitude = parseFloat(feature.properties.longitude).toFixed(3)
+        let latitude = parseFloat(feature.geometry.coordinates[0]).toFixed(3)
+        let longitude = parseFloat(feature.geometry.coordinates[1]).toFixed(3)
         let text = `<div class='mpopup'><h4>${vesselName}: ${status}</h4><br/>
                           <table class='data'><tbody>
                             <tr><th>Time</th><td>${time}</td></tr>
@@ -185,6 +185,21 @@
         }
         if (feature.properties.truewinddirection && feature.properties.courseovergroundtrue) {
           text += `<tr><th>AWA</th><td>${awa}</td></tr>`
+        }
+        if (feature.properties.depth) {
+          text += `<tr><th>Depth</th><td>${feature.properties.depth}</td></tr>`
+        }
+        if (feature.properties.watertemperature) {
+          text += `<tr><th>Water Temperature</th><td>${feature.properties.watertemperature}</td></tr>`
+        }
+        if (feature.properties.outsidetemperature) {
+          text += `<tr><th>outsidetemperature</th><td>${feature.properties.outsidetemperature}</td></tr>`
+        }
+        if (feature.properties.outsidepressure) {
+          text += `<tr><th>outsidepressure</th><td>${feature.properties.outsidepressure}</td></tr>`
+        }
+        if (feature.properties.outsidehumidity) {
+          text += `<tr><th>outsidehumidity</th><td>${feature.properties.outsidehumidity}</td></tr>`
         }
         text += `</tbody></table></div>`
 
@@ -241,10 +256,10 @@
           const deleteButton = document.getElementById('deletePointButton')
 
           if (saveButton) {
-            saveButton.addEventListener('click', () => this.saveNote(feature.geometry.coordinates))
+            saveButton.addEventListener('click', () => this.saveNote(feature.properties.time))
           }
           if (deleteButton) {
-            deleteButton.addEventListener('click', () => this.deletePoint(feature.geometry.coordinates))
+            deleteButton.addEventListener('click', () => this.deletePoint(feature.properties.time))
           }
         })
       }
@@ -280,16 +295,16 @@
         let controlLayer = L.control.layers()
         //console.log(geojson.length)
         for (let i = 0; i < geojson.length; i++) {
-          //console.log(geojson[i].track_geojson)
+          //console.log(geojson[i].geojson)
           let color = random_rgb_dark()
-          layers[i] = L.geoJSON(geojson[i].track_geojson, {
+          layers[i] = L.geoJSON(geojson[i].geojson, {
             style: { color: random_rgb_dark() },
             filter: geoMapFilter,
             pointToLayer: boatIcon,
             onEachFeature: popup,
           }).addTo(featGroup)
           featGroup.addTo(this.map)
-          const text = `<i class="geojson-box" style="background-color:${color}">&nbsp;</i><h4>${geojson[i].track_geojson.features[0].properties.name}</h4><small>${geojson[i].track_geojson.features[0].properties._from_time}</small>`
+          const text = `<i class="geojson-box" style="background-color:${color}">&nbsp;</i><h4>${geojson[i].geojson.features[0].properties.name}</h4><small>${geojson[i].geojson.features[0].properties.started}</small>`
           controlLayer.addOverlay(layers[i], text).addTo(this.map)
           //document.getElementsByClassName('leaflet-control-layers-toggle')[1].className = 'leaflet-control-layers-toggle pgsail-geojson'
           document.getElementsByClassName('leaflet-control-layers-toggle')[1].style =

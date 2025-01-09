@@ -153,7 +153,18 @@
         end_date: end_date.value,
       }
     try {
-      const response = await api.timelapse_by_points(payload)
+      //const response = await api.timelapse_by_points(payload)
+      // remove null query-string
+      if (payload.end_log === null && payload.start_log === null) {
+        delete payload.end_log
+        delete payload.start_log
+      } else {
+        delete payload.start_date
+        delete payload.end_date
+      }
+      const qs = new URLSearchParams(payload)
+      //console.log(qs.toString())
+      const response = await api.timelapse_trips_by_points(qs)
       if (response && response.geojson?.features && response.geojson?.features[0]?.geometry?.coordinates) {
         timelapse.value = response.geojson
         patchLMapPositions()
