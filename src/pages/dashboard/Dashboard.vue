@@ -14,7 +14,15 @@
             </tr>
             <tr>
               <td>{{ t('monitoring.title') }}</td>
-              <td>{{ status.monitoring }}</td>
+              <td>
+                {{ status.monitoring }}
+                <span class="relative inline-block size-3">
+                  <span
+                    :class="['absolute inline-flex h-full w-full animate-ping rounded-full opacity-75', healthClass]"
+                  ></span>
+                  <span :class="['relative inline-flex size-3 rounded-full', healthClass]"></span
+                ></span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -222,6 +230,7 @@
     obj.local_time = localTime()
     obj.last_updated = monitoring.value.time ? fromNow(monitoring.value.time) : 'Pending'
     obj.monitoring = monitoring.value.time && !monitoring.value.offline ? 'Online' : 'Offline'
+    obj.health = monitoring.value.time && !monitoring.value.offline ? 0 : 1
     return obj
   })
 
@@ -397,6 +406,14 @@
       //updateError.value = response.message
     } finally {
       //isBusy.value = false
+    }
+  })
+
+  const healthClass = computed(() => {
+    return {
+      'bg-green-500': status.value.health == 0,
+      'bg-yellow-500': status.value.health == 1,
+      'bg-red-500': status.value.health == 2,
     }
   })
 </script>
