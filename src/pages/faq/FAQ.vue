@@ -251,6 +251,19 @@
               ><br />
             </div>
           </va-collapse>
+          <va-collapse header="Sponsor">
+            <div class="pa-3">
+              Help us maintain and improve this project! Your support makes a huge difference and keeps our project
+              growing.<br />
+              Support us directly through
+              <a href="https://github.com/sponsors/xbgmsharp" target="_blank" class="va-text-bold va-link link"
+                >GitHub Sponsors<va-icon name="fa-external-link" size="small"
+              /></a>
+              with monthly or one-time donations.<br />
+              <h4>Every Contribution Matters</h4>
+              <p>Join our growing community of supporters and help us make this project even better!</p>
+            </div>
+          </va-collapse>
         </va-accordion>
       </va-card-content>
     </va-card>
