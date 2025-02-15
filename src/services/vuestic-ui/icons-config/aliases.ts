@@ -19,6 +19,7 @@ import IconSunset from '../../../components/icons/IconSunset.vue'
 import IconKML from '../../../components/icons/IconKML.vue'
 import IconMP4 from '../../../components/icons/IconMP4.vue'
 import IconPNG from '../../../components/icons/IconPNG.vue'
+import IconSponsor from '../../../components/icons/IconSponsor.vue'
 
 export default [
   {
@@ -315,6 +316,11 @@ export default [
   {
     name: 'icon-png',
     component: shallowRef(IconPNG),
+    color: 'primary',
+  },
+  {
+    name: 'sponsor',
+    component: shallowRef(IconSponsor),
     color: 'primary',
   },
 ]
