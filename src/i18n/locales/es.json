@@ -1,69 +1,69 @@
 {
   "auth": {
-    "demo": "Demo Mode",
+    "demo": "Modo Demo",
     "agree": "Acepto.",
-    "createAccount": "Create cuenta",
+    "createAccount": "Crear cuenta",
     "createNewAccount": "Crear cuenta",
-    "account_created": "New account created successfully.",
-    "email": "Email",
+    "account_created": "Cuenta creada exitosamente",
+    "email": "E-mail",
     "first_name": "Nombre",
-    "last_name": "Apellido",
+    "last_name": "Apellidos",
     "login": "Iniciar sesión",
-    "logout": "Cerrar sesión...",
+    "logout": "Cerrar sesión",
     "password": "Contraseña",
     "recover_password": "Recuperar contraseña",
-    "sign_up": "Registrar",
+    "sign_up": "Registrarse",
     "keep_logged_in": "Mantenme conectado",
-    "termsOfUse": "Términos de uso.",
+    "termsOfUse": "Términos de uso",
     "reset_password": "Restablecer contraseña",
-    "vessel_register": "Add vessel",
-    "otp": "Enter the verification code",
-    "otp_validate": "Validate",
-    "otp_validated": "OTP code validated successfully.",
-    "pushover_message": "Pushover validation",
-    "reset": "Your password has been reset successfully.",
+    "vessel_register": "Añadir barco",
+    "otp": "Introduce el código de verificación OTP",
+    "otp_validate": "Validar código OTP",
+    "otp_validated": "Código OTP validado con éxito",
+    "pushover_message": "Mensaje push ",
+    "reset": "Tu clave ha sido resetada con éxito",
     "errors": {
-      "credentials": "Wrong credentials",
+      "credentials": "Credenciales erróneos",
       "email": "Se requiere correo electrónico",
       "password": "Se requiere contraseña",
       "mismatch_pass": "Contraseña no coincidente",
       "short_pass": "La contraseña es demasiado corta",
-      "first_name": "First name is required",
-      "last_name": "Last name is required",
-      "agreed_to_terms": "You must agree to the terms of use to continue",
-      "expired_session": "Your session has expired.",
-      "otp": "validation code is required",
-      "otp_invalid": "We can't find your code",
-      "reset": "Invalid input"
+      "first_name": "Introduce tu nombre",
+      "last_name": "Introduce tus apellidos",
+      "agreed_to_terms": "Debes acpetar los términos de uso para continuar",
+      "expired_session": "Tu sesión ha caducado.",
+      "otp": "Hay que introducir el código OTP de validación",
+      "otp_invalid": "Código OTP erróneo",
+      "reset": "Entrada errónea"
     }
   },
   "menu": {
-    "dashboard": "Dashboard",
-    "logs": "Logs",
-    "stays": "Stays",
-    "moorages": "Moorages",
-    "map": "Map",
-    "boats": "Boats",
-    "stats": "Stats",
-    "timelapse": "Timelapse",
-    "timelapse_replay": "Replay",
-    "timelapse_form": "Customize",
+    "dashboard": "Panel de control",
+    "logs": "Registros de bitácora",
+    "stays": "Estancias",
+    "moorages": "Fondeos",
+    "map": "Mapa",
+    "boats": "Barcos",
+    "stats": "Estadísticas",
+    "timelapse": "Reproducir línea del tiempo",
+    "timelapse_replay": "Repetir",
+    "timelapse_form": "Ajustar linea del tiempo",
     "grafana": "Grafana",
-    "monitoring": "Monitoring",
-    "monitoring_realtime": "Real-Time",
-    "explore": "Explore",
-    "privacy": "Privacy",
+    "monitoring": "Monitorizar",
+    "monitoring_realtime": "Tiempo real",
+    "explore": "Explorar",
+    "privacy": "Privacidad",
     "faq": "FAQ",
-    "badges": "Badges",
-    "eventlogs": "Event Logs",
-    "help": "Help",
-    "history": "History",
+    "badges": "Insignias",
+    "eventlogs": "Cuaderno de bitácora",
+    "help": "Ayuda",
+    "history": "Historial",
     "windy": "Windy"
   },
   "notifications": {
-    "all": "All",
-    "mark_as_read": "Mark as read",
-    "sent_message": "Sent message"
+    "all": "Todas",
+    "mark_as_read": "Marcar como leído",
+    "sent_message": "Mensaje enviado"
   },
   "modals": {
     "close": "Cerrar"
@@ -81,93 +81,93 @@
     "german": "Alemán"
   },
   "user": {
-    "profile": "Mi Perfil",
-    "logout": "Cerrar Sesión"
+    "profile": "Mi perfil",
+    "logout": "Cerrar sesión"
   },
   "dashboard": {
     "title": "Panel",
     "versions": "Versiones",
-    "overview": "Logbook Overview",
+    "overview": "Vistazo de la bitácora",
     "local_time": "Hora local",
     "charts": {
-      "verticalBarChart": "Log entry per month",
-      "mixedChart": "Log entry per month per year",
-      "lineChart": "Log entry per year",
-      "HeatmapChart": "Log entry per month per weekday"
+      "verticalBarChart": "Número de registros por mes",
+      "mixedChart": "Número de registros por mes y año",
+      "lineChart": "Número de registros por año",
+      "HeatmapChart": "Mapa de calor"
     },
     "panel": {
-      "battery": "Battery",
+      "battery": "Batería",
       "solar": "Solar",
-      "power": "Power",
-      "tank": "Tank"
+      "power": "Energía",
+      "tank": "Tanque"
     },
     "months": {
-      "january": "January",
-      "february": "February",
-      "march": "March",
-      "april": "April",
-      "may": "May",
-      "june": "June",
-      "july": "July",
-      "august": "August",
-      "september": "September",
-      "october": "October",
-      "november": "November",
-      "december": "December"
+      "january": "Enero",
+      "february": "Febrero",
+      "march": "Marzo",
+      "april": "Abril",
+      "may": "Mayo",
+      "june": "Junio",
+      "july": "Julio",
+      "august": "Agosto",
+      "september": "Septiembre",
+      "october": "Octubre",
+      "november": "Noviembre",
+      "december": "Diciembre"
     },
     "days": {
       "monday": "Lunes",
       "tuesday": "Martes",
-      "wednesday": "Miercoles",
+      "wednesday": "Miércoles",
       "thursday": "Jueves",
       "friday": "Viernes",
-      "saturday": "Sabado",
+      "saturday": "Sábado",
       "sunday": "Domingo"
     }
   },
   "api": {
-    "error": "Api error"
+    "error": "Error de Api"
   },
   "logs": {
     "list": {
-      "title": "Logs - Log Book for",
+      "title": "Bitácora - buscar por",
       "filter": {
-        "title": "Search for log",
-        "name": "Name",
-        "date_range": "Date range",
-        "reset": "Reset"
+        "title": "Título",
+        "name": "Nombre",
+        "date_range": "Rango de fechas",
+        "reset": "Resetear"
       },
-      "action": "Action",
-      "from": "From",
-      "from_time": "Started",
-      "tags": "Tags",
-      "to": "To",
-      "to_time": "Ended"
+      "action": "Acción",
+      "from": "Desde",
+      "from_time": "Comienza",
+      "tags": "Etiquetas",
+      "to": "A",
+      "to_time": "Hasta"
     },
     "details": {
-      "title": "Log Book"
+      "title": "Cuaderno de bitácora"
     },
     "log": {
       "name": "Nombre | Nombres",
       "boat": "Buque | Buques",
-      "from": "Departed",
-      "from_time": "Departed at",
-      "to": "Arrived",
-      "to_time": "Arrived at",
+      "from": "Desde origen",
+      "from_time": "Cuándo zarpó",
+      "to": "Hasta destino",
+      "to_time": "Cuando arribó",
       "duration": "Duración",
-      "duration_h": "Duración [h]",
+      "duration_h": "Duración [H]",
       "distance": "Distancia",
       "distance_nm": "Distancia [NM]",
       "avg": "Promedio",
       "max": "Max",
       "speed": "Velocidad",
       "wind_speed": "Velocidad del viento",
-      "note": "Note | Notes",
-      "remarks": "Di lo que paso",
-      "export": "Export",
-      "avg_max_speed": "Average / Max Speed",
+      "note": "Nota | Notas",
+      "remarks": "Describe el evento",
+      "export": "Exportar",
+      "avg_max_speed": "Media / Velocidad máxima",
       "max_wind_speed": "Velocidad máxima del viento",
-      "sea_state": "Estado del mar",
+      "sea_state": "Estado de la mar",
       "cloud_coverage": "Cobertura de nubes",
       "visibility": "Visibilidad",
       "metadata": "Metadatos",
@@ -177,141 +177,141 @@
   },
   "stays": {
     "list": {
-      "title": "Stays - Moorage History of",
+      "title": "Estancias - Historial de estancias",
       "filter": {
-        "title": "Search for stay",
-        "name": "Name",
-        "date_range": "Date range",
-        "reset": "Reset"
+        "title": "Búsqueda de estancia",
+        "name": "Nombre",
+        "date_range": "Rango de fechas",
+        "reset": "Resetear"
       }
     },
     "details": {
-      "title": "Stay"
+      "title": "Estancias"
     },
     "stay": {
-      "name": "Name | Names",
-      "moorage": "Moorage",
-      "departure": "Departure Time",
-      "arrival": "Arrival Time",
-      "departed": "Departed To",
-      "arrived": "Arrived",
-      "stayed_at": "Stayed at",
+      "name": "Nombre | Nombres",
+      "moorage": "Fondeaderos",
+      "departure": "Hora de salida",
+      "arrival": "Hora de llegada",
+      "departed": "Zarpó",
+      "arrived": "Arribó",
+      "stayed_at": "Estuvo en",
       "duration": "Duración",
-      "duration_d": "Duración [d]",
-      "note": "Note | Notes"
+      "duration_d": "Duración [D]",
+      "note": "Nota | Notas"
     },
     "moorage": {
-      "title": "Stays at Moorage",
-      "arrived": "Llegó",
-      "departed": "Partido",
-      "stayed_at": "Me alojé en",
+      "title": "Estancias en amarre",
+      "arrived": "Arribó",
+      "departed": "Zarpó",
+      "stayed_at": "Estuvo en",
       "duration": "Duración",
-      "duration_d": "Duración [d]"
+      "duration_d": "Duración [D]"
     }
   },
   "moorages": {
     "list": {
-      "title": "Moorages of",
+      "title": "Amarres de",
       "filter": {
-        "title": "Search for moorage",
-        "name": "Name",
-        "date_range": "Date range",
-        "reset": "Reset"
+        "title": "Título",
+        "name": "Nombre",
+        "date_range": "Rango de fechas",
+        "reset": "Resetear"
       },
-      "moorage": "Moorage",
-      "default_stay": "Default Stay",
-      "total_stay": "Total Stay [d]",
-      "arrivals": "Arrivals & Departures"
+      "moorage": "Amarre",
+      "default_stay": "Tipo de estancia",
+      "total_stay": "Total estancia [D]",
+      "arrivals": "Número de viajes"
     },
     "arrivals-departures": {
-      "title": "Arrivals and Departures for Moorage"
+      "title": "Viajes desde el amarre"
     },
     "map": {
-      "title": "Map of Moorages"
+      "title": "Mapa de amarres"
     },
     "details": {
-      "title": "Moorage"
+      "title": "Amarre"
     },
     "moorage": {
-      "title": "Stays at Moorage",
-      "moorage": "Preferred Name",
-      "departed": "Default Stay Type",
-      "home": "Home",
-      "stayed_at": "Total Duration of Stay",
-      "arrivals": "Number of Arrivals & Departures",
-      "visits": "Number of Visits",
-      "first_seen": "Moorage first seen",
-      "last_seen": "Moorage last seen",
-      "note": "Notes"
+      "title": "Estancias en amarre",
+      "moorage": "Nombre del amarre",
+      "departed": "Tipo de amarre",
+      "home": "Casa",
+      "stayed_at": "Duración total de la estancia",
+      "arrivals": "Numero de viajes",
+      "visits": "Número de visitas",
+      "first_seen": "Pimer registro",
+      "last_seen": "Último registro",
+      "note": "Notas"
     }
   },
   "stats": {
-    "stats": "Statistics",
-    "logs": "Logs Statistics",
-    "moorages": "Moorages Statistics",
-    "name": "Buque",
-    "first": "First entry",
-    "last": "Last entry",
-    "unclassified": "Unclassified",
-    "anchor": "Muelle",
+    "stats": "Estadísticas",
+    "logs": "Estadísticas de bitácora",
+    "moorages": "Estadísticas de amarres",
+    "name": "Barco",
+    "first": "Primer registro ",
+    "last": "Último registro",
+    "unclassified": "Sin clasificar",
+    "anchor": "Fondeo",
     "buoy": "Boya",
-    "dock": "Dock",
-    "count": "Número de entradas",
-    "first_date": "First entry",
-    "last_date": "Last entry",
-    "longest_nonstop": "Navegación sin escalas más larga",
-    "max_speed": "Max Speed",
-    "max_wind_speed": "Max Wind Speed",
+    "dock": "Puerto",
+    "count": "Número de registros",
+    "first_date": "Primer registro",
+    "last_date": "Último registro",
+    "longest_nonstop": "Navegación más larga sin parar",
+    "max_speed": "Velocidad máxima",
+    "max_wind_speed": "Velocidad máxima del viento",
     "sum_distance": "Distancia total",
     "sum_duration": "Tiempo total en navegación",
-    "home_ports": "Home Ports",
-    "unique_moorages": "Unique Moorages",
-    "time_spent_at_home_port(s)": "Time spent at home port(s)",
-    "time_spent_away": "Time spent away",
+    "home_ports": "Puertos casa",
+    "unique_moorages": "Amarres únicos",
+    "time_spent_at_home_port(s)": "Tiempo en puerto",
+    "time_spent_away": "Tiempo fuera de puerto",
     "country": "País visitado",
-    "top_logs_by_distance": "Top Logs By Distance",
-    "top_logs_by_duration": "Top Logs By Duration"
+    "top_logs_by_distance": "Registros de bitácora por distancia",
+    "top_logs_by_duration": "Registros de bitácora por duración"
   },
   "boats": {
     "list": {
-      "title": "Boats"
+      "title": "Barcos"
     },
     "details": {
-      "title": "Boat"
+      "title": "Barco"
     },
     "boat": {
       "name": "Nombre | Nombres",
       "mmsi": "MMSI",
-      "first_contact": "Primero contacto",
+      "first_contact": "Primer contacto",
       "last_contact": "Último contacto",
-      "created_at": "Creado en",
+      "created_at": "Creado el",
       "token_modal": {
-        "button": "Get token",
-        "title": "Boat's token",
+        "button": "Token del barco",
+        "title": "Token del barco",
         "token": "Token",
-        "message": "Copy paste this token into your postgsail plugin instance of signalk."
+        "message": "Copia y pega este token en tu plugin de SignalK"
       },
-      "beam": "Beam",
-      "height": "Altura",
-      "length": "Longeur",
-      "country": "Estado del pabellón",
+      "beam": "Manga",
+      "height": "Puntal",
+      "length": "Eslora",
+      "country": "Pabellón",
       "ship_type": "Tipo de barco",
       "status": "Status",
-      "plugin_version": "Plugin version",
-      "signalk_version": "Signalk version",
-      "signalk": "Estos datos se extraen del 'Vessel Base Data' de SignalK.",
+      "plugin_version": "Versión de Plugin",
+      "signalk_version": "Versión Signalk",
+      "signalk": "Estos datos se extraen del 'Vessel DataBase' de SignalK",
       "platform": "Plataforma"
     },
     "errors": {
-      "name": "Name is required",
-      "param": "Please check your parameters",
-      "length": "Minimum 4 characters"
+      "name": "Se requiere nombre",
+      "param": "Comprueba tus parámetros",
+      "length": "Mínimo 4 caracteres"
     },
     "messages": {
       "pending": "Su barco aún no ha enviado ningún dato a PostgSail, todo debería estar bien cuando se conecte",
-      "offline": "Su barco ha estado desconectado desde {0} pero está configurado para PostgSail, todo debería estar bien cuando vuelva a estar conectado",
+      "offline": "Su barco ha estado desconectado desde {0} pero está configurado en PostgSail, todo debería estar bien cuando vuelva a estar conectado",
       "online": "Su barco está en línea, últimos datos recibidos {0}",
-      "plugin_version": "Está ejecutando una versión anterior del complemento PostgSail. Actualice a la ultima versión"
+      "plugin_version": "Está ejecutando una versión anterior del plugin de PostgSail. Actualice a la última versión"
     }
   },
   "profile": {
@@ -324,61 +324,61 @@
         "title": "Notificaciones"
       },
       "monitoring": {
-        "title": "Monitoring"
+        "title": "Monitorización"
       },
       "correlations": {
-        "title": "Correlations"
+        "title": "Vinculaciones SignalK"
       }
     },
-    "name": "Name",
-    "website": "Website",
-    "windy_station": "Windy Station",
-    "public_profile": "Public Profile",
-    "public_logs": "Log Details",
-    "public_name": "Name",
-    "public_stats": "Stats",
-    "public_logs_list": "Logs List",
-    "public_timelapse": "Timelapse",
-    "instagram_handle": "Instagram Handle",
-    "preferred_homepage": "Preferred Homepage",
-    "use_imperial_units": "Use Imperial Units",
-    "email_notifications": "E-mail Notifications",
-    "phone_notifications": "Phone Notifications",
-    "alerting": "Alerting",
-    "min_notification_interval": "Min Notification Interval (h)",
-    "high_wind_speed_threshold": "Wind Speed (kts)",
-    "low_outdoor_temperature_threshold": "Outdoor Temperature (C)",
-    "low_indoor_temperature_threshold": "Indoor Temperature (C)",
-    "low_water_temperature_threshold": "Water Temperature",
-    "low_water_depth_threshold": "Water Depth (m)",
-    "low_pressure_threshold": "Pressure (hpa)",
-    "high_pressure_drop_threshold": "Pressure Drop in 12 hours (hpa)",
-    "low_battery_charge_threshold": "Battery Charge (%)",
-    "low_battery_voltage_threshold": "Battery Voltage (V)",
+    "name": "Nombre",
+    "website": "Página web",
+    "windy_station": "Estación Windy",
+    "public_profile": "Perfil público",
+    "public_logs": "Detalles de registro público",
+    "public_name": "Nombre",
+    "public_stats": "Estadísticas",
+    "public_logs_list": "Lista de registros públicos",
+    "public_timelapse": "Línea del tiempo pública",
+    "instagram_handle": "Nick Instagram",
+    "preferred_homepage": "Pagina inicio preferida",
+    "use_imperial_units": "Usar medidas imperiales",
+    "email_notifications": "Notificaciones por E-mail",
+    "phone_notifications": "Notificaciones por teléfono",
+    "alerting": "Alertas",
+    "min_notification_interval": "Intervalo Min notificaciones (H)",
+    "high_wind_speed_threshold": "Velocidad del viento (Kts)",
+    "low_outdoor_temperature_threshold": "Temperatura exterior (C)",
+    "low_indoor_temperature_threshold": "Temperatura interior (C)",
+    "low_water_temperature_threshold": "Temperatura del agua",
+    "low_water_depth_threshold": "Profundidad (M)",
+    "low_pressure_threshold": "Presión (HPA)",
+    "high_pressure_drop_threshold": "Variación de La presión en 12 horas (HPA)",
+    "low_battery_charge_threshold": "Carga de batería (%)",
+    "low_battery_voltage_threshold": "Voltaje de batería (V)",
     "pushover": {
-      "pushover": "Pushover",
-      "link": "Link Your Pushover Account to Enable",
-      "connected": "Your user is connected to Pushover."
+      "pushover": "Notificaciones Push",
+      "link": "Vincula tu cuenta Push para activar",
+      "connected": "Tu usuario ha sido conectado a Push."
     },
     "telegram_bot": {
       "telegram_bot": "Telegram Bot",
-      "link": "Add PostgSail bot to a group or direct chat.",
-      "connected": "Your user is connected to {'@'}postgsail_bot."
+      "link": "Añade PostgSail bot a un grupo o chat directo.",
+      "connected": "Tu usuario se ha conectado a {'@'}postgsail_bot."
     },
-    "success": "Successfully updated {key} with {value}",
-    "failure": "Error updating {key} with {value}",
+    "success": "Actualizado {key} con {value} con éxito ",
+    "failure": "Error actualizando {key} con {value}",
     "msg": {
-      "website": "Website displayed alongside your stats, please enter the full URL starting with http:// or https://",
-      "instagram_handle": "Instagram link displayed alongside your stats, please enter without a leading {'@'} sign",
-      "windy_station": "Windy station identifier as displayed in Windy URL after /station/pws- (e.g. d06efc48)",
-      "public_profile": "When enabled, corresponding pages like stats, timelapse and others can be accessed by anyone without being required to login.",
-      "public_logs": "When enabled, your individual log details will be publicly accessible at https://iot.openplotter.cloud/{0}/log/{'id'}",
-      "public_stats": "When enabled, your statistics will be publicly accessible at https://iot.openplotter.cloud/{0}/stats",
-      "public_logs_list": "When enabled, list of all your logs will be publicly accessible at https://iot.openplotter.cloud/{0}/logs",
-      "public_timelapse": "When enabled, your timelapse will be publicly accessible at https://iot.openplotter.cloud/{0}/timelapse",
-      "public_monitoring": "When enabled, your monitoring will be publicly accessible at https://iot.openplotter.cloud/{0}/monitoring",
+      "website": "Página web mostrando tus estadísticas, por favor introduce la URL completa empezando con http:// or https://",
+      "instagram_handle": "Vínculo a tu Instagram mostrando  tus estadísticas, por favor, introduce el nick sin el símbolo de la {'@'}",
+      "windy_station": "Identificador de estación Windy tal y como se muestra en la URL de Windy después de  /station/pws- (e.g. d06efc48)",
+      "public_profile": "Estando activado, las páginas de estadísticas, líneas de tiempo y otras pueden ser accedidas por otros sin hacer login.",
+      "public_logs": "Estando activado, tus registros personales de navegación serán accesibles públicamente en https://iot.openplotter.cloud/{0}/log/{'id'}",
+      "public_stats": "Estando activado, tus estadísticas serán accesibles públicamente en https://iot.openplotter.cloud/{0}/stats",
+      "public_logs_list": "Estando activado, el listado de tus registros de navegación serán accesible públicamente en https://iot.openplotter.cloud/{0}/logs",
+      "public_timelapse": "Estando activado, tus líneas de tiempo serán accesibles públicamente en https://iot.openplotter.cloud/{0}/timelapse",
+      "public_monitoring": "Estando activado, tus datos de monitorización serán accesibles públicamente en https://iot.openplotter.cloud/{0}/monitoring",
       "public_name": "Cuando habilites tu perfil público, tendrás la opción de elegir el nombre de tu barco",
-      "public_windy": "When you enable your public profile, you will have the option to transform your boat in a weather station integrate in Windy."
+      "public_windy": "Cuando habilites tu perfil público, tendrás la opción de transformar tu barco en una estaciòn de navegación integrada en Windy."
     },
     "url": {
       "public_logs": "https://iot.openplotter.cloud/{0}/log/{1}",
@@ -389,18 +389,18 @@
       "public_windy": "https://www.windy.com/station/pws-{0}"
     },
     "monitoring": {
-      "depthKey": "Monitoring data source for depth",
-      "waterTemperatureKey": "Monitoring data source for water temperature",
-      "windSpeedKey": "Monitoring data source for wind speed",
-      "windDirectionKey": "Monitoring data source for wind direction",
-      "insidePressureKey": "Monitoring data source for inside atmospheric pressure",
-      "outsidePressureKey": "Monitoring data source for outside atmospheric pressure",
-      "insideTemperatureKey": "Monitoring data source for inside temperature",
-      "outsideTemperatureKey": "Monitoring data source for outside temperature",
-      "insideHumidityKey": "Monitoring data source for inside humidity",
-      "outsideHumidityKey": "Monitoring data source for outside humidity",
-      "stateOfChargeKey": "Monitoring data source for main battery stateOfCharge",
-      "voltageKey": "Monitoring data source for main battery Voltage"
+      "depthKey": "Fuente de monitorización para la profundidad",
+      "waterTemperatureKey": "Fuente de monitorización para la temperatura del agua",
+      "windSpeedKey": "Fuente de monitorización para la velocidad del viento",
+      "windDirectionKey": "Fuente de monitorización para la dirección del viento",
+      "insidePressureKey": "Fuente de monitorización para la presión atmosférica en el interior",
+      "outsidePressureKey": "Fuente de monitorización para la presión atmosférica en el exterior",
+      "insideTemperatureKey": "Fuente de monitorización para la temperatura en el interior",
+      "outsideTemperatureKey": "Fuente de monitorización para la temperatura en el exterior",
+      "insideHumidityKey": "Fuente de monitorización para la humedad en el interior",
+      "outsideHumidityKey": "Fuente de monitorización para la humedad en el exterior",
+      "stateOfChargeKey": "Fuente de monitorización para el estado de carga de la batería principal",
+      "voltageKey": "Fuente de monitorización para el voltaje de la batería principal"
     }
   },
   "faq": {
@@ -412,7 +412,7 @@
   },
   "monitoring": {
     "title": "Supervisión",
-    "error": "Unable to fetch monitoring data",
+    "error": "Incapaz de obtener datos de monitorización",
     "wind": {
       "headerString": "Viento",
       "unitString": "Kt",
@@ -421,7 +421,7 @@
     "temperature": {
       "headerString": "Temperatura",
       "unitString": "°C",
-      "detailString": "Afuera: "
+      "detailString": "Exterior: "
     },
     "battery": {
       "headerString": "Batería",
@@ -431,7 +431,7 @@
     "humidity": {
       "headerString": "Humedad",
       "unitString": "%",
-      "detailString": "Afuera: "
+      "detailString": "Exterior: "
     },
     "water": {
       "headerString": "Agua",
@@ -439,85 +439,85 @@
       "detailString": "Temperatura: "
     },
     "pressure": {
-      "headerString": "Barometro",
+      "headerString": "Barómetro",
       "unitString": "hPa",
-      "detailString": "24h Promedio:"
+      "detailString": "Promedio 24h:"
     },
     "offline": {
-      "offline": "Su embarcación está fuera de línea. El monitoreo en tiempo real requiere una conexión a Internet.",
+      "offline": "Su embarcación está fuera de línea. La monitorización en tiempo real requiere una conexión a Internet.",
       "lastupdate": "No hemos recibido ningún dato de su barco en los últimos 70 minutos."
     },
     "history": {
-      "title": "Monitoring History"
+      "title": "Historial de monitorización"
     },
     "explore": {
-      "title": "Explore Data",
-      "msg": "List of paths and value gather from SignalK and use to process logs, stays, moorages, maps and monitoring"
+      "title": "Explorar datos",
+      "msg": "Lista de rutas y valores recogidos de SignalK y usados para procesar registros, estancias, fondeos, mapas y monitorizaciones"
     },
     "windy": {
-      "title": "Windy Monitoring"
+      "title": "Monitorización Windy"
     },
     "polar": {
-      "title": "Polar Diagram"
+      "title": "Diagrama de polares"
     }
   },
   "id": {
     "stay_code": {
-      "1": "Unknown",
-      "2": "Anchor",
-      "3": "Mooring Buoy",
-      "4": "Dock"
+      "1": "Desconocido",
+      "2": "Ancla",
+      "3": "Boya fondeo",
+      "4": "Puerto"
     }
   },
   "units": {
     "distance": {
       "miles": "{n} NM",
-      "kilometres": "{n} km"
+      "kilometres": "{n} KM"
     },
     "speed": {
-      "knots": "{n} kts"
+      "knots": "{n} KTS"
     },
     "time": {
-      "days": "{n} day | {n} days",
-      "hours": "hour | hours | hours"
+      "days": "{n} día | {n} días",
+      "hours": "hora | horas | horas"
     }
   },
   "badges": {
-    "Helmsman": "Nice work logging your first sail! You are officially a helmsman now!",
-    "Wake Maker": "Welcome to the 15 knot+ club ya speed demon skipper!",
-    "Explorer": "It looks like home is where the helm is. Cheers to 10 days away from home port!",
-    "Mooring Pro": "It takes a lot of skill to \"thread that floating needle\" but seems like you have mastered mooring with 10 nights on buoy!",
-    "Anchormaster": "Hook, line and sinker, you have this anchoring thing down! 25 days on the hook for you!",
-    "Traveler": "Who needs to fly when one can sail! You are an international sailor. À votre santé!",
-    "Stormtrooper": "Just like the elite defenders of the Empire, here you are, our braving your own hydro-empire in windspeeds above 30kts. Nice work trooper!",
-    "Club Alaska": "Home to the bears, glaciers, midnight sun and high adventure. Welcome to the Club Alaska Captain!",
-    "Tropical Traveler": "Look at you with your suntan, tropical drink and southern latitude!",
-    "Aloha Award": "Ticking off over 2300 NM across the great blue Pacific makes you the rare recipient of the Aloha Award. Well done and Aloha sailor!",
-    "Navigator Award": "Woohoo! You made it, Ticking off over 100NM in one go, well done sailor!",
-    "Captain Award": "Congratulation, you reach over 1000NM, well done sailor!",
+    "Helmsman": "¡Excelente! Has registrado tu primera navegación! ¡Ya eres oficialmente un patrón!",
+    "Wake Maker": "Bienvenido al club de los 15+ Nudos! 'Eres un as de la velocidad!",
+    "Explorer": "Tu casa está donde esté tu barco, ¡Felicidades por estar más de 10 dias fuera de tu puerto!",
+    "Mooring Pro": "Hacen falta muchas habilidades para \"thread that floating needle\" pero parece ser que has conseguido estar al menos 10 noches en una boya!",
+    "Anchormaster": "De cabo a rabo Eres un maestro del fondeo de la cabeza a los pies, llevas 25 días al ancla!",
+    "Traveler": "¿Quien quiere volar cuando puede navegar? Eres un navegante internacional. ¡A tu salud",
+    "Stormtrooper": "Como un buen stormtrooper imperial de élite; Ahí lo llevas, manejando tu Hidro-nave imperial con vientos superiores a 30 Nudos, buen trabajo, Stromtrooper!",
+    "Club Alaska": "El hogar de los osos polares, glaciares, sol de medianoche y aventura del más alto nivel. ¡Bienvenido al club Capitán Alaska!",
+    "Tropical Traveler": "Mírate con tu bronceado, bebida tropical y latitudes del sur!",
+    "Aloha Award": "Obtener la marca de más de 2300 millas náuticas a través del gran Océano Pacífico te hace honroso receptor de la condecoración Aloha. ¡Bien hecho, navegante Aloha!",
+    "Navigator Award": "¡Yuju!¡Lo conseguiste! ¡Más de 100 millas náuticas de una tirada! ¡Bien hecho!",
+    "Captain Award": "Enhorabuena, hiciste ya más de 1000 millas, ¡bravo, navegante!",
     "default": "Mírate navegando en",
     "locked": "Bloqueado"
   },
   "nodata": {
-    "nodata": "¡Nada aquí todavía! ¡Configura tu instancia de Signalk y comienza a navegar!",
-    "start": "Las cosas comenzarán a aparecer aquí. Puede encontrar los detalles ",
-    "start_link": "la página de detalles de su barco.",
-    "wait": "Si acaba de ingresar su token, eche un vistazo a ",
-    "wait_link": "su página de seguimiento.",
-    "help": "Si no tiene claro lo que necesita hacer para empieza, please see \"What do I need to use PostgSail?\" question on ",
-    "help_link": "nuestras preguntas frecuentes."
+    "nodata": "¡No hay nada aún aquí! ¡Configura tu instancia de Signalk y comienza a navegar!",
+    "start": "Las cosas comenzarán a aparecer aquí. Puedes encontrar los detalles",
+    "start_link": "Página de detalles de tu barco.",
+    "wait": "Si acabas de ingresar tu token, echa un vistazo a ",
+    "wait_link": "Tu página de seguimiento.",
+    "help": "Si no tienes claro lo que necesitas hacer para comenzar a usarlo, lee el tema \"What do I need to use PostgSail?\" question on ",
+    "help_link": "Nuestras preguntas frecuentes."
   },
   "timelapse": {
-    "title": "Replay",
-    "customize": "Customize Replay",
+    "title": "Reproducir",
+    "customize": "Ajustar reproducción",
     "choosetrips": "Elegir viajes",
     "start": "Iniciar viaje",
     "end": "Finalizar viaje",
     "basemap": "Mapa base",
-    "boattype": "Show Boat As",
+    "boattype": "Mostrar barco como",
     "trackcolor": "Color de pista",
     "overlay": "Superposiciones de amarre",
-    "instruments": "Show Instruments",
+    "instruments": "Mostrar instrumentos",
     "zoom": "Nivel de zoom",
     "anim": "Velocidad de animación",
     "retraso": "Retraso inicial",
@@ -530,59 +530,59 @@
     "cancel": "Cancelar",
     "uploadFile": "Subir archivo",
     "undo": "Deshacer",
-    "dropzone": "Suelta los archivos aquí para subirlos",
+    "dropzone": "Arrastra aquí los archivos para subirlos",
     "fileDeleted": "Archivo eliminado",
-    "closeAlert": "cerrar alerta",
-    "backToTop": "volver al inicio",
-    "toggleDropdown": "alternar menú desplegable",
-    "carousel": "carrusel",
-    "goPreviousSlide": "ir a la diapositiva anterior",
-    "goNextSlide": "ir a la siguiente diapositiva",
-    "goSlide": "ir a la diapositiva {index}",
-    "slideOf": "diapositiva {index} de {length}",
-    "close": "cerrar",
-    "openColorPicker": "abrir selector de color",
-    "colorSelection": "selección de color",
-    "colorName": "color {color}",
-    "decreaseCounter": "disminuir contador",
-    "increaseCounter": "aumentar contador",
-    "selectAllRows": "seleccionar todas las filas",
-    "sortColumnBy": "ordenar columna por {name}",
-    "selectRowByIndex": "seleccionar fila {index}",
-    "resetDate": "restablecer fecha",
-    "nextPeriod": "siguiente periodo",
-    "switchView": "cambiar vista",
-    "previousPeriod": "periodo anterior",
-    "removeFile": "eliminar archivo",
-    "reset": "restablecer",
-    "pagination": "paginación",
-    "goToTheFirstPage": "ir a la primera página",
-    "goToPreviousPage": "ir a la página anterior",
-    "goToSpecificPage": "ir a la página {page}",
-    "goToSpecificPageInput": "ingresa el número de página",
-    "goNextPage": "ir a la siguiente página",
-    "goLastPage": "ir a la última página",
-    "currentRating": "calificación actual {value} de {max}",
-    "voteRating": "votar calificación {value} de {max}",
-    "optionsFilter": "filtro de opciones",
-    "splitPanels": "paneles divididos",
-    "movePaginationLeft": "mover paginación a la izquierda",
-    "movePaginationRight": "mover paginación a la derecha",
-    "resetTime": "restablecer hora",
-    "closeToast": "cerrar notificación",
+    "closeAlert": "Cerrar alerta",
+    "backToTop": "Volver arriba",
+    "toggleDropdown": "Alternar menú desplegable",
+    "carousel": "Carrusel",
+    "goPreviousSlide": "Ir a la diapositiva anterior",
+    "goNextSlide": "Ir a la siguiente diapositiva",
+    "goSlide": "Ir a la diapositiva {index}",
+    "slideOf": "Diapositiva {index} de {length}",
+    "close": "Cerrar",
+    "openColorPicker": "Abrir selector de color",
+    "colorSelection": "Selección de color",
+    "colorName": "Color {color}",
+    "decreaseCounter": "Disminuir contador",
+    "increaseCounter": "Aumentar contador",
+    "selectAllRows": "Seleccionar todas las filas",
+    "sortColumnBy": "Ordenar columna por {name}",
+    "selectRowByIndex": "Seleccionar fila {index}",
+    "resetDate": "Restablecer fecha",
+    "nextPeriod": "Siguiente periodo",
+    "switchView": "Cambiar vista",
+    "previousPeriod": "Periodo anterior",
+    "removeFile": "Eliminar archivo",
+    "reset": "Restablecer",
+    "pagination": "Paginación",
+    "goToTheFirstPage": "Ir a la primera página",
+    "goToPreviousPage": "Ir a la página anterior",
+    "goToSpecificPage": "Ir a la página {page}",
+    "goToSpecificPageInput": "Introduce el número de página",
+    "goNextPage": "Ir a la siguiente página",
+    "goLastPage": "Ir a la última página",
+    "currentRating": "Calificación actual {value} de {max}",
+    "voteRating": "Votar calificación {value} de {max}",
+    "optionsFilter": "Filtro de opciones",
+    "splitPanels": "Paneles divididos",
+    "movePaginationLeft": "Mover paginación a la izquierda",
+    "movePaginationRight": "Mover paginación a la derecha",
+    "resetTime": "Restablecer hora",
+    "closeToast": "Cerrar notificación",
     "selectedOption": "Opción seleccionada",
     "noSelectedOption": "No se ha seleccionado una opción",
-    "breadcrumbs": "migas de pan",
-    "counterValue": "valor del contador",
-    "selectedDate": "fecha seleccionada",
-    "selectedTime": "hora seleccionada",
-    "progressState": "estado del progreso",
-    "color": "color",
+    "breadcrumbs": "Migas de pan",
+    "counterValue": "Valor del contador",
+    "selectedDate": "Fecha seleccionada",
+    "selectedTime": "Hora seleccionada",
+    "progressState": "Estado del progreso",
+    "color": "Color",
     "next": "Siguiente",
     "back": "Anterior",
     "finish": "Finalizar",
-    "step": "paso",
-    "progress": "progreso",
+    "step": "Paso",
+    "progress": "Progreso",
     "loading": "Cargando",
     "sliderValue": "El valor actual del control deslizante es {value}",
     "switch": "Cambiar",
