@@ -45,7 +45,7 @@
           <div class="flex text-sm">
             <div class="text-[var(--va-secondary)] flow-root">
               <div class="float-left">{{ dateFormatUTC(log.fromTime) }}</div>
-              <div class="float-right">
+              <div class="absolute right-0">
                 <va-dropdown class="">
                   <template #anchor>
                     <va-icon name="more_vert" />
