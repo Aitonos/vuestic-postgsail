@@ -14,11 +14,11 @@
             <va-tab name="MonitoringTab">
               {{ t('profile.tabs.monitoring.title') }}
             </va-tab>
--->
+
             <va-tab name="CorrelationsTab">
               {{ t('profile.tabs.correlations.title') }}
             </va-tab>
-
+-->
             <va-tab name="NotificationsTab">
               {{ t('profile.tabs.notifications.title') }}
             </va-tab>
