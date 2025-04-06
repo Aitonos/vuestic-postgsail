@@ -29,7 +29,12 @@
           {{ value }}
         </template>
         <template #cell(actions)="{ rowData }">
-          <GetBoatToken :item="rowData" />
+          <div class="flex items-center space-x-2">
+            <GetBoatToken :item="rowData" />
+            <router-link :to="{ name: 'boat-profile' }">
+              <va-button icon="schema" color="primary" size="medium" title="Mapping paths" />
+            </router-link>
+          </div>
         </template>
       </va-data-table>
       <template v-if="items.length > perPage">

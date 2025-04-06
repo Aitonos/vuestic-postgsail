@@ -1,8 +1,17 @@
 <template>
   <div>
+    <!--
     <va-button @click="handleGetToken">
       {{ t('boats.boat.token_modal.button') }}
     </va-button>
+  -->
+    <va-button
+      icon="generating_tokens"
+      color="primary"
+      size="medium"
+      :title="t('boats.boat.token_modal.button')"
+      @click="handleGetToken"
+    />
     <va-modal v-model="showModal" no-padding>
       <template #content="{ ok }">
         <va-card-title>
