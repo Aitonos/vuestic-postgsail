@@ -389,18 +389,21 @@
       "public_windy": "https://www.windy.com/station/pws-{0}"
     },
     "monitoring": {
-      "depthKey": "Fuente de monitorización para la profundidad",
-      "waterTemperatureKey": "Fuente de monitorización para la temperatura del agua",
-      "windSpeedKey": "Fuente de monitorización para la velocidad del viento",
-      "windDirectionKey": "Fuente de monitorización para la dirección del viento",
-      "insidePressureKey": "Fuente de monitorización para la presión atmosférica en el interior",
-      "outsidePressureKey": "Fuente de monitorización para la presión atmosférica en el exterior",
-      "insideTemperatureKey": "Fuente de monitorización para la temperatura en el interior",
-      "outsideTemperatureKey": "Fuente de monitorización para la temperatura en el exterior",
-      "insideHumidityKey": "Fuente de monitorización para la humedad en el interior",
-      "outsideHumidityKey": "Fuente de monitorización para la humedad en el exterior",
-      "stateOfChargeKey": "Fuente de monitorización para el estado de carga de la batería principal",
-      "voltageKey": "Fuente de monitorización para el voltaje de la batería principal"
+      "depthKey": "Depth Source",
+      "waterTemperatureKey": "Water Temperature Source",
+      "windSpeedKey": "Wind Speed Source",
+      "windDirectionKey": "Wind Direction Source",
+      "insidePressureKey": "Inside Barometer Source",
+      "outsidePressureKey": "Outside Barometer Source",
+      "insideTemperatureKey": "Inside Temperature Source",
+      "outsideTemperatureKey": "Outside Temperature Source",
+      "insideHumidityKey": "Inside Humidity Source",
+      "outsideHumidityKey": "Outside Humidity Source",
+      "stateOfChargeKey": "Battery Charge Source",
+      "voltageKey": "Battery Voltage Source",
+      "solarVoltageKey": "Solar Voltage Source",
+      "solarPowerKey": "Solar Power Source",
+      "tankLevelKey": "Tank Level Source"
     }
   },
   "faq": {
