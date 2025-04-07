@@ -295,7 +295,10 @@
         let controlLayer = L.control.layers()
         //console.log(geojson.length)
         for (let i = 0; i < geojson.length; i++) {
-          //console.log(geojson[i].geojson)
+          console.log(geojson[i].geojson)
+          if (geojson[i].geojson.features == null || geojson[i].geojson.features.length == 0) {
+            continue
+          }
           let color = random_rgb_dark()
           layers[i] = L.geoJSON(geojson[i].geojson, {
             style: { color: random_rgb_dark() },
@@ -304,7 +307,7 @@
             onEachFeature: popup,
           }).addTo(featGroup)
           featGroup.addTo(this.map)
-          const text = `<i class="geojson-box" style="background-color:${color}">&nbsp;</i><h4>${geojson[i].geojson.features[0].properties.name}</h4><small>${geojson[i].geojson.features[0].properties.started}</small>`
+          const text = `<i class="geojson-box" style="background-color:${color}">&nbsp;</i><h4>${geojson[i]?.geojson?.features[0].properties.name}</h4><small>${geojson[i]?.geojson?.features[0].properties.started}</small>`
           controlLayer.addOverlay(layers[i], text).addTo(this.map)
           //document.getElementsByClassName('leaflet-control-layers-toggle')[1].className = 'leaflet-control-layers-toggle pgsail-geojson'
           document.getElementsByClassName('leaflet-control-layers-toggle')[1].style =

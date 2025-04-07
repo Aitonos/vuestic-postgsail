@@ -172,7 +172,8 @@
       return `${feature.properties.name} ${stay_type}`
     } else {
       // is logbook
-      let time = dateFormatUTC(feature.properties._from_time)
+      let starttime = dateFormatUTC(feature.properties.starttimestamp)
+      let endtime = dateFormatUTC(feature.properties.endtimestamp)
       let duration = durationFormatHours(feature.properties.duration)
       let distance = distanceFormatMiles(feature.properties.distance)
       let avg_speed = speedFormatKnots(feature.properties.avg_speed)
@@ -183,7 +184,8 @@
         html: `<div class='mpopup'>
                           <h4>${feature.properties.name}</a><br/>
                           <table class='data'><tbody>
-                            <tr><td>Time</td><td>${time}</td></tr>
+                            <tr><td>Start Time</td><td>${starttime}</td></tr>
+                            <tr><td>End Time</td><td>${endtime}</td></tr>
                             <tr><td>Distance</td><td>${distance}</td></tr>
                             <tr><td>Duration</td><td>${duration} hours</td></tr>
                             <tr><td>Speed</td><td>avg ${avg_speed} / max ${max_speed}</td></tr>

@@ -9,18 +9,11 @@
   import 'leaflet-rotatedmarker'
   import 'leaflet-timedimension'
 
-  /* TODO
-   * Update boat icon
-   * Listener to draw the linestring as time pass
-   * listener not found?
-   * Set player at start
-   * Add Emodnet bathymetry
-   * */
   export default {
     name: 'LeafletMap',
     props: {
       geoJsonFeatures: {
-        type: [Array],
+        type: Object,
         default: null,
       },
     },
@@ -30,37 +23,24 @@
       }
     },
     mounted() {
-      console.log(`Timelapse`)
-      let centerLat = 0
-      let centerLng = 0
-      let geojson = null
+      if (!this.geoJsonFeatures) return
 
-      if (this.geoJsonFeatures && this.geoJsonFeatures.length > 0) {
-        const midPoint = Math.round(this.geoJsonFeatures.length / 2)
-        //console.log(this.geoJsonFeatures)
-        centerLat = this.geoJsonFeatures[midPoint].geometry.coordinates[1]
-        centerLng = this.geoJsonFeatures[midPoint].geometry.coordinates[0]
-        geojson = this.geoJsonFeatures
-      }
+      // Center the map using the midpoint of the first feature
+      const firstFeature = this.geoJsonFeatures.features[0]
+      if (!firstFeature || !firstFeature.geometry.coordinates.length) return
 
-      if (centerLat == 0 && centerLng == 0) return
-      console.log(`centerLatLng: ${centerLat} ${centerLng}`)
-
-      let start = this.geoJsonFeatures[1].properties.time // First point
-      let end = this.geoJsonFeatures[this.geoJsonFeatures.length - 1].properties.time // Last point
-      console.log(`StartEnd: ${start} ${end}`)
-      // Remove first entry LineString
-      //this.geoJsonFeatures.shift(0)
-      //console.log(this.geoJsonFeatures[0])
+      const midPoint = Math.floor(firstFeature.geometry.coordinates.length / 2)
+      const centerLat = firstFeature.geometry.coordinates[midPoint][1]
+      const centerLng = firstFeature.geometry.coordinates[midPoint][0]
 
       this.map = L.map('mapContainer', {
         zoom: 12,
         center: [centerLat, centerLng],
         timeDimension: true,
-        timeDimensionOptions: {
-          timeInterval: `${start}/${end}`,
-          period: 'PT2M',
-        },
+        // timeDimensionOptions: {
+        //   timeInterval: `${start}/${end}`,
+        //   period: 'PT1M',
+        // },
         timeDimensionControl: true,
       })
 
@@ -101,16 +81,28 @@
         })
       }
 
-      const geoJSONLayer = L.geoJSON(geojson, {
+      // Extract all geometry Point from geojson to get a list of moorage geojson feature for map
+      const geojson = this.geoJsonFeatures
+      const logPoints = geojson.features
+        .filter((feature) => feature.geometry.type === 'Point')
+        .map((feature) => feature)
+      const logLine = geojson.features
+        .filter((feature) => feature.geometry.type === 'LineString')
+        .map((feature) => feature)
+
+      // Draw the GeoJSON LineString with speed-based colors
+      this.drawLineWithSpeedMarkers(this.geoJsonFeatures)
+
+      const geoJSONLayer = L.geoJSON(logLine, {
         pointToLayer: sailBoatIcon,
       })
 
       const geoJSONTDLayer = L.timeDimension.layer
         .geoJson(geoJSONLayer, {
           updateTimeDimension: true,
-          duration: 'PT2M',
+          // duration: 'PT2M',
           updateTimeDimensionMode: 'replace',
-          //addlastPoint: true
+          addlastPoint: true,
         })
         .addTo(this.map)
 
@@ -122,15 +114,51 @@
 
       this.map.fitBounds(geoJSONLayer.getBounds())
     },
+    methods: {
+      drawLineWithSpeedMarkers(geoJsonData) {
+        const lineFeature = geoJsonData.features.find((feature) => feature.geometry.type === 'LineString')
+        if (!lineFeature) return
+
+        const coordinates = lineFeature.geometry.coordinates
+        const speeds = geoJsonData.features
+          .filter((feature) => feature.geometry.type === 'Point')
+          .map((feature) => feature.properties.speedoverground)
+
+        // Create a multi-colored polyline based on speed
+        const latlngs = coordinates.map(([lng, lat]) => [lat, lng])
+        const segments = []
+
+        for (let i = 0; i < latlngs.length - 1; i++) {
+          const speed = speeds[i] || 0 // Get speed or default to 0
+          const color = this.getSpeedColor(speed)
+
+          segments.push(
+            L.polyline([latlngs[i], latlngs[i + 1]], {
+              color,
+              weight: 4,
+              opacity: 1,
+            }).addTo(this.map),
+          )
+        }
+      },
+      getSpeedColor(speed) {
+        // RampColor logic to assign color based on speed
+        const scaleLinear = (value, inputMin, inputMax, outputMin, outputMax) => {
+          const normalized = (value - inputMin) / (inputMax - inputMin)
+          return outputMin + normalized * (outputMax - outputMin)
+        }
+
+        const scaledValue = scaleLinear(speed, 0, 10, 0, 1) // Assuming speed ranges from 0 to 10
+
+        const colors = ['#d73027', '#fc8d59', '#fee090', '#91bfdb', '#4575b4'] // RdYlBu
+        const index = Math.min(Math.floor(scaledValue * (colors.length - 1)), colors.length - 1)
+        return colors[index]
+      },
+    },
     onBeforeUnmount() {
       if (this.map) {
         this.map.remove()
       }
-    },
-    methods: {
-      timeload(time) {
-        console.log(`Even timeload ${time}`)
-      },
     },
   }
 </script>
@@ -138,5 +166,7 @@
 <style scoped>
   #mapContainer {
     z-index: 0;
+    height: 100vh;
+    width: 100%;
   }
 </style>
