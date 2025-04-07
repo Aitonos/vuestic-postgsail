@@ -11,9 +11,9 @@
             <td>
               <MySelect
                 v-if="environment_keys.length >= 1"
-                :data="settings?.preferences?.monitoring?.depthKey"
+                :data="monitoring_keys.depthKey"
                 :object="environment_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="depthKey"
                 @clickFromChildComponent="UpdatePref"
               />
@@ -28,9 +28,9 @@
             <td>
               <MySelect
                 v-if="temperatures_keys.length >= 1"
-                :data="settings.preferences.monitoring.waterTemperatureKey"
+                :data="monitoring_keys.waterTemperatureKey"
                 :object="temperatures_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="waterTemperatureKey"
                 @clickFromChildComponent="UpdatePref"
               />
@@ -45,9 +45,9 @@
             <td>
               <MySelect
                 v-if="wind_keys.length >= 1"
-                :data="settings.preferences.monitoring.windSpeedKey"
+                :data="monitoring_keys.windSpeedKey"
                 :object="wind_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="windSpeedKey"
                 @clickFromChildComponent="UpdatePref"
               />
@@ -62,9 +62,9 @@
             <td>
               <MySelect
                 v-if="wind_keys.length >= 1"
-                :data="settings.preferences.monitoring.windDirectionKey"
+                :data="monitoring_keys.windDirectionKey"
                 :object="wind_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="windDirectionKey"
                 @clickFromChildComponent="UpdatePref"
               />
@@ -79,9 +79,9 @@
             <td>
               <MySelect
                 v-if="pressure_keys.length >= 1"
-                :data="settings.preferences.monitoring.insidePressureKey"
+                :data="monitoring_keys.insidePressureKey"
                 :object="pressure_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="insidePressureKey"
                 @clickFromChildComponent="UpdatePref"
               />
@@ -96,9 +96,9 @@
             <td>
               <MySelect
                 v-if="pressure_keys.length >= 1"
-                :data="settings.preferences.monitoring.outsidePressureKey"
+                :data="monitoring_keys.outsidePressureKey"
                 :object="pressure_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="outsidePressureKey"
                 @clickFromChildComponent="UpdatePref"
               />
@@ -113,9 +113,9 @@
             <td>
               <MySelect
                 v-if="temperatures_keys.length >= 1"
-                :data="settings.preferences.monitoring.insideTemperatureKey"
+                :data="monitoring_keys.insideTemperatureKey"
                 :object="temperatures_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="insideTemperatureKey"
                 @clickFromChildComponent="UpdatePref"
               /><br />
@@ -129,9 +129,9 @@
             <td>
               <MySelect
                 v-if="temperatures_keys.length >= 1"
-                :data="settings.preferences.monitoring.outsideTemperatureKey"
+                :data="monitoring_keys.outsideTemperatureKey"
                 :object="temperatures_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="outsideTemperatureKey"
                 @clickFromChildComponent="UpdatePref"
               /><br />
@@ -145,9 +145,9 @@
             <td>
               <MySelect
                 v-if="humidity_keys.length >= 1"
-                :data="settings.preferences.monitoring.insideHumidityKey"
+                :data="monitoring_keys.insideHumidityKey"
                 :object="humidity_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="insideHumidityKey"
                 @clickFromChildComponent="UpdatePref"
               /><br />
@@ -161,9 +161,9 @@
             <td>
               <MySelect
                 v-if="humidity_keys.length >= 1"
-                :data="settings.preferences.monitoring.outsideHumidityKey"
+                :data="monitoring_keys.outsideHumidityKey"
                 :object="humidity_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="outsideHumidityKey"
                 @clickFromChildComponent="UpdatePref"
               /><br />
@@ -180,9 +180,9 @@
               </template>
               <MySelect
                 v-if="stateOfCharge_keys.length >= 1"
-                :data="settings.preferences.monitoring.stateOfChargeKey"
+                :data="monitoring_keys.stateOfChargeKey"
                 :object="stateOfCharge_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="stateOfChargeKey"
                 @clickFromChildComponent="UpdatePref"
               /><br />
@@ -199,9 +199,9 @@
               </template>
               <MySelect
                 v-if="batteryVoltage_keys.length >= 1"
-                :data="settings.preferences.monitoring.voltageKey"
+                :data="monitoring_keys.voltageKey"
                 :object="batteryVoltage_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="voltageKey"
                 @clickFromChildComponent="UpdatePref"
               /><br />
@@ -218,9 +218,9 @@
               </template>
               <MySelect
                 v-if="solarVoltage_keys.length >= 1"
-                :data="settings.preferences.monitoring.solarVoltageKey"
+                :data="monitoring_keys.solarVoltageKey"
                 :object="solarVoltage_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="solarVoltageKey"
                 @clickFromChildComponent="UpdatePref"
               /><br />
@@ -237,9 +237,9 @@
               </template>
               <MySelect
                 v-if="solarPower_keys.length >= 1"
-                :data="settings.preferences.monitoring?.solarPowerKey || ''"
+                :data="monitoring_keys.solarPowerKey"
                 :object="solarPower_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="solarPowerKey"
                 @clickFromChildComponent="UpdatePref"
               /><br />
@@ -256,21 +256,41 @@
               </template>
               <MySelect
                 v-if="tankLevel_keys.length >= 1"
-                :data="settings.preferences.monitoring.tankLevelKey"
+                :data="monitoring_keys.tankLevelKey"
                 :object="tankLevel_keys"
-                :sk_key="settings.preferences.monitoring"
+                :sk_key="monitoring_keys"
                 map="tankLevelKey"
                 @clickFromChildComponent="UpdatePref"
               /><br />
               <div>eg: tanks.freshWater.currentLevel</div>
             </td>
           </tr>
-          <tr>
-            <td>Additional Monitoring</td>
-            <td></td>
+          <tr v-for="(section, index) in additionalSections" :key="index">
+            <td>
+              <va-input v-model="section.name" label="Section Name" type="text" />
+            </td>
+            <td>
+              <VaSelect
+                v-if="all_keys.length >= 1"
+                v-model="section.key"
+                :options="all_keys"
+                searchable
+                highlight-matched-text
+                style="width: 100%"
+                @update:modelValue="updateSelectedKey(index, section.key)"
+              />
+              <va-button color="danger" size="medium" @click="deleteSection(index)">Delete</va-button>
+            </td>
           </tr>
         </tbody>
       </table>
+    </div>
+    <h3 class="h3">Add New Monitoring Value</h3>
+    <div>
+      <div>{{ t('profile.monitoring.message') }}</div>
+      <va-button color="primary" size="medium" class="my-button" @click="addNewMonitoringValue">
+        Add New Monitoring Value
+      </va-button>
     </div>
   </div>
 </template>
@@ -279,24 +299,21 @@
   // TODO update setup with lang="ts"
   import { useI18n } from 'vue-i18n'
   import PostgSail from '../../services/api-client'
-  import { ref, onBeforeMount, onMounted, reactive, computed } from 'vue'
-  import { storeToRefs } from 'pinia'
-  import { useGlobalStore } from '../../stores/global-store'
+  import { ref, onMounted, reactive, computed } from 'vue'
   import { useToast } from 'vuestic-ui'
-  import settingsData from '../../data/settings.json'
   import MySelect from '../../components/SelectSearchable.vue'
 
   const { t } = useI18n()
   const { init: initToast } = useToast()
-  const GlobalStore = useGlobalStore()
-  const { settings } = storeToRefs(GlobalStore)
-  const { fetchSettings, updatePref } = GlobalStore
 
+  const api = new PostgSail()
   const isBusy = ref(false)
   const apiError = ref(null)
   const apiSuccess = ref(null)
   const apiData = reactive([])
   const offline = ref(false)
+  const monitoring_keys = ref({})
+  const additionalSections = ref([])
 
   const all_keys = computed(() => {
     const f = Array.isArray(apiData.value) ? apiData.value.map((row) => row.key) : []
@@ -420,12 +437,20 @@
     return f
   })
 
-  // TODO Issue getting default value as per store setup
-  onBeforeMount(async () => {
-    console.log(`onBeforeMount Correlation Tab`)
-    await fetchSettings()
-    console.log('Correlation Tab onBeforeMount', `${settings.value.first} ${settings.value.last}`)
-  })
+  const addNewMonitoringValue = () => {
+    additionalSections.value.push({ name: `Section ${additionalSections.value.length + 1}`, key: '' })
+  }
+
+  const deleteSection = (index) => {
+    additionalSections.value.splice(index, 1)
+  }
+
+  const updateSelectedKey = async (index, key) => {
+    console.log('updateSelectedKey', index, key)
+    additionalSections.value[index].key = key
+    console.log('updateSelectedKey', additionalSections.value)
+    await UpdatePref(monitoring_keys.value, additionalSections.value[index].key, additionalSections.value[index].name)
+  }
 
   //const UpdatePref = async (key: string, value: any) => {
   const UpdatePref = async (key, value, map) => {
@@ -437,14 +462,11 @@
     console.debug('Correlation Tab UpdatePref', `Updating ${map}: ${value}`)
     let obj = {}
     obj[map] = value
-    console.debug(JSON.stringify({ ...key, ...obj }))
-    const api = new PostgSail()
-    const response = await api.update_vessel_monitoring({ patch: { ...key, ...obj } })
-    //GlobalStore.settings.preferences.monitoring = { ...key, ...obj }
-    // Update GlobalStore should be automatic maybe need to use reactive()
-    // API Call api.update_user_preferences({ key: ${key}, value: ${value} }) from the store
-    //const response = await updatePref('monitoring', `{"${key}": "${value}"}`)
-    //const response = await updatePref('monitoring', JSON.stringify({ ...key, ...obj }))
+    let payload = { ...key, ...obj, ...additionalSections.value }
+    // Read by Signalk plugin
+    payload['additionalDataKeys'] = Object.values(additionalSections.value.map((section) => section.key))
+    console.debug(JSON.stringify(payload))
+    const response = await api.update_vessel_monitoring({ patch: payload })
     // Notify user on success or failure using va-toast.
     initToast({
       message: `${response ? 'Successfully updated' : 'Error updating'} ${map} with ${value}`,
@@ -457,8 +479,18 @@
   onMounted(async () => {
     isBusy.value = true
     apiError.value = null
-    const api = new PostgSail()
     try {
+      // Fetch current configuration
+      const vessel_monitoring = await api.get_vessel_monitoring()
+      if (Array.isArray(vessel_monitoring) && vessel_monitoring[0].configuration) {
+        console.log('Boat Configuration', vessel_monitoring[0].configuration)
+        monitoring_keys.value = vessel_monitoring[0].configuration
+        console.log('Boat Configuration', monitoring_keys.value)
+      } else {
+        console.warn('Boat Configuration', vessel_monitoring)
+        //throw { response }
+      }
+      // Fetch all keys all available keys
       const response = await api.explore()
       if (Array.isArray(response)) {
         console.log('Boat Correlation', response)
@@ -481,3 +513,14 @@
     }
   })
 </script>
+
+<style lang="scss" scoped>
+  .va-data-table {
+    overflow-x: auto;
+    width: 100%;
+  }
+  .my-button {
+    width: 100%;
+    text-align: center;
+  }
+</style>
