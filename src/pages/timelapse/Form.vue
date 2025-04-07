@@ -502,14 +502,11 @@
     handleGeoJSON = (id) => handleExport_common('geojson', id),
     handleExport_common = (format) => {
       console.debug('handleExport formData:', formData)
-      const payload = { start_log: null, end_log: null }
-      if (formData.start_log != '') {
-        payload.start_log = formData.start_log
+      let qs = null
+      if (format === 'geojson') {
+        qs = new URLSearchParams(removeNullValues(formData))
       }
-      if (formData.end_log != '') {
-        payload.end_log = formData.end_log
-      }
-      runBusy(handleExport, format, 'logs', payload, `trip_${formData.start_log}_${formData.end_log}`)
+      runBusy(handleExport, format, 'logs', qs ? qs : formData, `trip_${formData.start_log}_${formData.end_log}`)
     }
   const handleMP4 = () => {
     console.debug('handleMP4 formData:', formData)
@@ -543,6 +540,17 @@
     } else {
       window.open(`https://gis.openplotter.cloud/trip_${vesselId}_${formData.start_log}_${formData.end_log}.png`)
     }
+  }
+
+  function removeNullValues(obj) {
+    // Iterate through the object keys
+    for (let key in obj) {
+      // Check if the value is null
+      if (obj[key] === null) {
+        delete obj[key] // Remove the key from the object
+      }
+    }
+    return obj
   }
 </script>
 
