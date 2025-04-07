@@ -157,13 +157,13 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/profile/Profile.vue'),
         meta: { titleKey: 'profile.title' },
       },
-
+      /*
       {
         name: 'settings',
         path: 'settings',
         component: () => import('../pages/settings/Settings.vue'),
       },
-
+*/
       {
         name: 'help-menu',
         path: '/:boat(\\w+)?',
