@@ -146,18 +146,24 @@ const routes: Array<RouteRecordRaw> = [
         meta: { titleKey: 'boats.details.title' },
       },
       {
+        name: 'boat-profile',
+        path: 'boat/mapping',
+        component: () => import('../pages/boats/Correlations.vue'),
+        meta: { titleKey: 'boats.details.title' },
+      },
+      {
         path: 'profile',
         name: 'profile',
         component: () => import('../pages/profile/Profile.vue'),
         meta: { titleKey: 'profile.title' },
       },
-      /*
+
       {
         name: 'settings',
         path: 'settings',
         component: () => import('../pages/settings/Settings.vue'),
       },
-      */
+
       {
         name: 'help-menu',
         path: '/:boat(\\w+)?',
@@ -274,6 +280,18 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/eventlogs/Timelines.vue'),
         meta: { titleKey: 'menu.eventlogs' },
       },
+      /*
+      {
+        name: 'map-explorer',
+        path: 'explore',
+        component: () => import('../components/maps/leafletMapExplorer.vue'),
+      },
+      {
+        name: 'map-timedimension',
+        path: 'timedimension',
+        component: () => import('../pages/timelapse/TimeDimension.vue'),
+      },
+      */
     ],
   },
   {
