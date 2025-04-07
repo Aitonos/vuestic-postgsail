@@ -2,7 +2,7 @@
   <div>
     <va-select
       v-model="value"
-      class="mb-6"
+      style="width: 100%"
       :options="options"
       value-by="value"
       outline
