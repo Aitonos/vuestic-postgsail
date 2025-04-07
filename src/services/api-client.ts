@@ -90,7 +90,9 @@ class ApiClient extends HttpClient {
   async pushover_link() {
     return this.post(`rpc/pushover_subscribe_link_fn`)
   }
-
+  async update_vessel_monitoring(payload: JSObj) {
+    return this.post(`rpc/monitoring_upsert_fn`, payload)
+  }
   /*
    * Vessels API endpoint
    */
@@ -195,7 +197,7 @@ class ApiClient extends HttpClient {
   }
 
   async logs_export_geojson(payload: JSObj) {
-    return this.post(`rpc/export_logbooks_geojson_linestring_trips_fn`, payload)
+    return this.timelapse_trips_by_points(payload)
   }
 
   async update_observations(payload: JSObj) {
