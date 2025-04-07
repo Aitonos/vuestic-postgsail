@@ -139,6 +139,16 @@
     moorage_overlay.value,
     instruments.value,
   )
+  function removeNullValues(obj) {
+    // Iterate through the object keys
+    for (let key in obj) {
+      // Check if the value is null
+      if (obj[key] === null) {
+        delete obj[key] // Remove the key from the object
+      }
+    }
+    return obj
+  }
 
   onMounted(async () => {
     const title = t('timelapse.title') + ': ' + vesselName
@@ -153,17 +163,9 @@
         end_date: end_date.value,
       }
     try {
-      //const response = await api.timelapse_by_points(payload)
-      // remove null query-string
-      if (payload.end_log === null && payload.start_log === null) {
-        delete payload.end_log
-        delete payload.start_log
-      } else {
-        delete payload.start_date
-        delete payload.end_date
-      }
-      const qs = new URLSearchParams(payload)
-      //console.log(qs.toString())
+      //const response = await api.timelapse_by_points(payload) POST
+      const qs = new URLSearchParams(removeNullValues(payload)) // GET
+      console.debug(qs.toString())
       const response = await api.timelapse_trips_by_points(qs)
       if (response && response.geojson?.features && response.geojson?.features[0]?.geometry?.coordinates) {
         timelapse.value = response.geojson
@@ -496,9 +498,8 @@
       title: 'Are you sure?',
       okText: 'Yes generate a ~45 seconds video',
       cancelText: 'No thanks!',
-      zIndex: -9999,
+      //zIndex: -9999,
     })
-
     if (result) {
       console.log('record qs:', window.location.search)
       const searchParams = new URLSearchParams(window.location.search || '')
