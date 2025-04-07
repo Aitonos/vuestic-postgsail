@@ -68,7 +68,7 @@
     </div>
 
     <div class="flex justify-center mt-4">
-      <va-button class="my-0 flexStatic" @click="onsubmit">{{ t('auth.sign_up') }}</va-button>
+      <va-button class="my-0 flexStatic" style="width: 100%" @click="onsubmit">{{ t('auth.sign_up') }}</va-button>
     </div>
   </VaForm>
 </template>
