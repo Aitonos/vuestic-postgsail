@@ -502,11 +502,14 @@
     handleGeoJSON = (id) => handleExport_common('geojson', id),
     handleExport_common = (format) => {
       console.debug('handleExport formData:', formData)
+      console.debug('handleExport format:', format)
+      const payload = { end_log: formData.end_log, start_log: formData.start_log }
       let qs = null
       if (format === 'geojson') {
-        qs = new URLSearchParams(removeNullValues(formData))
+        qs = new URLSearchParams(removeNullValues(payload))
       }
-      runBusy(handleExport, format, 'logs', qs ? qs : formData, `trip_${formData.start_log}_${formData.end_log}`)
+      console.debug('handleExport qs:', qs)
+      runBusy(handleExport, format, 'logs', qs ? qs : payload, `trip_${formData.start_log}_${formData.end_log}`)
     }
   const handleMP4 = () => {
     console.debug('handleMP4 formData:', formData)
