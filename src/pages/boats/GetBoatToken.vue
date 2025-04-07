@@ -46,7 +46,7 @@
           </va-inner-loading>
         </va-card-content>
         <va-card-actions>
-          <va-button class="ml-auto" color="primary" @click="ok">{{ t('modals.close') }}</va-button>
+          <va-button class="ml-auto" color="primary" style="width: 100%" @click="ok">{{ t('modals.close') }}</va-button>
         </va-card-actions>
       </template>
     </va-modal>
