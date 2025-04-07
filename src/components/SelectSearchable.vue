@@ -3,12 +3,13 @@
     <template v-if="keyExists() != -1">
       <va-chip outline color="success">{{ value }}</va-chip>
     </template>
-    <template v-else>
+    <template v-if="true">
       <VaSelect
         v-model="value"
         :options="options"
         searchable
         highlight-matched-text
+        style="width: 100%"
         @update:modelValue="handleSelect(sk_key, value, map)"
       />
     </template>
