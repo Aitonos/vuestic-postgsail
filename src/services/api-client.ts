@@ -90,6 +90,9 @@ class ApiClient extends HttpClient {
   async pushover_link() {
     return this.post(`rpc/pushover_subscribe_link_fn`)
   }
+  async get_vessel_monitoring() {
+    return this.get(`metadata?select=configuration`)
+  }
   async update_vessel_monitoring(payload: JSObj) {
     return this.post(`rpc/monitoring_upsert_fn`, payload)
   }
