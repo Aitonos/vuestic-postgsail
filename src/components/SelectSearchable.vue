@@ -34,13 +34,7 @@
     },
     methods: {
       handleSelect: function (value, sk_key, map) {
-        /*
-        console.log(
-          'clickFromChildComponent',
-          value,
-          options.find((option) => option.value === value),
-        )
-        */
+        //console.log('clickFromChildComponent', value, sk_key, map)
         this.$emit('clickFromChildComponent', value, sk_key, map)
       },
       keyExists() {
