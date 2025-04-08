@@ -184,7 +184,7 @@
     multiplier = Math.min(map.value.getZoom(), 9)
     console.log('multiplier', multiplier)
     const markerIcon = function (feature, latlng) {
-      if (feature.properties.stay_code == 3) {
+      if (feature.properties.default_stay_id == 3) {
         return L.marker(latlng, {
           icon: new L.Icon({
             iconSize: [multiplier * 4, multiplier * 4],
@@ -194,7 +194,7 @@
           }),
         })
       }
-      if (feature.properties.stay_code == 4) {
+      if (feature.properties.default_stay_id == 4) {
         return L.marker(latlng, {
           icon: new L.Icon({
             iconSize: [multiplier * 4, multiplier * 4],
@@ -279,6 +279,7 @@
 
   // TODO Zoom and fit on click
   const onEachLineStringFeaturePopup = function (feature, layer) {
+    //console.log('onEachLineStringFeaturePopup', feature, layer)
     var popupContent = '<p>I started out as a GeoJSON ' + feature.geometry.type + ", but now I'm a Leaflet vector!</p>"
     if (feature.properties && feature.properties._from_time) {
       let time = dateFormatUTC(feature.properties._from_time)
@@ -343,7 +344,7 @@
     }
     try {
       const response = await api.find_log_from_moorage_fn(payload)
-      if (response && response.geojson?.features) {
+      if (response && response?.geojson && Array.isArray(response.geojson.features)) {
         return response.geojson
       } else {
         console.error('error find_log_from_moorage_fn', response)
