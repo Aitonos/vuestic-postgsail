@@ -396,7 +396,8 @@
       "voltageKey": "Battery Voltage Source",
       "solarVoltageKey": "Solar Voltage Source",
       "solarPowerKey": "Solar Power Source",
-      "tankLevelKey": "Tank Level Source"
+      "tankLevelKey": "Tank Level Source",
+      "message": "You can monitor all data available on your boat network using PostgSail. Monitoring data sources can be organized into sections based on shared characteristics, such as measurement units. For instance, a 'Tanks' section could group together data sources for Freshwater, Wastewater, and Fuel, providing a structured and intuitive overview. You can add as many sections as you would like."
     }
   },
   "faq": {
