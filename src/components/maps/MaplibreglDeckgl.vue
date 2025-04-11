@@ -80,11 +80,11 @@
           // Set the icon based on feature properties
           getIcon: (f) => {
             //console.log(f)
-            if (!f.properties.stay_code) return null
-            if (f.properties.stay_code == 3) {
+            if (!f.properties.default_stay_id) return null
+            if (f.properties.default_stay_id == 3) {
               return { id: 'mooring', url: '/mooring_icon.png', width: 32, height: 32 }
             }
-            if (f.properties.stay_code == 4) {
+            if (f.properties.default_stay_id == 4) {
               return { id: 'dock', url: '/dock_icon.png', width: 32, height: 32 }
             }
             // Add default icon is anchor
@@ -166,13 +166,13 @@
   function getTooltip(feature) {
     if (feature.properties.stay_code) {
       let stay_type = ''
-      if (feature.properties.stay_code == 2) {
+      if (feature.properties.default_stay_id == 2) {
         stay_type = ' stay at anchor'
       }
-      if (feature.properties.stay_code == 3) {
+      if (feature.properties.default_stay_id == 3) {
         stay_type = ' stay at mooring buoy'
       }
-      if (feature.properties.stay_code == 4) {
+      if (feature.properties.default_stay_id == 4) {
         stay_type = ' stay at dock'
       }
       return `${feature.properties.name} ${stay_type}`
@@ -222,7 +222,8 @@
       if ((feature?.properties?.total_stay || 0) > 1) popup = popup + 's'
       popup = popup + '</a></td></tr>'
       //popup += `Preference: ${feature.properties.stay_code}`
-      popup += '<tr><th>Preference</th><td>' + stayed_at_options[feature.properties.stay_code - 1].text + '</td></tr>'
+      popup +=
+        '<tr><th>Preference</th><td>' + stayed_at_options[feature.properties.default_stay_id - 1].text + '</td></tr>'
       if (feature?.properties?.notes) {
         popup += '<tr><th>Notes</th><td>' + feature?.properties?.notes + '</td></tr>'
       }
