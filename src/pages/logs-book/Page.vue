@@ -12,8 +12,8 @@
             :options="[
               { label: 'Cards', value: 1 },
               { label: 'Table', value: 2 },
-              { label: 'Map', value: 3 },
-              { label: 'Mapgl', value: 4 },
+              //{ label: 'Map', value: 3 },
+              //{ label: 'Mapgl', value: 4 },
               { label: 'MapLibre-gl', value: 5 },
             ]"
           />
@@ -170,7 +170,7 @@
         const indexToRemove = rowsData.value.findIndex((trip) => trip.id === log.id)
         rowsData.value.splice(indexToRemove, 1)
         // Clean CacheStore and force refresh
-        CacheStore.resetCache()
+        await CacheStore.resetCache()
         const resp = await CacheStore.getAPI('logs')
         if (Array.isArray(resp)) {
           rowsData.value.splice(0, rowsData.value.length || [])
