@@ -48,4 +48,7 @@
       }
     }
   }
+  .va-data-table__table-tr > .va-data-table__table-td:first-child > a {
+    max-width: 100%;
+  }
 </style>
