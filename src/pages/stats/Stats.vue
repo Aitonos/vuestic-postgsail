@@ -131,8 +131,8 @@
                   </tr>
                 </tbody>
               </table>
-              <div class="h-48">
-                <va-chart :data="pieChartUnderway" type="doughnut" :options="pieChartOptions" />
+              <div>
+                <EchartsDonught v-if="pieChartUnderway" :series="pieChartUnderway" />
               </div>
             </template>
           </va-inner-loading>
@@ -188,8 +188,8 @@
               </tr>
             </tbody>
           </table>
-          <div class="h-48">
-            <va-chart :data="pieChartStayType" type="doughnut" :options="pieChartOptions" />
+          <div>
+            <EchartsDonught v-if="pieChartStayType" :series="pieChartStayType" />
           </div>
         </va-card-content>
       </va-card>
@@ -272,7 +272,7 @@
   import { useI18n } from 'vue-i18n'
   import PostgSail from '../../services/api-client'
   const nodatayet = defineAsyncComponent(() => import('../../components/noDataScreen.vue'))
-  const VaChart = defineAsyncComponent(() => import('../../components/va-charts/VaChart.vue'))
+  import EchartsDonught from '../../components/echarts/donught.vue'
   import { useGlobalStore } from '../../stores/global-store'
   import { useCacheStore } from '../../stores/cache-store'
   import { storeToRefs } from 'pinia'
@@ -303,107 +303,6 @@
   function getFlagIcon(code, size) {
     return `flag-icon-${code} ${size}`
   }
-
-  const pieChartOptions = {
-    plugins: {
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            return t('units.time.days', context.parsed)
-          },
-        },
-      },
-    },
-  }
-
-  const pieChartUnderway = computed(() => {
-    if (!stats_logs.value || !stats_moorages.value) {
-      return {}
-    }
-
-    return {
-      labels: ['Underway', 'Away', 'Home'],
-      datasets: [
-        {
-          data: [
-            moment.duration(stats_logs.value.sum_duration).as('days').toFixed(1),
-            moment.duration(stats_moorages.value.time_spent_away).as('days').toFixed(1),
-            moment.duration(stats_moorages.value.time_at_home_ports).as('days').toFixed(1),
-          ],
-          backgroundColor: ['#004B95', '#73C5C5', '#F9E0A2'],
-        },
-      ],
-    }
-  })
-
-  const timeSpentAwayByType = computed(() => {
-    if (
-      !stats_moorages.value ||
-      !Array.isArray(stats_moorages.value.time_spent_away_arr) ||
-      stats_moorages.value.time_spent_away_arr.length === 0
-    ) {
-      return {}
-    }
-
-    let totalDurationMs = 0
-    const stayMap = {}
-
-    stats_moorages.value.time_spent_away_arr.forEach((entry) => {
-      const stayCode = entry.stay_code
-      const durationMs = moment.duration(entry.stay_duration).asMilliseconds()
-
-      totalDurationMs += durationMs
-      if (!stayMap[stayCode]) {
-        stayMap[stayCode] = { durationMs: 0 }
-      }
-      stayMap[stayCode].durationMs += durationMs
-    })
-
-    Object.keys(stayMap).forEach((stayCode) => {
-      const durationMs = stayMap[stayCode].durationMs
-
-      stayMap[stayCode].percentage = Math.round((durationMs / totalDurationMs) * 100)
-
-      const durationObj = moment.duration(durationMs)
-      stayMap[stayCode].duration = durationObj.toISOString()
-    })
-
-    return stayMap
-  })
-
-  const pieChartStayType = computed(() => {
-    const timeData = timeSpentAwayByType.value
-
-    const labels = []
-    const data = []
-    const backgroundColor = []
-
-    const stayCodeColors = {
-      1: '#FF6384', // Unclassified
-      2: '#A2D9D9', // Anchor
-      3: '#BDE2B9', // Buoy
-      4: '#F4B678', // Dock
-    }
-
-    Object.keys(timeData).forEach((stayCode) => {
-      const value = timeData[stayCode]
-      if (value.durationMs > 0) {
-        labels.push(t('id.stay_code.' + stayCode))
-        data.push(moment.duration(value.duration).as('days').toFixed(1))
-        backgroundColor.push(stayCodeColors[stayCode] || '#CCCCCC')
-      }
-    })
-
-    return {
-      labels,
-      datasets: [
-        {
-          data,
-          backgroundColor,
-        },
-      ],
-    }
-  })
 
   const disabled = computed(() => {
     //console.log('disabled logs', logs.value)
@@ -643,6 +542,76 @@
       //isBusy.value = false
     }
   }
+
+  const pieChartUnderway = computed(() => {
+    if (!stats_logs.value || !stats_moorages.value) {
+      return []
+    }
+    return [
+      {
+        value: moment.duration(stats_logs.value.sum_duration).as('days').toFixed(1),
+        name: t('stats.underway'),
+      },
+      {
+        value: moment.duration(stats_moorages.value.time_spent_away).as('days').toFixed(1),
+        name: t('stats.away'),
+      },
+      {
+        value: moment.duration(stats_moorages.value.time_at_home_ports).as('days').toFixed(1),
+        name: t('stats.home'),
+      },
+    ]
+  })
+
+  const timeSpentAwayByType = computed(() => {
+    if (
+      !stats_moorages.value ||
+      !Array.isArray(stats_moorages.value.time_spent_away_arr) ||
+      stats_moorages.value.time_spent_away_arr.length === 0
+    ) {
+      return {}
+    }
+
+    let totalDurationMs = 0
+    const stayMap = {}
+
+    stats_moorages.value.time_spent_away_arr.forEach((entry) => {
+      const stayCode = entry.stay_code
+      const durationMs = moment.duration(entry.stay_duration).asMilliseconds()
+
+      totalDurationMs += durationMs
+      if (!stayMap[stayCode]) {
+        stayMap[stayCode] = { durationMs: 0 }
+      }
+      stayMap[stayCode].durationMs += durationMs
+    })
+
+    Object.keys(stayMap).forEach((stayCode) => {
+      const durationMs = stayMap[stayCode].durationMs
+
+      stayMap[stayCode].percentage = Math.round((durationMs / totalDurationMs) * 100)
+
+      const durationObj = moment.duration(durationMs)
+      stayMap[stayCode].duration = durationObj.toISOString()
+    })
+
+    return stayMap
+  })
+
+  const pieChartStayType = computed(() => {
+    const timeData = timeSpentAwayByType.value
+    const data = []
+    Object.keys(timeData).forEach((stayCode) => {
+      const value = timeData[stayCode]
+      if (value.durationMs > 0) {
+        data.push({
+          value: moment.duration(value.duration).as('days').toFixed(1),
+          name: t('id.stay_code.' + stayCode),
+        })
+      }
+    })
+    return data
+  })
 </script>
 
 <style lang="scss" scoped>
