@@ -22,9 +22,29 @@
           />
 
           <div class="d-flex justify-center mt-3">
-            <va-button class="my-0" @click="onsubmit">{{ t('auth.otp_validate') }}</va-button>
+            <va-button class="my-0" style="width: 100%" @click="onsubmit">{{ t('auth.otp_validate') }}</va-button>
           </div>
         </form>
+      </div>
+    </va-card-content>
+    <va-card-content>
+      <div
+        class="sm:min-h-[114px] p-4 rounded-lg border border-dashed border-primary flex flex-col sm:flex-row items-start sm:items-center gap-4 note"
+        :style="{ backgroundColor: colorToRgba(getColor('primary'), 0.07) }"
+      >
+        <div class="flex flex-col gap-2 flex-grow">
+          <div class="text-lg font-bold leading-relaxed">Important note</div>
+          <div class="text-secondary text-sm leading-tight">
+            PostgSail Cloud is free for personal use with a single vessel. If you encounter any issue validating your
+            account, please contact us at info@openplotter.cloud.
+          </div>
+        </div>
+        <a
+          href="mailto:info@openplotter.cloud?subject=PostgSail Cloud&body=Issue validating my account"
+          target="_blank"
+        >
+          <VaButton class="flex-none w-full sm:w-auto">Contact us</VaButton></a
+        >
       </div>
     </va-card-content>
   </va-card>
@@ -36,9 +56,11 @@
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { useGlobalStore } from '../../stores/global-store'
+  import { useColors } from 'vuestic-ui'
 
   const GlobalStore = useGlobalStore()
   const { t } = useI18n()
+  const { getColor, colorToRgba } = useColors()
 
   const isBusy = ref(false)
   const apiError = ref(null)
@@ -109,12 +131,10 @@
       width: 40%;
     }
   }
-
   strong {
     display: block;
     margin-bottom: 10px;
   }
-
   .code {
     border: 0px;
     text-align: center;
@@ -124,5 +144,11 @@
     font-weight: bold;
     font-size: 20px;
     padding-bottom: 5px;
+  }
+  .note {
+    border-width: 1px;
+    border-style: dashed;
+    border-radius: 0.5rem;
+    border-color: var(--va-primary);
   }
 </style>
