@@ -93,12 +93,3 @@
     }
   })
 </script>
-
-<style scoped>
-  .va-link {
-    color: var(--va-primary);
-  }
-  .va-link:hover {
-    color: var(--va-primary-dark);
-  }
-</style>
