@@ -18,14 +18,29 @@
     },
   })
 
-  const defaultConfig = {
+  // Reactive xAxis labels using computed
+  const xAxisLabels = computed(() => [
+    t('dashboard.months.january'),
+    t('dashboard.months.february'),
+    t('dashboard.months.march'),
+    t('dashboard.months.april'),
+    t('dashboard.months.may'),
+    t('dashboard.months.june'),
+    t('dashboard.months.july'),
+    t('dashboard.months.august'),
+    t('dashboard.months.september'),
+    t('dashboard.months.october'),
+    t('dashboard.months.november'),
+    t('dashboard.months.december'),
+  ])
+
+  // Chart options reactive to locale and props
+  const chartOptions = computed(() => ({
     tooltip: {
       trigger: 'axis',
       axisPointer: {
         type: 'cross',
-        crossStyle: {
-          color: '#999',
-        },
+        crossStyle: { color: '#999' },
       },
     },
     toolbox: {
@@ -44,23 +59,8 @@
     xAxis: [
       {
         type: 'category',
-        data: [
-          t('dashboard.months.january'),
-          t('dashboard.months.february'),
-          t('dashboard.months.march'),
-          t('dashboard.months.april'),
-          t('dashboard.months.may'),
-          t('dashboard.months.june'),
-          t('dashboard.months.july'),
-          t('dashboard.months.august'),
-          t('dashboard.months.september'),
-          t('dashboard.months.october'),
-          t('dashboard.months.november'),
-          t('dashboard.months.december'),
-        ],
-        axisPointer: {
-          type: 'shadow',
-        },
+        data: xAxisLabels.value,
+        axisPointer: { type: 'shadow' },
       },
     ],
     yAxis: [
@@ -68,18 +68,11 @@
         type: 'value',
         name: 'Log entry',
         min: 0,
-        axisLabel: {
-          formatter: '{value}',
-        },
+        axisLabel: { formatter: '{value}' },
       },
     ],
-    series: [],
-  }
-  const chartOptions = computed(() => {
-    const localoptions = { ...defaultConfig }
-    localoptions['series'] = props.series || []
-    return localoptions
-  })
+    series: props.series || [],
+  }))
 </script>
 
 <template>
