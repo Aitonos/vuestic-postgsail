@@ -272,7 +272,10 @@
     "time_spent_away": "Time Spent Away",
     "country": "Country visited",
     "top_logs_by_distance": "Top Logs by Distance",
-    "top_logs_by_duration": "Top Logs by Duration"
+    "top_logs_by_duration": "Top Logs by Duration",
+    "underway": "Underway",
+    "away": "Away",
+    "home": "Home"
   },
   "boats": {
     "list": {

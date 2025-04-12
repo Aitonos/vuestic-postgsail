@@ -270,7 +270,10 @@
     "time_spent_away": "Tiempo fuera de puerto",
     "country": "País visitado",
     "top_logs_by_distance": "Registros de bitácora por distancia",
-    "top_logs_by_duration": "Registros de bitácora por duración"
+    "top_logs_by_duration": "Registros de bitácora por duración",
+    "underway": "Underway",
+    "away": "Away",
+    "home": "Home"
   },
   "boats": {
     "list": {
