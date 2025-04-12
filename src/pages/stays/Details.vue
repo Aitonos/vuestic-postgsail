@@ -290,7 +290,7 @@
     > dt:nth-child(4n + 3) {
       &,
       & + dd {
-        background-color: var(--va-background);
+        background-color: var(--va-background-primary);
       }
     }
   }

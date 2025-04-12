@@ -84,11 +84,11 @@
                 </dd>
                 <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.first_seen') }}</dt>
                 <dd class="flex xs12 md6 pa-2">
-                  {{ item.first_seen }}
+                  {{ dateFormatUTC(item.first_seen) }}
                 </dd>
                 <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.last_seen') }}</dt>
                 <dd class="flex xs12 md6 pa-2">
-                  {{ item.last_seen }}
+                  {{ dateFormatUTC(item.last_seen) }}
                 </dd>
                 <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.note') }}</dt>
                 <dd class="flex xs12 md6 pa-1">
@@ -104,8 +104,8 @@
                   <va-button :disabled="!canSubmit" @click="handleSubmit">Save</va-button>
                 </div>
                 -->
-                <div class="flex flex-row pa-2">
-                  <va-button color="danger" @click="handleDelete">Delete</va-button>
+                <div class="flex flex-row pa-2 items-center">
+                  <va-button color="danger" style="width: 100%" @click="handleDelete">Delete</va-button>
                 </div>
               </div>
             </va-form>
@@ -127,7 +127,7 @@
   import Map from '../../components/maps/leafletMapMoorages.vue'
   import { asBusy } from '../../utils/handleExports'
   import StayAt from '../../components/SelectStayAt.vue'
-  import { durationFormatDays, durationI18nDaysHours } from '../../utils/dateFormatter.js'
+  import { dateFormatUTC, durationI18nDaysHours } from '../../utils/dateFormatter.js'
   import { useModal, useToast } from 'vuestic-ui'
   const { confirm } = useModal()
   const { init: initToast } = useToast()
@@ -361,7 +361,7 @@
     > dt:nth-child(4n + 3) {
       &,
       & + dd {
-        background-color: var(--va-background);
+        background-color: var(--va-background-primary);
       }
     }
   }
