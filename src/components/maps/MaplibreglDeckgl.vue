@@ -231,21 +231,27 @@
       return popup
     } else {
       // is logbook
-      let time = dateFormatUTC(feature.properties._from_time)
+      let starttime = dateFormatUTC(feature.properties.starttimestamp)
+      let endtime = dateFormatUTC(feature.properties.endtimestamp)
       let duration = durationFormatHours(feature.properties.duration)
       let distance = distanceFormatMiles(feature.properties.distance)
-      let avg_speed = speedFormatKnots(feature.properties.avg_speed)
-      let max_speed = speedFormatKnots(feature.properties.max_speed)
-      let max_wind = speedFormatKnots(feature.properties.max_wind_speed)
+      let avg_speed = speedFormatKnots(feature.properties.avg_sog)
+      let max_speed = speedFormatKnots(feature.properties.max_sog)
+      let avg_depth = distanceFormat(feature.properties.avg_depth)
+      let max_depth = distanceFormat(feature.properties.max_depth)
+      let avg_tws = speedFormatKnots(feature.properties.avg_tws)
+      let max_tws = speedFormatKnots(feature.properties.max_tws)
       let notes = feature.properties?.notes || ''
       let text = `<div class='mpopup'>
                         <h4><a href="/log/${feature.properties.id}">${feature.properties.name}</a></h4><br/>
                         <table class='data'><tbody>
-                          <tr><td>Time</td><td>${time}</td></tr>
+                          <tr><td>Start Time</td><td>${starttime}</td></tr>
+                          <tr><td>End Time</td><td>${endtime}</td></tr>
                           <tr><td>Distance</td><td>${distance}</td></tr>
                           <tr><td>Duration</td><td>${duration} hours</td></tr>
                           <tr><td>Speed</td><td>avg ${avg_speed} / max ${max_speed}</td></tr>
-                          <tr><td>Wind</td><td>max ${max_wind}</td></tr>
+                          <tr><th>Wind</th><td>avg ${avg_tws} / max ${max_tws}</td></tr>
+                          <tr><td>Depth</td><td>avg ${avg_depth} / max ${max_depth}</td></tr>
                           <tr><td>Notes</td><td>${notes}</td></tr>
                         </tbody></table></br>
                         <a href="/timelapse/${feature.properties.id}">Replay</a>
