@@ -97,15 +97,15 @@
     return [
       {
         value: moment.duration(stats_logs.value.sum_duration).as('days').toFixed(1),
-        name: 'Underway',
+        name: t('stats.underway'),
       },
       {
         value: moment.duration(stats_moorages.value.time_spent_away).as('days').toFixed(1),
-        name: 'Away',
+        name: t('stats.away'),
       },
       {
         value: moment.duration(stats_moorages.value.time_at_home_ports).as('days').toFixed(1),
-        name: 'Home',
+        name: t('stats.home'),
       },
     ]
   })
