@@ -46,7 +46,7 @@
 
     <va-card-content>
       <div
-        class="sm:min-h-[114px] p-4 rounded-lg border border-dashed border-primary flex flex-col sm:flex-row items-start sm:items-center gap-4"
+        class="sm:min-h-[114px] p-4 rounded-lg border border-dashed border-primary flex flex-col sm:flex-row items-start sm:items-center gap-4 note"
         :style="{ backgroundColor: colorToRgba(getColor('primary'), 0.07) }"
       >
         <div class="flex flex-col gap-2 flex-grow">
@@ -169,5 +169,11 @@
 <style lang="scss" scoped>
   .va-data-table {
     overflow-x: auto;
+  }
+  .note {
+    border-width: 1px;
+    border-style: dashed;
+    border-radius: 0.5rem;
+    border-color: var(--va-primary);
   }
 </style>
