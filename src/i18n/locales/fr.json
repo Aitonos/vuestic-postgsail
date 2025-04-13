@@ -12,11 +12,11 @@
     "logout": "Se déconnecter...",
     "password": "Mot de passe",
     "recover_password": "Récupérer mot de passe",
-    "sign_up": "Sign Up",
+    "sign_up": "S'inscrire",
     "keep_logged_in": "Rester connecté",
     "termsOfUse": "Conditions d'utilisation.",
     "reset_password": "Réinitialiser le mot de passe",
-    "vessel_register": "Add vessel",
+    "vessel_register": "Ajouter un navire",
     "otp": "Enter the verification code",
     "otp_validate": "Validate",
     "otp_validated": "OTP code validated successfully.",
@@ -28,35 +28,35 @@
       "password": "Mot de passe requis",
       "mismatch_pass": "Mot de passe different",
       "short_pass": "Le mot de passe est trop court",
-      "first_name": "First name is required",
-      "last_name": "Last name is required",
-      "agreed_to_terms": "You must agree to the terms of use to continue",
-      "expired_session": "Your session has expired.",
+      "first_name": "Le prénom est requis",
+      "last_name": "Le nom de famille est requis",
+      "agreed_to_terms": "Vous devez être le terme d'utilisation pour continuer",
+      "expired_session": "Votre session que vous avez expirée.",
       "otp": "validation code is required",
       "otp_invalid": "We can't find your code",
       "reset": "Invalid input"
     }
   },
   "menu": {
-    "dashboard": "Dashboard",
+    "dashboard": "Tableau de bord",
     "logs": "Logs",
-    "stays": "Stays",
-    "moorages": "Moorages",
-    "map": "Map",
+    "stays": "Séjours",
+    "moorages": "Amarrages",
+    "map": "Carte",
     "boats": "Boats",
-    "stats": "Stats",
+    "stats": "Statistiques",
     "timelapse": "Timelapse",
     "timelapse_replay": "Replay",
     "timelapse_form": "Customize",
     "grafana": "Grafana",
     "monitoring": "Monitoring",
-    "monitoring_realtime": "Real-Time",
+    "monitoring_realtime": "Temps réel",
     "explore": "Explore",
     "privacy": "Privacy",
     "faq": "FAQ",
     "badges": "Badges",
     "eventlogs": "Event Logs",
-    "help": "Help",
+    "help": "Aide",
     "history": "History",
     "windy": "Windy"
   },
@@ -66,7 +66,7 @@
     "sent_message": "Sent message"
   },
   "modals": {
-    "close": "Close"
+    "close": "Fermer"
   },
   "404": {
     "title": "Cette page est parti naviguer",
@@ -82,10 +82,10 @@
   },
   "user": {
     "profile": "Profile",
-    "logout": "Logout"
+    "logout": "Déconnexion"
   },
   "dashboard": {
-    "title": "Dashboard",
+    "title": "Tableau de bord",
     "versions": "Versions",
     "overview": "Logbook Overview",
     "local_time": "Heure locale",
@@ -186,7 +186,7 @@
       }
     },
     "details": {
-      "title": "Stay"
+      "title": "Séjour"
     },
     "stay": {
       "name": "Name | Names",
@@ -211,14 +211,14 @@
   },
   "moorages": {
     "list": {
-      "title": "Moorages of",
+      "title": "Amarrages de",
       "filter": {
         "title": "Search for moorage",
-        "name": "Name",
+        "name": "Nom | Noms",
         "date_range": "Date range",
         "reset": "Reset"
       },
-      "moorage": "Moorage",
+      "moorage": "Amarrage",
       "default_stay": "Default Stay",
       "total_stay": "Total Stay [d]",
       "arrivals": "Arrivals & Departures"
@@ -245,7 +245,7 @@
     }
   },
   "stats": {
-    "stats": "Statistics",
+    "stats": "Statistiques",
     "logs": "Logs Statistics",
     "moorages": "Moorages Statistics",
     "name": "Boat",
@@ -293,7 +293,7 @@
         "token": "Token",
         "message": "Copy paste this token into your postgsail plugin instance of signalk."
       },
-      "beam": "Beam",
+      "beam": "Maître-bau",
       "height": "Hauteur",
       "length": "Longeur",
       "country": "État du pavillon",
@@ -306,8 +306,8 @@
     },
     "errors": {
       "name": "Name is required",
-      "param": "Please check your parameters",
-      "length": "Minimum 4 characters"
+      "param": "Veuillez vérifier vos paramètres",
+      "length": "Minimum 4 caractères"
     },
     "messages": {
       "pending": "Votre bateau n'a pas encore envoyé de données à PostgSail, tout devrait bien se passer lorsqu'il se connectera",
@@ -338,7 +338,7 @@
     "public_profile": "Public Profile",
     "public_name": "Name",
     "public_logs": "Log Details",
-    "public_stats": "Stats",
+    "public_stats": "Statistiques",
     "public_logs_list": "Logs List",
     "public_timelapse": "Timelapse",
     "instagram_handle": "Instagram Handle",
@@ -469,10 +469,10 @@
   },
   "id": {
     "stay_code": {
-      "1": "Unknown",
-      "2": "Anchor",
-      "3": "Mooring Buoy",
-      "4": "Dock"
+      "1": "Inconnu",
+      "2": "Ancre",
+      "3": "Bouée d'amarrage",
+      "4": "Quai"
     }
   },
   "units": {
@@ -534,10 +534,10 @@
     "last": "Les 500 derniers événements"
   },
   "vuestic": {
-    "search": "Search",
+    "search": "Recherche",
     "noOptions": "Items not found",
     "ok": "OK",
-    "cancel": "Cancel",
+    "cancel": "Annuler",
     "uploadFile": "Upload file",
     "undo": "Undo",
     "dropzone": "Drop files here to upload",
@@ -550,7 +550,7 @@
     "goNextSlide": "go next slide",
     "goSlide": "go slide {index}",
     "slideOf": "slide {index} of {length}",
-    "close": "close",
+    "close": "Fermer",
     "openColorPicker": "open color picker",
     "colorSelection": "color selection",
     "colorName": "color {color}",
@@ -564,7 +564,7 @@
     "switchView": "switch view",
     "previousPeriod": "previous period",
     "removeFile": "remove file",
-    "reset": "reset",
+    "reset": "Réinitialiser",
     "pagination": "pagination",
     "goToTheFirstPage": "go to the first page",
     "goToPreviousPage": "go to the previous page",
@@ -587,17 +587,17 @@
     "selectedDate": "selected date",
     "selectedTime": "selected time",
     "progressState": "progress state",
-    "color": "color",
-    "next": "Next",
-    "back": "Previous",
-    "finish": "Finish",
+    "color": "couleur",
+    "next": "Suivant",
+    "back": "Précédent",
+    "finish": "Terminer",
     "step": "step",
     "progress": "progress",
     "loading": "Loading",
     "sliderValue": "Current slider value is {value}",
     "switch": "Switch",
-    "inputField": "Input field",
+    "inputField": "Champ de saisie",
     "fileTypeIncorrect": "File type is incorrect",
-    "select": "Select an option"
+    "select": "Sélectionnez une option"
   }
 }
