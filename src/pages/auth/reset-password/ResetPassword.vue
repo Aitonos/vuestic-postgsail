@@ -30,7 +30,7 @@
         aria-label="password_repeat"
       />
       <div class="flex justify-center mt-4">
-        <va-button class="my-0" @click="onsubmit">{{ t('auth.reset_password') }}</va-button>
+        <va-button class="my-0" style="width: 100%" @click="onsubmit">{{ t('auth.reset_password') }}</va-button>
       </div>
     </va-inner-loading>
   </VaForm>
