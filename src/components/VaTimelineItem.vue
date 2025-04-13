@@ -79,7 +79,4 @@
       }
     }
   }
-  .va-timeline-item__content:hover {
-    background-color: yellowgreen;
-  }
 </style>

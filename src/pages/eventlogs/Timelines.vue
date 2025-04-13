@@ -2,13 +2,22 @@
 <template>
   <VaCard>
     <VaCardTitle class="flex justify-between">
-      <h1 class="card-title text-secondary font-bold uppercase">Timeline</h1>
-      <h2>the last 500 events</h2>
+      <h1 class="card-title text-secondary font-bold uppercase">{{ t('timeline.timeline') }}</h1>
+      <h2>{{ t('timeline.last') }}</h2>
     </VaCardTitle>
     <VaCardContent>
-      <table class="mt-4">
+      <table class="mt-4 va-table va-table--hoverable va-table--striped">
         <tbody>
           <VaTimelineItem v-for="(item, key) in items" :key="key" color="danger" active :date="item.fromnow">
+            <template v-if="item.channel === 'new_account' || item.channel === 'new_vessel'">
+              {{ item.message }} at {{ item.processed }}
+            </template>
+            <template v-if="item.channel === 'grafana'">
+              <a :href="grafana_url" target="_blank"
+                ><span class="va-link link font-semibold"> {{ item.message }} </span></a
+              >
+              at {{ item.processed }}
+            </template>
             <template v-if="item.channel === 'new_logbook'">
               <RouterLink class="va-link link font-semibold" :to="{ name: 'log-map', params: { id: item.payload } }">{{
                 item.message
@@ -31,6 +40,10 @@
               <RouterLink class="va-link link font-semibold" to="/monitoring">{{ item.message }}</RouterLink>
               at {{ item.processed }}
             </template>
+            <template v-else>
+              <span class="va-link link font-semibold">{{ item.message }}</span>
+              at {{ item.processed }}
+            </template>
           </VaTimelineItem>
         </tbody>
       </table>
@@ -51,12 +64,17 @@
   const apiError = ref(null)
   const rowsData = ref([])
   const messages = ref({
-    monitoring_offline: 'monitoring offline',
-    monitoring_online: 'monitoring online',
-    new_logbook: 'new logbook',
-    maplapse_video: 'replay video',
-    new_video: 'new video',
+    new_account: 'Account created',
+    email_otp: 'Account validated',
+    new_vessel: 'New vessel registered',
+    grafana: 'Monitoring application ready',
+    monitoring_offline: 'Monitoring offline',
+    monitoring_online: 'Monitoring online',
+    new_logbook: 'New logbook',
+    maplapse_video: 'Replay video',
+    new_video: 'New video',
   })
+  const grafana_url = ref(import.meta.env.VITE_GRAFANA_URL)
 
   const items = computed(() => {
     return Array.isArray(rowsData.value)
