@@ -8,7 +8,6 @@
   import { dateFormatUTC, durationFormatHours } from '../../utils/dateFormatter.js'
   import { distanceFormatMiles, distanceFormat } from '../../utils/distanceFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
-  import { angleFormat } from '../../utils/angleFormatter.js'
   import { stayed_at_options } from '../../utils/PostgSail.ts'
 
   const isBusy = ref(false),
@@ -164,7 +163,7 @@
   }
 
   function getTooltip(feature) {
-    if (feature.properties.stay_code) {
+    if (feature.properties.default_stay_id) {
       let stay_type = ''
       if (feature.properties.default_stay_id == 2) {
         stay_type = ' stay at anchor'
@@ -210,11 +209,11 @@
 
   function getOnClickDesc(feature) {
     // Is moorage
-    if (feature.properties.stay_code) {
+    if (feature.properties.default_stay_id) {
       let popup = `<div class='mpopup'><center><h4><a href="/moorage/${feature.properties.id}">${feature.properties.name}</a></h4></center>`
       popup += '<table class="data">'
       popup += '<tr><th>Visits</th><td><a href="/moorage/arrivals-departures/' + feature.properties.id + '">'
-      popup += `${feature?.properties?.reference_count}`
+      popup += `${feature?.properties?.stays_count}`
       popup += '</a></td></tr>'
       popup += '<tr><th>Stays</th><td>'
       popup +=
