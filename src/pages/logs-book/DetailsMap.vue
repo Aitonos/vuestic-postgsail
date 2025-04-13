@@ -77,7 +77,6 @@
   import { dateFormatUTC, durationFormatHours, durationI18nHours, dateFormatTime } from '../../utils/dateFormatter.js'
   import { distanceFormatMiles } from '../../utils/distanceFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
-  import * as turf from '@turf/turf'
   import { useModal, useToast } from 'vuestic-ui'
   const { confirm } = useModal()
   const { init: initToast } = useToast()

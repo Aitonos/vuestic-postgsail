@@ -162,7 +162,7 @@
   </div>
 
   <va-divider class="my-4" />
-  <div class="text-xs uppercase">DISTANCE / DURATION</div>
+  <div class="text-xs uppercase">{{ $t('logs.log.distance') }} / {{ $t('logs.log.duration') }}</div>
   <div class="flex items-center">
     <va-icon class="flex-none" name="route" :size="32" />
     <div class="flex-grow ml-2 text-sm">{{ logbook.distance }} / {{ logbook.duration }}</div>
@@ -179,19 +179,19 @@
       </ul>
     </div>
   </div>
-  <div class="text-xs uppercase mt-2">SPEED AVG / MAX</div>
+  <div class="text-xs uppercase mt-2">{{ $t('logs.log.avg_max_speed') }}</div>
   <div class="flex items-center">
     <va-icon class="flex-none" name="speed" :size="32" />
     <div class="flex-grow ml-2 text-sm">{{ $props.logbook.avg_speed }} / {{ $props.logbook.max_speed }}</div>
   </div>
 
-  <div class="text-xs uppercase mt-2">WIND AVG / MAX</div>
+  <div class="text-xs uppercase mt-2">{{ $t('logs.log.max_wind_speed') }}</div>
   <div class="flex items-center">
     <va-icon class="flex-none" name="air" :size="32" />
     <div class="flex-grow ml-2 text-sm">{{ $props.logbook.avg_wind_speed }} / {{ $props.logbook.max_wind_speed }}</div>
   </div>
 
-  <div class="text-xs uppercase mt-2">NOTES</div>
+  <div class="text-xs uppercase mt-2">{{ $t('logs.log.note') }}</div>
   <div class="text-sm">
     <template v-if="isLoggedIn">
       <va-textarea
@@ -206,7 +206,7 @@
     </template>
   </div>
 
-  <div class="text-xs uppercase mt-2">TAGS</div>
+  <div class="text-xs uppercase mt-2">{{ $t('logs.log.tags') }}</div>
   <div class="text-sm">
     <template v-if="isLoggedIn">
       <va-select
@@ -245,9 +245,9 @@
                 </div>
                 -->
     <div class="flex flex-row pa-2">
-      <va-button :disable="readOnly" color="danger" @click="$emit('delete', logbook as Trip)"
-        >Delete Log Book</va-button
-      >
+      <va-button :disable="readOnly" color="danger" style="width: 100%" @click="$emit('delete', logbook as Trip)">{{
+        $t('logs.log.delete')
+      }}</va-button>
     </div>
   </template>
 </template>

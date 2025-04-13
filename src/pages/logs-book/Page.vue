@@ -19,17 +19,17 @@
           />
         </div>
         <div v-if="doShowAsCards < 3" class="layout flex flex-col lg:flex-row gap-4 justify-between">
-          <va-input v-model="filter.name" :clearable="true" placeholder="Filter by name..." />
+          <va-input v-model="filter.name" :clearable="true" :placeholder="$t('logs.list.filter.name')" />
           <va-date-input
             v-model="filter.dateRange"
             style="width: 100%"
             :clearable="true"
-            placeholder="Filter by date range..."
+            :placeholder="$t('logs.list.filter.date_range')"
             mode="range"
           />
           <va-select
             v-model="filter.tags"
-            placeholder="Filter by tags..."
+            :placeholder="$t('logs.list.filter.tags')"
             :options="tagsOptions"
             multiple
             text-by="text"
