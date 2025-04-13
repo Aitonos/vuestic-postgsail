@@ -122,10 +122,9 @@
     firstNameErrors.value = formData.firstName ? [] : [t('auth.errors.first_name')]
     lastNameErrors.value = formData.lastName ? [] : [t('auth.errors.last_name')]
     agreedToTermsErrors.value = formData.agreedToTerms ? [] : [t('auth.errors.agreed_to_terms')]
-
-    console.log(formReady.value, formData.email, emailErrors.value.length, validate())
-    //if (!validate()) return
-    if (validate() == false) return
+    let formValid = validate()
+    console.log(formReady.value, formData.email, emailErrors.value.length, formValid)
+    if (!formValid) return
     if (!formReady.value) return
     if (formData.email.indexOf('+') > -1) {
       emailErrors.value = ['invalid email format']

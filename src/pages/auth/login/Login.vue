@@ -87,8 +87,9 @@
   async function onsubmit() {
     emailErrors.value = email.value ? [] : [t('auth.errors.email')]
     passwordErrors.value = password.value ? [] : [t('auth.errors.password')]
-
-    if (!validate()) return
+    let formValid = validate()
+    console.log(formReady.value, email.value, emailErrors.value.length, formValid)
+    if (!formValid) return
     if (!formReady.value) return
     if (email.value.indexOf('+') > -1 && !email.value.indexOf('openplotter.cloud')) {
       emailErrors.value = ['invalid email format']

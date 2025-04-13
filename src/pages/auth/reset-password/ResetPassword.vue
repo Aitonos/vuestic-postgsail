@@ -63,8 +63,9 @@
   })
 
   async function onsubmit() {
-    console.log('reset', validate())
-    if (!validate()) return
+    let formValid = validate()
+    console.log('reset', formValid)
+    if (!formValid) return
     if (!formData.password || !formData.password_confirm) {
       passwordErrors.value = [t('auth.errors.password')]
     } else {

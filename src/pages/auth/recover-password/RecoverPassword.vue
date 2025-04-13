@@ -43,8 +43,9 @@
   const isBusy = ref(false)
 
   async function onsubmit() {
-    console.log('recover', validate())
-    if (!validate()) return
+    let formValid = validate()
+    console.log('recover', formValid)
+    if (!formValid) return
     if (!formData.email) {
       emailErrors.value = email.value ? [] : [t('auth.errors.email')]
     } else {
