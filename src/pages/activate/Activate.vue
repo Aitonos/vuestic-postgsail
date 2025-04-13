@@ -35,8 +35,8 @@
         <div class="flex flex-col gap-2 flex-grow">
           <div class="text-lg font-bold leading-relaxed">Important note</div>
           <div class="text-secondary text-sm leading-tight">
-            PostgSail Cloud is free for personal use with a single vessel. If you encounter any issue validating your
-            account, please contact us at info@openplotter.cloud.
+            PostgSail Cloud is Open Source and free for personal use with a single vessel. If you encounter any issue
+            validating your account, please contact us at info@openplotter.cloud.
           </div>
         </div>
         <a

@@ -52,8 +52,8 @@
         <div class="flex flex-col gap-2 flex-grow">
           <div class="text-lg font-bold leading-relaxed">Important note</div>
           <div class="text-secondary text-sm leading-tight">
-            PostgSail Cloud is free for personal use with a single vessel. If wish to manage multiple boats contact
-            us.<br />
+            PostgSail Cloud is Open Source and free for personal use with a single vessel. If wish to manage multiple
+            boats contact us.<br />
             You can create public or private fleets for your friends, cruising clubs, yacht clubs or flotillas. Please
             contact us at info@openplotter.cloud.
           </div>
