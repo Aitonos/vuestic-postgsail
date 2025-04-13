@@ -1,7 +1,7 @@
 {
   "auth": {
     "demo": "Modo Demo",
-    "agree": "Acepto.",
+    "agree": "Acepto",
     "createAccount": "Crear cuenta",
     "createNewAccount": "Crear cuenta",
     "account_created": "Cuenta creada exitosamente",
@@ -20,7 +20,7 @@
     "otp": "Introduce el código de verificación OTP",
     "otp_validate": "Validar código OTP",
     "otp_validated": "Código OTP validado con éxito",
-    "pushover_message": "Mensaje push ",
+    "pushover_message": "Mensaje push",
     "reset": "Tu clave ha sido resetada con éxito",
     "errors": {
       "credentials": "Credenciales erróneos",
@@ -30,8 +30,8 @@
       "short_pass": "La contraseña es demasiado corta",
       "first_name": "Introduce tu nombre",
       "last_name": "Introduce tus apellidos",
-      "agreed_to_terms": "Debes acpetar los términos de uso para continuar",
-      "expired_session": "Tu sesión ha caducado.",
+      "agreed_to_terms": "Debes aceptar los términos de uso para continuar",
+      "expired_session": "Tu sesión ha caducado",
       "otp": "Hay que introducir el código OTP de validación",
       "otp_invalid": "Código OTP erróneo",
       "reset": "Entrada errónea"
@@ -70,7 +70,7 @@
   },
   "404": {
     "title": "Esta página se fue a navegar.",
-    "text": "Si crees que esto no es correcto, por favor envíanos un mensaje a ",
+    "text": "Si crees que esto no es correcto, por favor envíanos un mensaje a",
     "back_button": "Volver al tablero"
   },
   "language": {
@@ -141,8 +141,8 @@
       "from": "Desde",
       "from_time": "Comienza",
       "tags": "Etiquetas",
-      "to": "A",
-      "to_time": "Hasta"
+      "to": "hasta",
+      "to_time": "Acaba"
     },
     "details": {
       "title": "Cuaderno de bitácora"
@@ -271,9 +271,9 @@
     "country": "País visitado",
     "top_logs_by_distance": "Registros de bitácora por distancia",
     "top_logs_by_duration": "Registros de bitácora por duración",
-    "underway": "Underway",
-    "away": "Away",
-    "home": "Home"
+    "underway": "Navegando",
+    "away": "Fuera",
+    "home": "Casa"
   },
   "boats": {
     "list": {
@@ -392,22 +392,22 @@
       "public_windy": "https://www.windy.com/station/pws-{0}"
     },
     "monitoring": {
-      "depthKey": "Depth Source",
-      "waterTemperatureKey": "Water Temperature Source",
-      "windSpeedKey": "Wind Speed Source",
-      "windDirectionKey": "Wind Direction Source",
-      "insidePressureKey": "Inside Barometer Source",
-      "outsidePressureKey": "Outside Barometer Source",
-      "insideTemperatureKey": "Inside Temperature Source",
-      "outsideTemperatureKey": "Outside Temperature Source",
-      "insideHumidityKey": "Inside Humidity Source",
-      "outsideHumidityKey": "Outside Humidity Source",
-      "stateOfChargeKey": "Battery Charge Source",
-      "voltageKey": "Battery Voltage Source",
-      "solarVoltageKey": "Solar Voltage Source",
-      "solarPowerKey": "Solar Power Source",
-      "tankLevelKey": "Tank Level Source",
-      "message": "You can monitor all data available on your boat network using PostgSail. Monitoring data sources can be organized into sections based on shared characteristics, such as measurement units. For instance, a 'Tanks' section could group together data sources for Freshwater, Wastewater, and Fuel, providing a structured and intuitive overview. You can add as many sections as you would like."
+      "depthKey": "Fuente de profundidad",
+      "waterTemperatureKey": "Fuente de temperatura del agua",
+      "windSpeedKey": "Fuente de velocidad del viento",
+      "windDirectionKey": "Fuente de la dirección del viento",
+      "insidePressureKey": "Fuente del barometro de interior",
+      "outsidePressureKey": "Fuente del barometro de exterior",
+      "insideTemperatureKey": "Fuente de la temperatura interior",
+      "outsideTemperatureKey": "Fuente de la temperatura interior",
+      "insideHumidityKey": "Fuente del grado de humedad interior",
+      "outsideHumidityKey": "Fuente del grado de humedad exterior",
+      "stateOfChargeKey": "Fuente del estado de carga de la batería",
+      "voltageKey": "Fuente del voltaje de la batería",
+      "solarVoltageKey": "Fuente del voltaje solar",
+      "solarPowerKey": "Fuente de la energía solar",
+      "tankLevelKey": "Fuente del nivel de depósito",
+      "message": "USando Postgsail, puedes monitorear todos los datos disponibles en la red de tu barco. Las fuentes de datos de monitorización pueden ser organizadas en secciones basadas en caracteristicas compartidas, tales como unidades de medida. Por ejemplo, una seccion llamada "Depósitos" podría agrupar fuentes de datos para agua dulce, aguas negras y combustible, aportando una estructura visual e intuitiva. Puedes crear tantas secciones como quieras."
     }
   },
   "faq": {
@@ -522,7 +522,7 @@
     "end": "Finalizar viaje",
     "basemap": "Mapa base",
     "boattype": "Mostrar barco como",
-    "trackcolor": "Color de pista",
+    "trackcolor": "Color de la ruta",
     "overlay": "Superposiciones de amarre",
     "instruments": "Mostrar instrumentos",
     "zoom": "Nivel de zoom",
@@ -552,7 +552,7 @@
     "goSlide": "Ir a la diapositiva {index}",
     "slideOf": "Diapositiva {index} de {length}",
     "close": "Cerrar",
-    "openColorPicker": "Abrir selector de color",
+    "openColorPicker": "Abrir el selector de color",
     "colorSelection": "Selección de color",
     "colorName": "Color {color}",
     "decreaseCounter": "Disminuir contador",
