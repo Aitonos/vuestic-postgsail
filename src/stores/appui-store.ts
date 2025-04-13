@@ -9,6 +9,7 @@ const defaultState = {
   isMobile: false,
   doShowAsCards: 1,
   currentTheme: 'light',
+  language: 'gb',
   timelapse: {
     map_type: null,
     boat_type: null,

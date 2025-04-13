@@ -14,6 +14,7 @@ const defaultState = {
   isSidebarMinimized: false,
   isMobile: false,
   doShowAsCards: 1,
+  language: 'gb',
   currentTheme: 'light',
   token: '',
   // de-duplication to reduce syncing requirements; now in getters:
@@ -114,7 +115,7 @@ export const useGlobalStore = defineStore('global', {
       localStorage,
       { mergeDefaults: true },
       //{ mergeDefaults: (storageValue, defaults) => deepMerge(defaultState, storageValue) }
-    ),
+    ).value,
   actions: {
     login(token: string, keepLoggedIn: boolean) {
       this.token = token

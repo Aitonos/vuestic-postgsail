@@ -24,8 +24,20 @@
 
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
+  import { watch } from 'vue'
+  import { storeToRefs } from 'pinia'
+  import { useGlobalStore } from '../../../../stores/global-store'
 
   const { t, locale } = useI18n()
+  const GlobalStore = useGlobalStore()
+  const { language } = storeToRefs(GlobalStore)
+  locale.value = language.value
+  watch(locale, () => {
+    console.log('language ref changed!')
+    console.log('language:', locale.value)
+    GlobalStore.$state.language = locale.value
+    language.value = locale.value
+  })
 
   withDefaults(
     defineProps<{
