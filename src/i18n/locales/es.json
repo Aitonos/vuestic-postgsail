@@ -530,6 +530,10 @@
     "retraso": "Retraso inicial",
     "exportar": "Exportar"
   },
+  "timeline": {
+    "timeline": "Línea de tiempo",
+    "last": "Los últimos 500 eventos"
+  },
   "vuestic": {
     "search": "Buscar",
     "noOptions": "No se encontraron elementos",

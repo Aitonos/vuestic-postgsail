@@ -529,6 +529,10 @@
     "delay": "Délai initial",
     "export": "Exporter"
   },
+  "timeline": {
+    "timeline": "Chronologie",
+    "last": "Les 500 derniers événements"
+  },
   "vuestic": {
     "search": "Search",
     "noOptions": "Items not found",

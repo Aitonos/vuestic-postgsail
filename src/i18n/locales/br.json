@@ -530,6 +530,10 @@
     "atraso": "Atraso inicial",
     "exportar": "Exportar"
   },
+  "timeline": {
+    "timeline": "Timeline",
+    "last": "The last 500 events"
+  },
   "vuestic": {
     "search": "Pesquisar",
     "noOptions": "Itens não encontrados",

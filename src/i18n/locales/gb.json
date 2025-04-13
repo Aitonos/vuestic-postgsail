@@ -538,6 +538,10 @@
     "delay": "Initial Delay",
     "export": "Export"
   },
+  "timeline": {
+    "timeline": "Timeline",
+    "last": "The last 500 events"
+  },
   "vuestic": {
     "search": "Search",
     "noOptions": "Items not found",
