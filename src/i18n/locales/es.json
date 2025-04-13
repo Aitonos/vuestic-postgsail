@@ -132,10 +132,13 @@
     "list": {
       "title": "Bitácora - buscar por",
       "filter": {
-        "title": "Título",
-        "name": "Nombre",
-        "date_range": "Rango de fechas",
-        "reset": "Resetear"
+        "title": "Search for log",
+        "name": "Filter by name...",
+        "date_range": "Filter by date range...",
+        "tags": "Filter by tags...",
+        "reset": "Reset",
+        "start_date": "Start date",
+        "end_date": "End date"
       },
       "action": "Acción",
       "from": "Desde",
@@ -172,7 +175,9 @@
       "visibility": "Visibilidad",
       "metadata": "Metadatos",
       "observations": "Observaciones",
-      "share": "Compartir"
+      "share": "Compartir",
+      "tags": "Tags",
+      "delete": "Delete Log Book"
     }
   },
   "stays": {

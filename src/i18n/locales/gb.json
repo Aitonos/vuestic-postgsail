@@ -137,8 +137,9 @@
       "title": "Logs - Log Book for",
       "filter": {
         "title": "Search for log",
-        "name": "Name",
-        "date_range": "Date range",
+        "name": "Filter by name...",
+        "date_range": "Filter by date range...",
+        "tags": "Filter by tags...",
         "reset": "Reset",
         "start_date": "Start date",
         "end_date": "End date"
@@ -171,14 +172,16 @@
       "note": "Note | Notes",
       "remarks": "Tell what happened",
       "export": "Export",
-      "avg_max_speed": "Average / Max Speed",
-      "max_wind_speed": "Max Wind Speed",
+      "avg_max_speed": "SPEED AVG / MAX",
+      "max_wind_speed": "WIND AVG / MAX",
       "sea_state": "Sea state",
       "cloud_coverage": "Cloud coverage",
       "visibility": "Visibility",
       "metadata": "Metadata",
       "observations": "Observations",
-      "share": "Share"
+      "share": "Share",
+      "tags": "Tags",
+      "delete": "Delete Log Book"
     }
   },
   "stays": {

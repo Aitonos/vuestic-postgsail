@@ -31,7 +31,7 @@
       "first_name": "Le prénom est requis",
       "last_name": "Le nom de famille est requis",
       "agreed_to_terms": "Vous devez être le terme d'utilisation pour continuer",
-      "expired_session": "Votre session que vous avez expirée.",
+      "expired_session": "Votre session a expirée.",
       "otp": "validation code is required",
       "otp_invalid": "We can't find your code",
       "reset": "Invalid input"
@@ -133,9 +133,12 @@
       "title": "Logs - Log Book for",
       "filter": {
         "title": "Search for log",
-        "name": "Name",
-        "date_range": "Date range",
-        "reset": "Reset"
+        "name": "Filter by name...",
+        "date_range": "Filter by date range...",
+        "tags": "Filter by tags...",
+        "reset": "Reset",
+        "start_date": "Start date",
+        "end_date": "End date"
       },
       "action": "Action",
       "from": "From",
@@ -150,10 +153,10 @@
     "log": {
       "name": "Nom | Noms",
       "boat": "Navire | Navires",
-      "from": "Departed",
-      "from_time": "Departed at",
-      "to": "Arrived",
-      "to_time": "Arrived at",
+      "from": "Depart",
+      "from_time": "Depart à",
+      "to": "Arrivée",
+      "to_time": "Arrivée à",
       "duration": "Durée",
       "distance": "Distance",
       "duration_h": "Durée [h]",
@@ -165,14 +168,16 @@
       "note": "Note | Notes",
       "remarks": "Raconte ce qui s'est passé",
       "export": "Export",
-      "avg_max_speed": "Average / Max Speed",
-      "max_wind_speed": "Vitesse maximale du vent",
+      "avg_max_speed": "SPEED AVG / MAX",
+      "max_wind_speed": "WIND AVG / MAX",
       "sea_state": "État de la mer",
       "cloud_coverage": "Couverture nuageuse",
       "visibility": "Visibilité",
       "metadata": "Métadonnées",
       "observations": "Observations",
-      "share": "Partager"
+      "share": "Partager",
+      "tags": "Tags",
+      "delete": "Delete Log Book"
     }
   },
   "stays": {
