@@ -4,7 +4,7 @@
   </template>
   <template v-else>
     <va-card class="col-span-12 lg:col-span-6 sm:col-span-12 p-2 mb-3">
-      <va-card-title>Statistics for {{ stats_logs.name }} </va-card-title>
+      <va-card-title>{{ $t('stats.stats') }} {{ stats_logs.name }} </va-card-title>
       <va-card-content>
         <template v-if="apiError">
           <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
@@ -12,13 +12,13 @@
         <va-inner-loading :loading="isBusy">
           <template v-if="stats_logs && stats_logs.count">
             <div class="gap-4 mb-4">
-              <div class="mb-2">Date Range:</div>
+              <div class="mb-2">{{ $t('stats.date_range') }}:</div>
               <div class="w-64">
                 <va-date-input v-model="dateRange" mode="range" @update:modelValue="updateDateRange" />
               </div>
             </div>
             <div>
-              <div class="mb-2">Badges Awarded:</div>
+              <div class="mb-2">{{ $t('stats.badges') }}:</div>
               <div class="badges-stats">
                 <div v-for="(item, key) in userBadges" :key="key">
                   <div v-if="!item.disabled">
@@ -197,43 +197,43 @@
       <top-by
         v-if="logsTopByDistance.length > 0"
         :items="logsTopByDistance"
-        title="Top Logs by Distance"
+        :title="t('stats.top_logs_by_distance')"
         columnvalue="distance"
       />
       <top-by
         v-if="logsTopByDuration.length > 0"
         :items="logsTopByDuration"
-        title="Top Logs by Duration"
+        :title="t('stats.top_logs_by_duration')"
         columnvalue="duration"
       />
       <top-by
         v-if="logsTopByAvgSpeed.length > 0"
         :items="logsTopByAvgSpeed"
-        title="Top Logs by Average Speed"
+        :title="t('stats.top_logs_by_avg_speed')"
         columnvalue="avg_speed"
       />
       <top-by
         v-if="logsTopByMaxSpeed.length > 0"
         :items="logsTopByMaxSpeed"
-        title="Top Logs by Max Speed"
+        :title="t('stats.top_logs_by_max_speed')"
         columnvalue="max_speed"
       />
       <top-by
         v-if="logsTopByWindSpeed.length > 0"
         :items="logsTopByWindSpeed"
-        title="Top Logs by Max Wind Speed"
+        :title="t('stats.top_logs_by_wind_speed')"
         columnvalue="wind_speed"
       />
       <top-moorages-by
         v-if="mooragesTopByDuration.length > 0"
         :items="mooragesTopByDuration"
-        title="Top Moorages by Stay Duration"
+        :title="t('stats.top_moorages_by_duration')"
         columnvalue="duration"
       />
       <top-moorages-by
         v-if="mooragesTopByArrivals.length > 0"
         :items="mooragesTopByArrivals"
-        title="Top Moorages by Arrivals"
+        :title="t('stats.top_moorages_by_arrivals')"
         columnvalue="arrivals"
       />
     </div>

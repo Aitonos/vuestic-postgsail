@@ -7,14 +7,19 @@
           <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
         </template>
         <div class="layout flex flex-col lg:flex-row gap-4 justify-between">
-          <va-input v-model="filter.name" :clearable="true" placeholder="Filter by name..." />
+          <va-input v-model="filter.name" :clearable="true" :placeholder="$t('stays.list.filter.name')" />
           <va-date-input
             v-model="filter.dateRange"
             :clearable="true"
-            placeholder="Filter by date range..."
+            :placeholder="$t('stays.list.filter.date_range')"
             mode="range"
           />
-          <va-select v-model="filter.stayed_at" placeholder="Filter by stay type..." :options="options" multiple>
+          <va-select
+            v-model="filter.stayed_at"
+            :placeholder="$t('stays.list.filter.stay_type')"
+            :options="options"
+            multiple
+          >
             <template #content="{ value }">
               <va-chip
                 v-for="chip in value"

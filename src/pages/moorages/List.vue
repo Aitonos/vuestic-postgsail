@@ -11,10 +11,10 @@
             <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
           </template>
           <div class="layout flex flex-col lg:flex-row gap-4 justify-between">
-            <va-input v-model="filter.name" :clearable="true" placeholder="Filter by name..." />
+            <va-input v-model="filter.name" :clearable="true" :placeholder="$t('moorages.list.filter.name')" />
             <va-select
               v-model="filter.default_stay"
-              placeholder="Filter by default stay type..."
+              :placeholder="$t('moorages.list.filter.stay_type')"
               :options="options"
               multiple
               text-by="text"
