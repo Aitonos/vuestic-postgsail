@@ -93,7 +93,7 @@
     { key: 'status', label: t('boats.boat.status'), sortable: true },
     { key: 'lastContact', label: t('boats.boat.last_contact'), sortable: true },
     { key: 'createdAt', label: t('boats.boat.created_at'), sortable: true },
-    { key: 'actions', label: '' },
+    { key: 'actions', label: t('boats.list.actions') },
   ])
   const items = computed(() => {
     return Array.isArray(rowsData.value)

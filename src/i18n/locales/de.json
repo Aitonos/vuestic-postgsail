@@ -189,8 +189,9 @@
       "title": "Liste der Aufenthalte",
       "filter": {
         "title": "Nach Aufenthalt suchen",
-        "name": "Name",
-        "date_range": "Datumsbereich",
+        "name": "Filter by name...",
+        "date_range": "Filter by date range...",
+        "stay_type": "Filter by stay type...",
         "reset": "Zurücksetzen"
       }
     },
@@ -222,8 +223,8 @@
       "title": "Liste der Anlegestellen",
       "filter": {
         "title": "Nach Anlegestelle suchen",
-        "name": "Name",
-        "date_range": "Datumsbereich",
+        "name": "Filter by name...",
+        "stay_type": "Filter by stay type...",
         "reset": "Zurücksetzen"
       },
       "moorage": "Anlegestelle",
@@ -243,11 +244,14 @@
       "visits": "Number of Visits",
       "first_seen": "Moorage first seen",
       "last_seen": "Moorage last seen",
-      "note": "Notizen"
+      "note": "Notizen",
+      "delete": "Delete moorage"
     }
   },
   "stats": {
-    "stats": "Statistiken",
+    "stats": "Statistiken for",
+    "date_range": "Date Range",
+    "badges": "Badges Awarded",
     "logs": "Protokollstatistiken",
     "moorages": "Anlegestellenstatistiken",
     "name": "Boot",
@@ -267,18 +271,24 @@
     "sum_duration": "Total Time Underway",
     "home_ports": "Home Ports",
     "unique_moorages": "Unique Moorages",
-    "time_spent_at_home_port(s)": "Time spent at home port(s)",
+    "time_at_home_ports": "Time spent at home port(s)",
     "time_spent_away": "Time spent away",
     "country": "Country visited",
-    "top_logs_by_distance": "Top Logs By Distance",
-    "top_logs_by_duration": "Top Logs By Duration",
+    "top_logs_by_distance": "Top Logs by Distance",
+    "top_logs_by_duration": "Top Logs by Duration",
+    "top_logs_by_avg_speed": "Top Logs by Average Speed",
+    "top_logs_by_max_speed": "Top Logs by Max Speed",
+    "top_logs_by_wind_speed": "Top Logs by Max Wind Speed",
+    "top_moorages_by_duration": "Top Moorages by Stay Duration",
+    "top_moorages_by_arrivals": "Top Moorages by Arrivals",
     "underway": "Underway",
     "away": "Away",
     "home": "Home"
   },
   "boats": {
     "list": {
-      "title": "Liste der Boote"
+      "title": "Liste der Boote",
+      "actions": "Actions"
     },
     "details": {
       "title": "Details des Bootes"

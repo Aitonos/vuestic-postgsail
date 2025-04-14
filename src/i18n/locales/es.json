@@ -185,8 +185,9 @@
       "title": "Estancias - Historial de estancias",
       "filter": {
         "title": "Búsqueda de estancia",
-        "name": "Nombre",
-        "date_range": "Rango de fechas",
+        "name": "Filter by name...",
+        "date_range": "Filter by date range...",
+        "stay_type": "Filter by stay type...",
         "reset": "Resetear"
       }
     },
@@ -219,8 +220,8 @@
       "title": "Amarres de",
       "filter": {
         "title": "Título",
-        "name": "Nombre",
-        "date_range": "Rango de fechas",
+        "name": "Filter by name...",
+        "stay_type": "Filter by stay type...",
         "reset": "Resetear"
       },
       "moorage": "Fondeadero",
@@ -247,11 +248,14 @@
       "visits": "Número de visitas",
       "first_seen": "Pimer registro",
       "last_seen": "Último registro",
-      "note": "Notas"
+      "note": "Notas",
+      "delete": "Delete moorage"
     }
   },
   "stats": {
-    "stats": "Estadísticas",
+    "stats": "Estadísticas de",
+    "date_range": "Date Range",
+    "badges": "Badges Awarded",
     "logs": "Estadísticas de bitácora",
     "moorages": "Estadísticas de fondeaderos",
     "name": "Barco",
@@ -279,10 +283,12 @@
     "underway": "En navegación",
     "away": "Fuera de puert base",
     "home": "Puerto base"
+
   },
   "boats": {
     "list": {
-      "title": "Barcos"
+      "title": "Barcos",
+      "actions": "Accións"
     },
     "details": {
       "title": "Barco"
@@ -304,7 +310,7 @@
       "length": "Eslora",
       "country": "Pabellón",
       "ship_type": "Tipo de barco",
-      "status": "Status",
+      "status": "Estatuto",
       "plugin_version": "Versión de Plugin",
       "signalk_version": "Versión Signalk",
       "signalk": "Estos datos se extraen del 'Vessel DataBase' de SignalK",
