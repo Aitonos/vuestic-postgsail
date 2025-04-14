@@ -176,7 +176,7 @@
       "metadata": "Metadatos",
       "observations": "Observaciones",
       "share": "Compartir",
-      "tags": "Tags",
+      "tags": "Etiquetas",
       "delete": "Delete Log Book"
     }
   },
@@ -185,8 +185,9 @@
       "title": "Estancias - Historial de estancias",
       "filter": {
         "title": "Búsqueda de estancia",
-        "name": "Nombre",
-        "date_range": "Rango de fechas",
+        "name": "Filter by name...",
+        "date_range": "Filter by date range...",
+        "stay_type": "Filter by stay type...",
         "reset": "Resetear"
       }
     },
@@ -219,8 +220,8 @@
       "title": "Amarres de",
       "filter": {
         "title": "Título",
-        "name": "Nombre",
-        "date_range": "Rango de fechas",
+        "name": "Filter by name...",
+        "stay_type": "Filter by stay type...",
         "reset": "Resetear"
       },
       "moorage": "Amarre",
@@ -247,11 +248,14 @@
       "visits": "Número de visitas",
       "first_seen": "Pimer registro",
       "last_seen": "Último registro",
-      "note": "Notas"
+      "note": "Notas",
+      "delete": "Delete moorage"
     }
   },
   "stats": {
-    "stats": "Estadísticas",
+    "stats": "Estadísticas de",
+    "date_range": "Date Range",
+    "badges": "Badges Awarded",
     "logs": "Estadísticas de bitácora",
     "moorages": "Estadísticas de amarres",
     "name": "Barco",
@@ -271,18 +275,24 @@
     "sum_duration": "Tiempo total en navegación",
     "home_ports": "Puertos casa",
     "unique_moorages": "Amarres únicos",
-    "time_spent_at_home_port(s)": "Tiempo en puerto",
+    "time_at_home_ports": "Tiempo en puerto",
     "time_spent_away": "Tiempo fuera de puerto",
     "country": "País visitado",
     "top_logs_by_distance": "Registros de bitácora por distancia",
     "top_logs_by_duration": "Registros de bitácora por duración",
+    "top_logs_by_avg_speed": "Top Logs by Average Speed",
+    "top_logs_by_max_speed": "Top Logs by Max Speed",
+    "top_logs_by_wind_speed": "Top Logs by Max Wind Speed",
+    "top_moorages_by_duration": "Top Moorages by Stay Duration",
+    "top_moorages_by_arrivals": "Top Moorages by Arrivals",
     "underway": "Underway",
     "away": "Away",
     "home": "Home"
   },
   "boats": {
     "list": {
-      "title": "Barcos"
+      "title": "Barcos",
+      "actions": "Accións"
     },
     "details": {
       "title": "Barco"
@@ -304,7 +314,7 @@
       "length": "Eslora",
       "country": "Pabellón",
       "ship_type": "Tipo de barco",
-      "status": "Status",
+      "status": "Estatuto",
       "plugin_version": "Versión de Plugin",
       "signalk_version": "Versión Signalk",
       "signalk": "Estos datos se extraen del 'Vessel DataBase' de SignalK",

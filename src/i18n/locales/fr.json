@@ -185,8 +185,9 @@
       "title": "Stays - Moorage History of",
       "filter": {
         "title": "Search for stay",
-        "name": "Name",
-        "date_range": "Date range",
+        "name": "Filter by name...",
+        "date_range": "Filter by date range...",
+        "stay_type": "Filter by stay type...",
         "reset": "Reset"
       }
     },
@@ -219,8 +220,8 @@
       "title": "Amarrages de",
       "filter": {
         "title": "Search for moorage",
-        "name": "Nom | Noms",
-        "date_range": "Date range",
+        "name": "Filter by name...",
+        "stay_type": "Filter by stay type...",
         "reset": "Reset"
       },
       "moorage": "Amarrage",
@@ -246,11 +247,14 @@
       "visits": "Number of Visits",
       "first_seen": "Moorage first seen",
       "last_seen": "Moorage last seen",
-      "note": "Notes"
+      "note": "Notes",
+      "delete": "Delete moorage"
     }
   },
   "stats": {
-    "stats": "Statistiques",
+    "stats": "Statistiques pour",
+    "date_range": "Date Range",
+    "badges": "Badges Awarded",
     "logs": "Logs Statistics",
     "moorages": "Moorages Statistics",
     "name": "Boat",
@@ -259,7 +263,7 @@
     "unclassified": "Unclassified",
     "anchor": "Ancre",
     "buoy": "Bouée",
-    "dock": "Dock",
+    "dock": "Port",
     "count": "Nombre d'entrées",
     "first_date": "First entry",
     "last_date": "Last entry",
@@ -270,18 +274,24 @@
     "sum_duration": "Temps total en navigation",
     "home_ports": "Home Ports",
     "unique_moorages": "Unique Moorages",
-    "time_spent_at_home_port(s)": "Time spent at home port(s)",
+    "time_at_home_ports": "Time spent at home port(s)",
     "time_spent_away": "Time spent away",
     "country": "Pays visité",
-    "top_logs_by_distance": "Top Logs By Distance",
-    "top_logs_by_duration": "Top Logs By Duration",
+    "top_logs_by_distance": "Top Logs by Distance",
+    "top_logs_by_duration": "Top Logs by Duration",
+    "top_logs_by_avg_speed": "Top Logs by Average Speed",
+    "top_logs_by_max_speed": "Top Logs by Max Speed",
+    "top_logs_by_wind_speed": "Top Logs by Max Wind Speed",
+    "top_moorages_by_duration": "Top Moorages by Stay Duration",
+    "top_moorages_by_arrivals": "Top Moorages by Arrivals",
     "underway": "Underway",
     "away": "Away",
     "home": "Home"
   },
   "boats": {
     "list": {
-      "title": "Boats"
+      "title": "Boats",
+      "actions": "Actions"
     },
     "details": {
       "title": "Boat"
