@@ -140,7 +140,7 @@
                 color="secondary"
                 @click="$emit('replay', log)"
               >
-                Replay
+                {{ t('logs.list.replay') }}
               </va-button>
               <va-button
                 class="grid grid-cols-1"
@@ -150,7 +150,7 @@
                 color="secondary"
                 @click="$emit('edit', log)"
               >
-                Edit
+                {{ t('logs.list.edit') }}
               </va-button>
               <va-button
                 class="grid grid-cols-1"
@@ -160,7 +160,7 @@
                 color="secondary"
                 @click="$emit('delete', log)"
               >
-                Delete
+                {{ t('logs.list.delete') }}
               </va-button>
             </va-dropdown-content>
           </va-dropdown>
