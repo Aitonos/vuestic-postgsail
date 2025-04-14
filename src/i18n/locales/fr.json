@@ -145,7 +145,10 @@
       "from_time": "Started",
       "tags": "Tags",
       "to": "To",
-      "to_time": "Ended"
+      "to_time": "Ended",
+      "edit": "Editer",
+      "replay": "Replay",
+      "delete": "Supprimer"
     },
     "details": {
       "title": "Log Book"

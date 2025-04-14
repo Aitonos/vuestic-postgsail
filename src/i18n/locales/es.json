@@ -145,7 +145,10 @@
       "from_time": "Comienza",
       "tags": "Etiquetas",
       "to": "A",
-      "to_time": "Hasta"
+      "to_time": "Hasta",
+      "edit": "Editar",
+      "replay": "Replay",
+      "delete": "Delete"
     },
     "details": {
       "title": "Cuaderno de bitácora"
