@@ -54,8 +54,8 @@
       position: 'top',
     },
     grid: {
-      height: '50%',
-      top: '10%',
+      //height: '80%',
+      //top: '10%',
     },
     xAxis: {
       type: 'category',
