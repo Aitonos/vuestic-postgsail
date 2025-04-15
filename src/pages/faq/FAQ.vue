@@ -45,6 +45,10 @@
               Your information stays private unless you explicitly decide to make it available publicly. If you choose
               to do so, your friends and others can access your logs, monitoring, statistics and timelapse.
             </p>
+            <p>
+              PostgSail is hosted in a European sovereign cloud and is fully compliant with GDPR and is not impacted by
+              U.S. CLOUD Act law. You own your data.
+            </p>
             <br />
           </va-collapse>
           <va-collapse header="Timelapse">
@@ -85,6 +89,20 @@
               your signalk path.
             </div>
           </va-collapse>
+          <va-collapse header="No metrics, why?">
+            <div class="pa-3">
+              <p>
+                Postgsail ignore all metrics that does not provide valid GPS coordinates.<br />
+                Make sure your GPS device is connected to your OpenPlotter and that the GPS data is being sent to the
+                SignalK server.<br />
+                Postgsail ignore all metrics where the time is in the future. Make sure your time is sync with GPS or an
+                NTP server.<br />
+                Postgsail ignore all metrics that are in the past of the last entry.<br />
+                Postgsail ignore all metrics with an invalid status.<br />
+                Postgsail ignore all metrics where the SOG is over 40 knots.
+              </p>
+            </div>
+          </va-collapse>
           <va-collapse header="Energy">
             <div class="pa-3">
               <p>
@@ -96,7 +114,11 @@
                 - tanks.*.currentLevel.*<br />
                 Check the
                 <router-link class="va-text-bold va-link link" :to="{ name: 'explore' }">explore page</router-link> to
-                see your signalk path.
+                see your signalk path.<br />
+                You can setup the monitoring path you want to use for the energy widget in the
+                <router-link class="va-text-bold va-link link" :to="{ name: 'boat-profile' }"
+                  >boat correlation page</router-link
+                >.
               </p>
             </div>
           </va-collapse>
@@ -126,8 +148,12 @@
                   class="va-text-bold va-link link"
                   >https://signalk.org/specification/1.7.0/doc/vesselsBranch.html<va-icon
                     name="fa-external-link"
-                    size="small"
-                /></a>
+                    size="small" /></a
+                ><br />
+                You can setup the monitoring path you want to see in the
+                <router-link class="va-text-bold va-link link" :to="{ name: 'boat-profile' }"
+                  >boat correlation page</router-link
+                >.
               </p>
             </div>
           </va-collapse>
