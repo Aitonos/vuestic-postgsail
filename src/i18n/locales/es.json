@@ -93,7 +93,7 @@
       "verticalBarChart": "Número de registros por mes",
       "mixedChart": "Número de registros por mes y año",
       "lineChart": "Número de registros por año",
-      "HeatmapChart": "Mapa de calor"
+      "HeatmapChart": "Mapa de calor por mes y dia"
     },
     "panel": {
       "battery": "Batería",
