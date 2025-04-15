@@ -545,8 +545,8 @@
     "instruments": "Mostrar instrumentos",
     "zoom": "Nivel de zoom",
     "anim": "Velocidad de animación",
-    "retraso": "Retraso inicial",
-    "exportar": "Exportar"
+    "delay": "Retraso inicial",
+    "export": "Exportar"
   },
   "timeline": {
     "timeline": "Línea de tiempo",
