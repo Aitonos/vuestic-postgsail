@@ -212,7 +212,7 @@
                 <dt></dt>
                 <dl style="min-width: 100%">
                   <div style="min-width: 100%">
-                    <va-button style="min-width: 100%" :to="timelapse_link">Replay ▶</va-button>
+                    <va-button style="min-width: 100%" :to="timelapse_link">{{ $t('logs.list.replay') }} ▶</va-button>
                   </div>
                 </dl>
               </dl>
