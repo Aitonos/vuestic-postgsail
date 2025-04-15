@@ -24,6 +24,14 @@
               }}</RouterLink>
               at {{ item.processed }}
             </template>
+            <template v-else-if="item.channel === 'new_moorage'">
+              <RouterLink
+                class="va-link link font-semibold"
+                :to="{ name: 'moorage-details', params: { id: item.payload } }"
+                >{{ item.message }}</RouterLink
+              >
+              at {{ item.processed }}
+            </template>
             <template v-else-if="item.channel === 'maplapse_video'">
               <a :href="'/maplapse' + item.replay" target="_blank">
                 <span class="va-link link font-semibold">{{ item.message }}</span>
@@ -71,6 +79,7 @@
     monitoring_offline: 'Monitoring offline',
     monitoring_online: 'Monitoring online',
     new_logbook: 'New logbook',
+    new_moorage: 'New moorage',
     maplapse_video: 'Replay video',
     new_video: 'New video',
   })
