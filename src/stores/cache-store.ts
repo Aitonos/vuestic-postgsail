@@ -1,5 +1,6 @@
 import type { JSObj, Callback_1Param, JSONObject } from '../data/types'
 import defineAPIStore from './defineAPIStore'
+import moment from 'moment'
 
 const assertions: JSObj = {
   notArray: [
@@ -103,37 +104,40 @@ export const useCacheStore = defineAPIStore('cache', {
       this.lines = obj
       return obj
     },
-    matrixChartbyMonthDay(): number[][] {
-      const obj: Record<number, Record<number, number>> = {}
-
-      // Initialize structure: 12 months x 7 weekdays
-      for (let month = 0; month < 12; month++) {
-        obj[month] = {}
-        for (let day = 0; day < 7; day++) {
-          obj[month][day] = 0
+    matrixChartbyMonthDay(): Array<string> {
+      const obj: { [key: string]: any } = []
+      // Create a 12 months array per 7 days array zero fill
+      const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      const weekdays = [0, 1, 2, 3, 4, 5, 6]
+      for (const [key, value] of Object.entries(months)) {
+        //console.log(key, value)
+        obj[value] = {}
+        for (const [subkey, subvalue] of Object.entries(weekdays)) {
+          //console.log(key, value, subkey, subvalue)
+          obj[value][subvalue] = 0
         }
       }
-
-      // Count logs by month and weekday
+      // Sum the days
       this.logs.forEach(({ started }: { started: string }) => {
         const date = new Date(started)
         const month = date.getMonth() // 0–11
         const weekday = date.getDay() // 0–6, Sunday = 0
-        //console.log(started.toString(), 'month', month, 'weekday', weekday)
         obj[month][weekday] += 1
       })
-
-      // Format output for ECharts heatmap: [month, weekday, value]
-      const heatmapData: number[][] = []
-
-      for (let month = 0; month < 12; month++) {
-        for (let day = 0; day < 7; day++) {
-          heatmapData.push([month, day, obj[month][day]])
+      // Create the matrix array of json
+      // [ { x: 'January', y: 'Sunday', v: 0 }, ..., { x: 'December', y: 'Saturday', v: 0 } ]
+      // [ { x: '0', y: '0', v: 0 }, ..., { x: '12', y: '6', v: 0 } ]
+      const z: any[] = []
+      for (const [key, value] of Object.entries(months)) {
+        //console.log(key, value)
+        for (const [subkey, subvalue] of Object.entries(weekdays)) {
+          //console.log(key, value, subkey, subvalue, obj[value][subvalue])
+          z.push({ x: value, y: subvalue, v: obj[value][subvalue] })
         }
       }
-
-      console.log('CacheStore matrixChartbyMonthDay obj', heatmapData)
-      return heatmapData
+      console.log('CacheStore matrixChartbyMonthDay obj', obj)
+      this.matrix = z
+      return z
     } /*
     pieChartLogs(): JSONObject {
       const obj = {
