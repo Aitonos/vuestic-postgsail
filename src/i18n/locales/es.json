@@ -144,8 +144,11 @@
       "from": "De",
       "from_time": "Desde",
       "tags": "Etiquetas",
-      "to": "Hasta",
-      "to_time": "Acaba"
+      "to": "A",
+      "to_time": "Hasta",
+      "edit": "Editar",
+      "replay": "Replay",
+      "delete": "Delete"
     },
     "details": {
       "title": "Cuaderno de bitácora"
