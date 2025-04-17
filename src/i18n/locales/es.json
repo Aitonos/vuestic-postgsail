@@ -30,7 +30,7 @@
       "short_pass": "La contraseña es demasiado corta",
       "first_name": "Introduce tu nombre",
       "last_name": "Introduce tus apellidos",
-      "agreed_to_terms": Para continuar, debes antes aceptar los términos de uso",
+      "agreed_to_terms": "Para continuar, debes antes aceptar los términos de uso",
       "expired_session": "Tu sesión ha caducado",
       "otp": "Introduce el código OTP de validación",
       "otp_invalid": "Código OTP erróneo",
