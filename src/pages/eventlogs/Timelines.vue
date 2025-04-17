@@ -9,16 +9,23 @@
       <table class="mt-4 va-table va-table--hoverable va-table--striped">
         <tbody>
           <VaTimelineItem v-for="(item, key) in items" :key="key" color="danger" active :date="item.fromnow">
-            <template v-if="item.channel === 'new_account' || item.channel === 'new_vessel'">
-              {{ item.message }} at {{ item.processed }}
+            <template v-if="item.channel === 'new_account'">
+              <RouterLink class="va-link link font-semibold" :to="{ name: 'profile' }"> {{ item.message }}</RouterLink>
+              at {{ item.processed }}
             </template>
-            <template v-if="item.channel === 'grafana'">
+            <template v-else-if="item.channel === 'new_vessel'">
+              <RouterLink class="va-link link font-semibold" :to="{ name: 'boats' }">
+                {{ item.message }}
+              </RouterLink>
+              at {{ item.processed }}
+            </template>
+            <template v-else-if="item.channel === 'grafana'">
               <a :href="grafana_url" target="_blank"
                 ><span class="va-link link font-semibold"> {{ item.message }} </span></a
               >
               at {{ item.processed }}
             </template>
-            <template v-if="item.channel === 'new_logbook'">
+            <template v-else-if="item.channel === 'new_logbook'">
               <RouterLink class="va-link link font-semibold" :to="{ name: 'log-map', params: { id: item.payload } }">{{
                 item.message
               }}</RouterLink>
@@ -48,10 +55,7 @@
               <RouterLink class="va-link link font-semibold" to="/monitoring">{{ item.message }}</RouterLink>
               at {{ item.processed }}
             </template>
-            <template v-else>
-              <span class="va-link link font-semibold">{{ item.message }}</span>
-              at {{ item.processed }}
-            </template>
+            <template v-else> {{ item.message }} at {{ item.processed }} </template>
           </VaTimelineItem>
         </tbody>
       </table>
