@@ -1,10 +1,10 @@
 {
   "auth": {
     "demo": "Modo Demo",
-    "agree": "Acepto.",
+    "agree": "Acepto",
     "createAccount": "Crear cuenta",
     "createNewAccount": "Crear cuenta",
-    "account_created": "Cuenta creada exitosamente",
+    "account_created": "Cuenta creada con éxito",
     "email": "E-mail",
     "first_name": "Nombre",
     "last_name": "Apellidos",
@@ -20,21 +20,21 @@
     "otp": "Introduce el código de verificación OTP",
     "otp_validate": "Validar código OTP",
     "otp_validated": "Código OTP validado con éxito",
-    "pushover_message": "Mensaje push ",
+    "pushover_message": "Mensaje push",
     "reset": "Tu clave ha sido resetada con éxito",
     "errors": {
       "credentials": "Credenciales erróneos",
-      "email": "Se requiere correo electrónico",
-      "password": "Se requiere contraseña",
-      "mismatch_pass": "Contraseña no coincidente",
+      "email": "Se requiere un correo electrónico",
+      "password": "Se requiere una contraseña",
+      "mismatch_pass": "Las contraseñas no coinciden",
       "short_pass": "La contraseña es demasiado corta",
       "first_name": "Introduce tu nombre",
       "last_name": "Introduce tus apellidos",
-      "agreed_to_terms": "Debes acpetar los términos de uso para continuar",
-      "expired_session": "Tu sesión ha caducado.",
-      "otp": "Hay que introducir el código OTP de validación",
+      "agreed_to_terms": Para continuar, debes antes aceptar los términos de uso",
+      "expired_session": "Tu sesión ha caducado",
+      "otp": "Introduce el código OTP de validación",
       "otp_invalid": "Código OTP erróneo",
-      "reset": "Entrada errónea"
+      "reset": "Resetear"
     }
   },
   "menu": {
@@ -45,16 +45,16 @@
     "map": "Mapa",
     "boats": "Barcos",
     "stats": "Estadísticas",
-    "timelapse": "Reproducir línea del tiempo",
-    "timelapse_replay": "Repetir",
-    "timelapse_form": "Ajustar linea del tiempo",
+    "timelapse": "Línea del tiempo",
+    "timelapse_replay": "Reproducir",
+    "timelapse_form": "Ajustes de reproducción",
     "grafana": "Grafana",
-    "monitoring": "Monitorizar",
-    "monitoring_realtime": "Tiempo real",
+    "monitoring": "Monitoreo",
+    "monitoring_realtime": "Ahora mismo",
     "explore": "Explorar",
     "privacy": "Privacidad",
     "faq": "FAQ",
-    "badges": "Insignias",
+    "badges": "Medallas",
     "eventlogs": "Cuaderno de bitácora",
     "help": "Ayuda",
     "history": "Historial",
@@ -69,9 +69,9 @@
     "close": "Cerrar"
   },
   "404": {
-    "title": "Esta página se fue a navegar.",
-    "text": "Si crees que esto no es correcto, por favor envíanos un mensaje a ",
-    "back_button": "Volver al tablero"
+    "title": "¡Vaya! Esta página se fue a navegar ;D",
+    "text": "Si crees que hay algún error, por favor envíanos un mensaje a ",
+    "back_button": "Volver al panel de control"
   },
   "language": {
     "english": "Inglés",
@@ -85,7 +85,7 @@
     "logout": "Cerrar sesión"
   },
   "dashboard": {
-    "title": "Panel",
+    "title": "Panel de control",
     "versions": "Versiones",
     "overview": "Vistazo de la bitácora",
     "local_time": "Hora local",
@@ -97,9 +97,9 @@
     },
     "panel": {
       "battery": "Batería",
-      "solar": "Solar",
+      "solar": "Placas Solares",
       "power": "Energía",
-      "tank": "Tanque"
+      "tank": "Depósitos"
     },
     "months": {
       "january": "Enero",
@@ -130,19 +130,19 @@
   },
   "logs": {
     "list": {
-      "title": "Bitácora - buscar por",
+      "title": "Cuaderno de bitácora - buscar de",
       "filter": {
         "title": "Search for log",
-        "name": "Filter by name...",
-        "date_range": "Filter by date range...",
+        "name": "Filtrar by name...",
+        "date_range": "Filtrar by date range...",
         "tags": "Filter by tags...",
         "reset": "Reset",
         "start_date": "Start date",
         "end_date": "End date"
       },
       "action": "Acción",
-      "from": "Desde",
-      "from_time": "Comienza",
+      "from": "De",
+      "from_time": "Desde",
       "tags": "Etiquetas",
       "to": "A",
       "to_time": "Hasta",
@@ -156,15 +156,15 @@
     "log": {
       "name": "Nombre | Nombres",
       "boat": "Buque | Buques",
-      "from": "Desde origen",
-      "from_time": "Cuándo zarpó",
-      "to": "Hasta destino",
-      "to_time": "Cuando arribó",
+      "from": "Desde",
+      "from_time": "salió",
+      "to": "Hasta",
+      "to_time": "llegó",
       "duration": "Duración",
       "duration_h": "Duración [H]",
       "distance": "Distancia",
       "distance_nm": "Distancia [NM]",
-      "avg": "Promedio",
+      "avg": "Media",
       "max": "Max",
       "speed": "Velocidad",
       "wind_speed": "Velocidad del viento",
@@ -174,13 +174,13 @@
       "avg_max_speed": "Media / Velocidad máxima",
       "max_wind_speed": "Velocidad máxima del viento",
       "sea_state": "Estado de la mar",
-      "cloud_coverage": "Cobertura de nubes",
+      "cloud_coverage": "Nubosidad",
       "visibility": "Visibilidad",
       "metadata": "Metadatos",
       "observations": "Observaciones",
       "share": "Compartir",
-      "tags": "Etiquetas",
-      "delete": "Delete Log Book"
+      "tags": "Tags",
+      "delete": "Borrar registro de bitácora"
     }
   },
   "stays": {
@@ -189,8 +189,8 @@
       "filter": {
         "title": "Búsqueda de estancia",
         "name": "Filter by name...",
-        "date_range": "Filter by date range...",
-        "stay_type": "Filter by stay type...",
+        "date_range": "Filtrar by date range...",
+        "stay_type": "Filtrar by stay type...",
         "reset": "Resetear"
       }
     },
@@ -199,15 +199,15 @@
     },
     "stay": {
       "name": "Nombre | Nombres",
-      "moorage": "Fondeaderos",
-      "departure": "Hora de salida",
-      "arrival": "Hora de llegada",
-      "departed": "Zarpó",
-      "arrived": "Arribó",
+      "moorage": "Lugar",
+      "departure": "Día y hora de salida",
+      "arrival": "Día y hora de llegada",
+      "departed": "Llegó a",
+      "arrived": "Salió de",
       "stayed_at": "Estuvo en",
       "duration": "Duración",
       "duration_d": "Duración [D]",
-      "note": "Nota | Notas"
+      "note": "Notas | Notas"
     },
     "moorage": {
       "title": "Estancias en amarre",
@@ -223,20 +223,20 @@
       "title": "Amarres de",
       "filter": {
         "title": "Título",
-        "name": "Filter by name...",
-        "stay_type": "Filter by stay type...",
+        "name": "Filtrar by name...",
+        "stay_type": "Filtrar by stay type...",
         "reset": "Resetear"
       },
-      "moorage": "Amarre",
+      "moorage": "Fondeadero",
       "default_stay": "Tipo de estancia",
       "total_stay": "Total estancia [D]",
-      "arrivals": "Número de viajes"
+      "arrivals": "Número de registros"
     },
     "arrivals-departures": {
       "title": "Viajes desde el amarre"
     },
     "map": {
-      "title": "Mapa de amarres"
+      "title": "Mapa de fondeaderos"
     },
     "details": {
       "title": "Amarre"
@@ -260,7 +260,7 @@
     "date_range": "Date Range",
     "badges": "Badges Awarded",
     "logs": "Estadísticas de bitácora",
-    "moorages": "Estadísticas de amarres",
+    "moorages": "Estadísticas de fondeaderos",
     "name": "Barco",
     "first": "Primer registro ",
     "last": "Último registro",
@@ -276,21 +276,21 @@
     "max_wind_speed": "Velocidad máxima del viento",
     "sum_distance": "Distancia total",
     "sum_duration": "Tiempo total en navegación",
-    "home_ports": "Puertos casa",
-    "unique_moorages": "Amarres únicos",
-    "time_at_home_ports": "Tiempo en puerto",
+    "home_ports": "Puertos base",
+    "unique_moorages": "Número de fondeaderos",
+    "time_spent_at_home_port(s)": "Tiempo en puerto",
     "time_spent_away": "Tiempo fuera de puerto",
     "country": "País visitado",
-    "top_logs_by_distance": "Registros de bitácora por distancia",
-    "top_logs_by_duration": "Registros de bitácora por duración",
-    "top_logs_by_avg_speed": "Top Logs by Average Speed",
-    "top_logs_by_max_speed": "Top Logs by Max Speed",
-    "top_logs_by_wind_speed": "Top Logs by Max Wind Speed",
+    "top_logs_by_distance": "Lista de Registros ordenados por distancia",
+    "top_logs_by_duration": "Lista de Registros ordenados por duración",
+    "top_logs_by_avg_speed": "Lista de Registros ordenados por Average Speed",
+    "top_logs_by_max_speed": "Lista de Registros ordenados por Max Speed",
+    "top_logs_by_wind_speed": "Lista de Registros ordenados por Max Wind Speed",
     "top_moorages_by_duration": "Top Moorages by Stay Duration",
-    "top_moorages_by_arrivals": "Top Moorages by Arrivals",
-    "underway": "Underway",
-    "away": "Away",
-    "home": "Home"
+    "underway": "En navegación",
+    "away": "Fuera de puert base",
+    "home": "Puerto base"
+
   },
   "boats": {
     "list": {
@@ -303,8 +303,8 @@
     "boat": {
       "name": "Nombre | Nombres",
       "mmsi": "MMSI",
-      "first_contact": "Primer contacto",
-      "last_contact": "Último contacto",
+      "first_contact": "Primer contacto obtenido",
+      "last_contact": "Último contacto obtenido",
       "created_at": "Creado el",
       "token_modal": {
         "button": "Token del barco",
@@ -361,7 +361,7 @@
     "public_logs_list": "Lista de registros públicos",
     "public_timelapse": "Línea del tiempo pública",
     "instagram_handle": "Nick Instagram",
-    "preferred_homepage": "Pagina inicio preferida",
+    "preferred_homepage": "Pagina preferida de inicio ",
     "use_imperial_units": "Usar medidas imperiales",
     "email_notifications": "Notificaciones por E-mail",
     "phone_notifications": "Notificaciones por teléfono",
@@ -489,7 +489,7 @@
   "id": {
     "stay_code": {
       "1": "Desconocido",
-      "2": "Ancla",
+      "2": "Fondeado",
       "3": "Boya fondeo",
       "4": "Puerto"
     }
