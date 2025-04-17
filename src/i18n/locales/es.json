@@ -133,8 +133,8 @@
       "title": "Cuaderno de bitácora - buscar de",
       "filter": {
         "title": "Search for log",
-        "name": "Filter by name...",
-        "date_range": "Filter by date range...",
+        "name": "Filtrar by name...",
+        "date_range": "Filtrar by date range...",
         "tags": "Filter by tags...",
         "reset": "Reset",
         "start_date": "Start date",
@@ -189,8 +189,8 @@
       "filter": {
         "title": "Búsqueda de estancia",
         "name": "Filter by name...",
-        "date_range": "Filter by date range...",
-        "stay_type": "Filter by stay type...",
+        "date_range": "Filtrar by date range...",
+        "stay_type": "Filtrar by stay type...",
         "reset": "Resetear"
       }
     },
@@ -223,8 +223,8 @@
       "title": "Amarres de",
       "filter": {
         "title": "Título",
-        "name": "Filter by name...",
-        "stay_type": "Filter by stay type...",
+        "name": "Filtrar by name...",
+        "stay_type": "Filtrar by stay type...",
         "reset": "Resetear"
       },
       "moorage": "Fondeadero",
@@ -283,6 +283,10 @@
     "country": "País visitado",
     "top_logs_by_distance": "Lista de Registros ordenados por distancia",
     "top_logs_by_duration": "Lista de Registros ordenados por duración",
+    "top_logs_by_avg_speed": "Lista de Registros ordenados por Average Speed",
+    "top_logs_by_max_speed": "Lista de Registros ordenados por Max Speed",
+    "top_logs_by_wind_speed": "Lista de Registros ordenados por Max Wind Speed",
+    "top_moorages_by_duration": "Top Moorages by Stay Duration",
     "underway": "En navegación",
     "away": "Fuera de puert base",
     "home": "Puerto base"
@@ -357,7 +361,7 @@
     "public_logs_list": "Lista de registros públicos",
     "public_timelapse": "Línea del tiempo pública",
     "instagram_handle": "Nick Instagram",
-    "preferred_homepage": "Pagina preferida DEinicio ",
+    "preferred_homepage": "Pagina preferida de inicio ",
     "use_imperial_units": "Usar medidas imperiales",
     "email_notifications": "Notificaciones por E-mail",
     "phone_notifications": "Notificaciones por teléfono",
