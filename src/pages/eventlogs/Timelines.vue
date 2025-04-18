@@ -55,7 +55,10 @@
               <RouterLink class="va-link link font-semibold" to="/monitoring">{{ item.message }}</RouterLink>
               at {{ item.processed }}
             </template>
-            <template v-else> {{ item.message }} at {{ item.processed }} </template>
+            <template v-else>
+              <span class="font-semibold">{{ item.message }}</span>
+              at {{ item.processed }}
+            </template>
           </VaTimelineItem>
         </tbody>
       </table>
@@ -75,17 +78,19 @@
   const isBusy = ref(false)
   const apiError = ref(null)
   const rowsData = ref([])
-  const messages = ref({
-    new_account: 'Account created',
-    email_otp: 'Account validated',
-    new_vessel: 'New vessel registered',
-    grafana: 'Monitoring application ready',
-    monitoring_offline: 'Monitoring offline',
-    monitoring_online: 'Monitoring online',
-    new_logbook: 'New logbook',
-    new_moorage: 'New moorage',
-    maplapse_video: 'Replay video',
-    new_video: 'New video',
+  const messages = computed(() => {
+    return {
+      new_account: t('timeline.new_account'),
+      email_otp: t('timeline.email_otp'),
+      new_vessel: t('timeline.new_vessel'),
+      grafana: t('timeline.grafana'),
+      monitoring_offline: t('timeline.monitoring_offline'),
+      monitoring_online: t('timeline.monitoring_online'),
+      new_logbook: t('timeline.new_logbook'),
+      new_moorage: t('timeline.new_moorage'),
+      maplapse_video: t('timeline.maplapse_video'),
+      new_video: t('timeline.new_video'),
+    }
   })
   const grafana_url = ref(import.meta.env.VITE_GRAFANA_URL)
 
