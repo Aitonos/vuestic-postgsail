@@ -549,7 +549,17 @@
   },
   "timeline": {
     "timeline": "Chronologie",
-    "last": "Les 500 derniers événements"
+    "last": "Les 500 derniers événements",
+    "new_account": "Account created",
+    "email_otp": "Account validated",
+    "new_vessel": "New vessel registered",
+    "grafana": "Monitoring application ready",
+    "monitoring_offline": "Monitoring offline",
+    "monitoring_online": "Monitoring online",
+    "new_logbook": "New logbook",
+    "new_moorage": "New moorage",
+    "maplapse_video": "Replay video",
+    "new_video": "New video"
   },
   "vuestic": {
     "search": "Recherche",
