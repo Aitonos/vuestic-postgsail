@@ -132,7 +132,7 @@
                 </tbody>
               </table>
               <div>
-                <EchartsDonught v-if="pieChartUnderway" :series="pieChartUnderway" />
+                <EchartsDonught v-if="pieChartUnderway" :series="pieChartUnderway" :theme="currentTheme" />
               </div>
             </template>
           </va-inner-loading>
@@ -189,7 +189,7 @@
             </tbody>
           </table>
           <div>
-            <EchartsDonught v-if="pieChartStayType" :series="pieChartStayType" />
+            <EchartsDonught v-if="pieChartStayType" :series="pieChartStayType" :theme="currentTheme" />
           </div>
         </va-card-content>
       </va-card>
@@ -288,7 +288,7 @@
 
   const { t } = useI18n()
   const GlobalStore = useGlobalStore()
-  const { userBadges } = storeToRefs(GlobalStore)
+  const { userBadges, currentTheme } = storeToRefs(GlobalStore)
   const CacheStore = useCacheStore()
   const { logs, stays, moorages } = storeToRefs(CacheStore)
 

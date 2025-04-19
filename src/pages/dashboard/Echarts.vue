@@ -4,13 +4,13 @@
       <va-card class="chart-widget col-span-12">
         <va-card-title>{{ t('dashboard.charts.mixedChart') }}</va-card-title>
         <va-card-content>
-          <EchartsMix v-if="mixedChartDataComputed" :series="mixedChartDataComputed" />
+          <EchartsMix v-if="mixedChartDataComputed" :series="mixedChartDataComputed" :theme="currentTheme" />
         </va-card-content>
       </va-card>
       <va-card class="chart-widget col-span-12">
         <va-card-title>{{ t('dashboard.charts.HeatmapChart') }}</va-card-title>
         <va-card-content>
-          <EchartsHeatmap v-if="HeatmapChartComputed" :series="HeatmapChartComputed" />
+          <EchartsHeatmap v-if="HeatmapChartComputed" :series="HeatmapChartComputed" :theme="currentTheme" />
         </va-card-content>
       </va-card>
     </div>
@@ -19,13 +19,13 @@
       <va-card class="flex-auto card-width">
         <va-card-title>{{ t('stats.logs') }}</va-card-title>
         <va-card-content style="width: 100%">
-          <EchartsDonught v-if="pieChartUnderway" :series="pieChartUnderway" />
+          <EchartsDonught v-if="pieChartUnderway" :series="pieChartUnderway" :theme="currentTheme" />
         </va-card-content>
       </va-card>
       <va-card class="flex-auto card-width">
         <va-card-title>{{ t('stats.moorages') }}</va-card-title>
         <va-card-content style="width: 100%">
-          <EchartsDonught v-if="pieChartStayType" :series="pieChartStayType" />
+          <EchartsDonught v-if="pieChartStayType" :series="pieChartStayType" :theme="currentTheme" />
         </va-card-content>
       </va-card>
     </div>
@@ -44,7 +44,7 @@
   import { useGlobalStore } from '../../stores/global-store'
 
   const GlobalStore = useGlobalStore()
-  const { stats_logs, stats_moorages } = storeToRefs(GlobalStore)
+  const { stats_logs, stats_moorages, currentTheme } = storeToRefs(GlobalStore)
   const { t } = useI18n()
 
   const CacheStore = useCacheStore()
