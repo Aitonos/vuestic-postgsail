@@ -16,6 +16,10 @@
       type: Array,
       required: true,
     },
+    theme: {
+      type: String,
+      default: THEME_KEY.LIGHT,
+    },
   })
 
   // prettier-ignore
@@ -103,6 +107,7 @@
   }
   const chartOptions = computed(() => {
     const localoptions = { ...defaultConfig }
+    localoptions.backgroundColor = props.theme === 'dark' ? '#1f262f' : ''
     //console.log(days.value)
     localoptions.series[0].data = props.series || []
     localoptions.xAxis.axisLabel.formatter = function (value) {
@@ -114,11 +119,14 @@
     }
     return localoptions
   })
+  const themeOption = computed(() => {
+    return props.theme || THEME_KEY.LIGHT
+  })
 </script>
 
 <template>
   <div id="echarts">
-    <v-chart :option="chartOptions" autoresize />
+    <v-chart :option="chartOptions" :theme="themeOption" autoresize />
   </div>
 </template>
 

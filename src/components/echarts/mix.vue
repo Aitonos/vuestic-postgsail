@@ -16,6 +16,10 @@
       type: Array,
       required: true,
     },
+    theme: {
+      type: String,
+      default: THEME_KEY.LIGHT,
+    },
   })
 
   // Reactive xAxis labels using computed
@@ -36,6 +40,7 @@
 
   // Chart options reactive to locale and props
   const chartOptions = computed(() => ({
+    backgroundColor: props.theme === 'dark' ? '#1f262f' : '',
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -73,11 +78,14 @@
     ],
     series: props.series || [],
   }))
+  const themeOption = computed(() => {
+    return props.theme || THEME_KEY.LIGHT
+  })
 </script>
 
 <template>
   <div id="echarts">
-    <v-chart :option="chartOptions" autoresize />
+    <v-chart :option="chartOptions" :theme="themeOption" autoresize />
   </div>
 </template>
 

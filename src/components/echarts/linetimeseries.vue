@@ -76,6 +76,9 @@
     }
     return localoptions
   })
+  const themeOption = computed(() => {
+    return props.theme || THEME_KEY.LIGHT
+  })
 </script>
 
 <template>

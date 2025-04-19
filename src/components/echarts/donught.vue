@@ -13,9 +13,16 @@
       type: Array,
       required: true,
     },
+    theme: {
+      type: String,
+      default: THEME_KEY.LIGHT,
+    },
   })
 
   const defaultConfig = {
+    textStyle: {
+      color: '#000',
+    },
     tooltip: {
       trigger: 'item',
     },
@@ -57,13 +64,17 @@
   const chartOptions = computed(() => {
     const localoptions = { ...defaultConfig }
     localoptions.series[0].data = props.series || []
+    localoptions.backgroundColor = props.theme === 'dark' ? '#1f262f' : ''
     return localoptions
+  })
+  const themeOption = computed(() => {
+    return props.theme || THEME_KEY.LIGHT
   })
 </script>
 
 <template>
   <div id="donught">
-    <v-chart :option="chartOptions" autoresize />
+    <v-chart :option="chartOptions" :theme="themeOption" autoresize />
   </div>
 </template>
 
