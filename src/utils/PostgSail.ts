@@ -57,19 +57,19 @@ export async function userBadges(payload: undefined | any) {
 export const stayed_at_options = [
   {
     value: 1,
-    text: 'Unknown',
+    text: t('id.stay_code.1'),
   },
   {
     value: 2,
-    text: 'Anchor',
+    text: t('id.stay_code.2'),
   },
   {
     value: 3,
-    text: 'Mooring Buoy',
+    text: t('id.stay_code.3'),
   },
   {
     value: 4,
-    text: 'Dock',
+    text: t('id.stay_code.4'),
   },
 ]
 
@@ -83,43 +83,43 @@ export const seaState = [
   },
   {
     value: 0,
-    text: 'Glassy calm (0m)',
+    text: t('seaState.0'),
   },
   {
     value: 1,
-    text: 'Rippled calm (0-0.1m)',
+    text: t('seaState.1'),
   },
   {
     value: 2,
-    text: 'Smooth (0.1-0.5m)',
+    text: t('seaState.2'),
   },
   {
     value: 3,
-    text: 'Slight (0.5-1.25m)',
+    text: t('seaState.3'),
   },
   {
     value: 4,
-    text: 'Moderate (1.25-2.5m)',
+    text: t('seaState.4'),
   },
   {
     value: 5,
-    text: 'Rough (2.5-4m)',
+    text: t('seaState.5'),
   },
   {
     value: 6,
-    text: 'Very rough (4-6m)',
+    text: t('seaState.6'),
   },
   {
     value: 7,
-    text: 'High (6-9m)',
+    text: t('seaState.7'),
   },
   {
     value: 8,
-    text: 'Very high (9-14m)',
+    text: t('seaState.8'),
   },
   {
     value: 9,
-    text: 'Phenomenal (14m+)',
+    text: t('seaState.9'),
   },
 ]
 
@@ -133,43 +133,43 @@ export const visibility = [
   },
   {
     value: 0,
-    text: 'Dense fog (<45m)',
+    text: t('visibility.0'),
   },
   {
     value: 1,
-    text: 'Thick fog (<180m)',
+    text: t('visibility.1'),
   },
   {
     value: 2,
-    text: 'Fog (<360m)',
+    text: t('visibility.2'),
   },
   {
     value: 3,
-    text: 'Moderate fog (<0.5NM)',
+    text: t('visibility.3'),
   },
   {
     value: 4,
-    text: 'Thin fog (<1NM)',
+    text: t('visibility.4'),
   },
   {
     value: 5,
-    text: 'Poor visibility (<2NM)',
+    text: t('visibility.5'),
   },
   {
     value: 6,
-    text: 'Moderate visibility (<5NM)',
+    text: t('visibility.6'),
   },
   {
     value: 7,
-    text: 'Good visibility (<10NM)',
+    text: t('visibility.7'),
   },
   {
     value: 8,
-    text: 'Very good visibility (<30NM)',
+    text: t('visibility.8'),
   },
   {
     value: 9,
-    text: 'Excellent visibility (>30NM)',
+    text: t('visibility.9'),
   },
 ]
 
