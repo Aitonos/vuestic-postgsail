@@ -21,7 +21,7 @@
     "otp_validate": "Validar código OTP",
     "otp_validated": "Código OTP validado con éxito",
     "pushover_message": "Mensaje push",
-    "reset": "Tu clave ha sido resetada con éxito",
+    "reset": "Tu clave ha sido reseteada con éxito",
     "errors": {
       "credentials": "Credenciales erróneos",
       "email": "Se requiere un correo electrónico",
@@ -41,12 +41,12 @@
     "dashboard": "Panel de control",
     "logs": "Registros de bitácora",
     "stays": "Estancias",
-    "moorages": "Fondeos",
+    "moorages": "Fondeaderos",
     "map": "Mapa",
     "boats": "Barcos",
     "stats": "Estadísticas",
     "timelapse": "Línea del tiempo",
-    "timelapse_replay": "Reproducir",
+    "timelapse_replay": "Reproducir línea del tiempo",
     "timelapse_form": "Ajustes de reproducción",
     "grafana": "Grafana",
     "monitoring": "Monitoreo",
@@ -55,7 +55,7 @@
     "privacy": "Privacidad",
     "faq": "FAQ",
     "badges": "Medallas",
-    "eventlogs": "Cuaderno de bitácora",
+    "eventlogs": "Registro de eventos",
     "help": "Ayuda",
     "history": "Historial",
     "windy": "Windy"
@@ -93,7 +93,7 @@
       "verticalBarChart": "Número de registros por mes",
       "mixedChart": "Número de registros por mes y año",
       "lineChart": "Número de registros por año",
-      "HeatmapChart": "Mapa de calor por mes y dia"
+      "HeatmapChart": "Cuadro por mes y dia"
     },
     "panel": {
       "battery": "Batería",
@@ -132,13 +132,13 @@
     "list": {
       "title": "Cuaderno de bitácora - buscar de",
       "filter": {
-        "title": "Search for log",
-        "name": "Filtrar by name...",
-        "date_range": "Filtrar by date range...",
-        "tags": "Filter by tags...",
-        "reset": "Reset",
-        "start_date": "Start date",
-        "end_date": "End date"
+        "title": "Buscar por registro",
+        "name": "Filtrar por nombre...",
+        "date_range": "Filtrar por fecha...",
+        "tags": "Filtrar por etiqueta...",
+        "reset": "Resetear",
+        "start_date": "Comienzo",
+        "end_date": "Fin"
       },
       "action": "Acción",
       "from": "De",
@@ -147,8 +147,8 @@
       "to": "A",
       "to_time": "Hasta",
       "edit": "Editar",
-      "replay": "Replay",
-      "delete": "Delete"
+      "replay": "Reproducir",
+      "delete": "Borrar"
     },
     "details": {
       "title": "Cuaderno de bitácora"
@@ -179,7 +179,7 @@
       "metadata": "Metadatos",
       "observations": "Observaciones",
       "share": "Compartir",
-      "tags": "Tags",
+      "tags": "Etiquetas",
       "delete": "Borrar registro de bitácora"
     }
   },
@@ -188,9 +188,9 @@
       "title": "Estancias - Historial de estancias",
       "filter": {
         "title": "Búsqueda de estancia",
-        "name": "Filter by name...",
-        "date_range": "Filtrar by date range...",
-        "stay_type": "Filtrar by stay type...",
+        "name": "Filtrar por nombre...",
+        "date_range": "Filtrar por fecha...",
+        "stay_type": "Filtrar por tipo de estancia...",
         "reset": "Resetear"
       }
     },
@@ -202,8 +202,8 @@
       "moorage": "Lugar",
       "departure": "Día y hora de salida",
       "arrival": "Día y hora de llegada",
-      "departed": "Llegó a",
-      "arrived": "Salió de",
+      "departed": "Llegó",
+      "arrived": "Salió",
       "stayed_at": "Estuvo en",
       "duration": "Duración",
       "duration_d": "Duración [D]",
@@ -211,8 +211,8 @@
     },
     "moorage": {
       "title": "Estancias en amarre",
-      "arrived": "Arribó",
-      "departed": "Zarpó",
+      "arrived": "Salió",
+      "departed": "Llegó",
       "stayed_at": "Estuvo en",
       "duration": "Duración",
       "duration_d": "Duración [D]"
@@ -220,11 +220,11 @@
   },
   "moorages": {
     "list": {
-      "title": "Amarres de",
+      "title": "Fondeos de",
       "filter": {
         "title": "Título",
-        "name": "Filtrar by name...",
-        "stay_type": "Filtrar by stay type...",
+        "name": "Filtrar por nombre...",
+        "stay_type": "Filtrar por tipo de estancia...",
         "reset": "Resetear"
       },
       "moorage": "Fondeadero",
@@ -242,32 +242,32 @@
       "title": "Amarre"
     },
     "moorage": {
-      "title": "Estancias en amarre",
-      "moorage": "Nombre del amarre",
-      "departed": "Tipo de amarre",
-      "home": "Casa",
+      "title": "Estancias en fondeo",
+      "moorage": "Nombre del fondeo",
+      "departed": "Tipo de fondeo",
+      "home": "Puerto base",
       "stayed_at": "Duración total de la estancia",
       "arrivals": "Numero de viajes",
       "visits": "Número de visitas",
-      "first_seen": "Pimer registro",
+      "first_seen": "Primer registro",
       "last_seen": "Último registro",
       "note": "Notas",
-      "delete": "Delete moorage"
+      "delete": "Borrar fondeo"
     }
   },
   "stats": {
     "stats": "Estadísticas de",
-    "date_range": "Date Range",
-    "badges": "Badges Awarded",
+    "date_range": "Rango de fecha",
+    "badges": "Medallas recibidas",
     "logs": "Estadísticas de bitácora",
-    "moorages": "Estadísticas de fondeaderos",
+    "": "Estadísticas de fondeaderos",
     "name": "Barco",
     "first": "Primer registro ",
     "last": "Último registro",
     "unclassified": "Sin clasificar",
-    "anchor": "Fondeo",
-    "buoy": "Boya",
-    "dock": "Puerto",
+    "anchor": "Fondeado",
+    "buoy": "En boya",
+    "dock": "En puerto",
     "count": "Número de registros",
     "first_date": "Primer registro",
     "last_date": "Último registro",
@@ -278,23 +278,23 @@
     "sum_duration": "Tiempo total en navegación",
     "home_ports": "Puertos base",
     "unique_moorages": "Número de fondeaderos",
-    "time_spent_at_home_port(s)": "Tiempo en puerto",
+    "time_spent_at_home_port(s)": "Tiempo en puerto base",
     "time_spent_away": "Tiempo fuera de puerto",
     "country": "País visitado",
     "top_logs_by_distance": "Lista de Registros ordenados por distancia",
     "top_logs_by_duration": "Lista de Registros ordenados por duración",
-    "top_logs_by_avg_speed": "Lista de Registros ordenados por Average Speed",
-    "top_logs_by_max_speed": "Lista de Registros ordenados por Max Speed",
-    "top_logs_by_wind_speed": "Lista de Registros ordenados por Max Wind Speed",
-    "top_moorages_by_duration": "Top Moorages by Stay Duration",
+    "top_logs_by_avg_speed": "Lista de Registros ordenados por velocidad media",
+    "top_logs_by_max_speed": "Lista de Registros ordenados por velocidad máxima",
+    "top_logs_by_wind_speed": "Lista de Registros ordenados por velocidad máxima del viento",
+    "top_moorages_by_duration": "Lista de Registros ordenados por duración",
     "underway": "En navegación",
-    "away": "Fuera de puert base",
-    "home": "Puerto base"
+    "away": "Fuera del puerto base",
+    "home": "En puerto base"
   },
   "boats": {
     "list": {
       "title": "Barcos",
-      "actions": "Accións"
+      "actions": "Acciones"
     },
     "details": {
       "title": "Barco"
@@ -302,8 +302,8 @@
     "boat": {
       "name": "Nombre | Nombres",
       "mmsi": "MMSI",
-      "first_contact": "Primer contacto obtenido",
-      "last_contact": "Último contacto obtenido",
+      "first_contact": "Primer contacto",
+      "last_contact": "Último contacto",
       "created_at": "Creado el",
       "token_modal": {
         "button": "Token del barco",
@@ -316,9 +316,9 @@
       "length": "Eslora",
       "country": "Pabellón",
       "ship_type": "Tipo de barco",
-      "status": "Estatuto",
-      "plugin_version": "Versión de Plugin",
-      "signalk_version": "Versión Signalk",
+      "status": "Status",
+      "plugin_version": "Versión del Plugin",
+      "signalk_version": "Versión de Signalk",
       "signalk": "Estos datos se extraen del 'Vessel DataBase' de SignalK",
       "platform": "Plataforma"
     },
@@ -372,7 +372,7 @@
     "low_water_temperature_threshold": "Temperatura del agua",
     "low_water_depth_threshold": "Profundidad (M)",
     "low_pressure_threshold": "Presión (HPA)",
-    "high_pressure_drop_threshold": "Variación de La presión en 12 horas (HPA)",
+    "high_pressure_drop_threshold": "Variación de la presión en las últimas 12 horas (HPA)",
     "low_battery_charge_threshold": "Carga de batería (%)",
     "low_battery_voltage_threshold": "Voltaje de batería (V)",
     "pushover": {
@@ -389,12 +389,12 @@
     "failure": "Error actualizando {key} con {value}",
     "msg": {
       "website": "Página web mostrando tus estadísticas, por favor introduce la URL completa empezando con http:// or https://",
-      "instagram_handle": "Vínculo a tu Instagram mostrando  tus estadísticas, por favor, introduce el nick sin el símbolo de la {'@'}",
-      "windy_station": "Identificador de estación Windy tal y como se muestra en la URL de Windy después de  /station/pws- (e.g. d06efc48)",
+      "instagram_handle": "Vínculo a tu Instagram mostrando tus estadísticas, por favor, introduce el nick sin el símbolo de la {'@'}",
+      "windy_station": "Identificador de estación Windy tal y como se muestra en la URL de Windy después de /station/pws- (e.g. d06efc48)",
       "public_profile": "Estando activado, las páginas de estadísticas, líneas de tiempo y otras pueden ser accedidas por otros sin hacer login.",
       "public_logs": "Estando activado, tus registros personales de navegación serán accesibles públicamente en https://iot.openplotter.cloud/{0}/log/{'id'}",
       "public_stats": "Estando activado, tus estadísticas serán accesibles públicamente en https://iot.openplotter.cloud/{0}/stats",
-      "public_logs_list": "Estando activado, el listado de tus registros de navegación serán accesible públicamente en https://iot.openplotter.cloud/{0}/logs",
+      "public_logs_list": "Estando activado, el listado de tus registros de navegación serán accesibles públicamente en https://iot.openplotter.cloud/{0}/logs",
       "public_timelapse": "Estando activado, tus líneas de tiempo serán accesibles públicamente en https://iot.openplotter.cloud/{0}/timelapse",
       "public_monitoring": "Estando activado, tus datos de monitorización serán accesibles públicamente en https://iot.openplotter.cloud/{0}/monitoring",
       "public_name": "Cuando habilites tu perfil público, tendrás la opción de elegir el nombre de tu barco",
@@ -409,22 +409,22 @@
       "public_windy": "https://www.windy.com/station/pws-{0}"
     },
     "monitoring": {
-      "depthKey": "Depth Source",
-      "waterTemperatureKey": "Water Temperature Source",
-      "windSpeedKey": "Wind Speed Source",
-      "windDirectionKey": "Wind Direction Source",
-      "insidePressureKey": "Inside Barometer Source",
-      "outsidePressureKey": "Outside Barometer Source",
-      "insideTemperatureKey": "Inside Temperature Source",
-      "outsideTemperatureKey": "Outside Temperature Source",
-      "insideHumidityKey": "Inside Humidity Source",
-      "outsideHumidityKey": "Outside Humidity Source",
-      "stateOfChargeKey": "Battery Charge Source",
-      "voltageKey": "Battery Voltage Source",
-      "solarVoltageKey": "Solar Voltage Source",
-      "solarPowerKey": "Solar Power Source",
-      "tankLevelKey": "Tank Level Source",
-      "message": "You can monitor all data available on your boat network using PostgSail. Monitoring data sources can be organized into sections based on shared characteristics, such as measurement units. For instance, a 'Tanks' section could group together data sources for Freshwater, Wastewater, and Fuel, providing a structured and intuitive overview. You can add as many sections as you would like."
+      "depthKey": "Sonda",
+      "waterTemperatureKey": "Temperatura del agua",
+      "windSpeedKey": "Velocidad del viento",
+      "windDirectionKey": "Dirección del viento",
+      "insidePressureKey": "Presión atmosférica en interior",
+      "outsidePressureKey": "Presión atmosférica en exterior",
+      "insideTemperatureKey": "Temperatura en interior",
+      "outsideTemperatureKey": "Temperatura en exterior",
+      "insideHumidityKey": "Humedad relativa en interior",
+      "outsideHumidityKey": "Humedad relativa en exterior",
+      "stateOfChargeKey": "Nivel de carga de la batería",
+      "voltageKey": "Voltaje de la batería",
+      "solarVoltageKey": "Voltaje de las placas solares",
+      "solarPowerKey": "Potencia de las placas solares",
+      "tankLevelKey": "Nivel de depósito",
+      "message": "Con Postgsail, puedes monitorizar todos los datos disponibles en la red de tu barco Las fuentes de monitorización pueden ser organizadas en secciones de acuerdo a sus características tales como unidades de medida. POr ejemplo, una sección de 'Depósitos' puede agrupar las fuentes de datos de los depósitos de combustible agua dulce, aguas negras, etc, dando así una visión rápida y estructurada. Puedes crear tantas secciones como necesites"
     }
   },
   "faq": {
@@ -445,7 +445,7 @@
     "temperature": {
       "headerString": "Temperatura",
       "unitString": "°C",
-      "detailString": "Exterior: "
+      "detailString": "En el exterior: "
     },
     "battery": {
       "headerString": "Batería",
@@ -455,10 +455,10 @@
     "humidity": {
       "headerString": "Humedad",
       "unitString": "%",
-      "detailString": "Exterior: "
+      "detailString": "En el exterior: "
     },
     "water": {
-      "headerString": "Agua",
+      "headerString": "Sonda",
       "unitString": "m",
       "detailString": "Temperatura: "
     },
@@ -549,7 +549,7 @@
     "locked": "Bloqueado"
   },
   "nodata": {
-    "nodata": "¡No hay nada aún aquí! ¡Configura tu instancia de Signalk y comienza a navegar!",
+    "nodata": "¡No hay nada aún por aquí! ¡Configura tu instancia de Signalk y comienza a navegar!",
     "start": "Las cosas comenzarán a aparecer aquí. Puedes encontrar los detalles",
     "start_link": "Página de detalles de tu barco.",
     "wait": "Si acabas de ingresar tu token, echa un vistazo a ",
@@ -577,15 +577,15 @@
     "timeline": "Línea de tiempo",
     "last": "Los últimos 500 eventos",
     "new_account": "Nueva cuenta creada",
-    "email_otp": "Account validated",
-    "new_vessel": "New vessel registered",
-    "grafana": "Monitoring application ready",
-    "monitoring_offline": "Monitoring offline",
-    "monitoring_online": "Monitoring online",
-    "new_logbook": "New logbook",
-    "new_moorage": "New moorage",
-    "maplapse_video": "Replay video",
-    "new_video": "New video"
+    "email_otp": "Cuenta validada",
+    "new_vessel": "Nuevo barco registrado",
+    "grafana": "Aplicación de monitorización lista",
+    "monitoring_offline": "Monitoreo desconectado",
+    "monitoring_online": "Monitoreo en línea",
+    "new_logbook": "Nuevo registro",
+    "new_moorage": "Nuevo fondeo",
+    "maplapse_video": "Reproducir vídeo",
+    "new_video": "Nuevo vídeo"
   },
   "vuestic": {
     "search": "Buscar",
