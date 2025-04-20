@@ -55,7 +55,7 @@
     "privacy": "Privacidad",
     "faq": "FAQ",
     "badges": "Medallas",
-    "eventlogs": "Cuaderno de bitácora",
+    "eventlogs": "Registro de eventos",
     "help": "Ayuda",
     "history": "Historial",
     "windy": "Windy"
@@ -190,7 +190,7 @@
         "title": "Búsqueda de estancia",
         "name": "Filtrar por nombre...",
         "date_range": "Filtrar por fecha...",
-        "stay_type": "Filtrar tipo de estancia...",
+        "stay_type": "Filtrar por tipo de estancia...",
         "reset": "Resetear"
       }
     },
@@ -260,7 +260,7 @@
     "date_range": "Rango de fecha",
     "badges": "Medallas recibidas",
     "logs": "Estadísticas de bitácora",
-    "moorages": "Estadísticas de fondeaderos",
+    "": "Estadísticas de fondeaderos",
     "name": "Barco",
     "first": "Primer registro ",
     "last": "Último registro",
@@ -424,7 +424,7 @@
       "solarVoltageKey": "Voltaje de las placas solares",
       "solarPowerKey": "Potencia de las placas solares",
       "tankLevelKey": "Nivel de depósito",
-      "message": "Con Postgsail, puedes monitorizar todos los datos disponibles en la red de tu barco Las fuentes de monitorización pueden ser organizadas en secciones de acuerdo a sus características tales como unidades de medida. POr ejemplo, una sección de "Depósitos" puede agrupar las fuentes de datos de los depósitos de combustible agua dulce, aguas negras, etc, dando así una visión rápida y estructurada. Puedes crear tantas secciones como necesites"
+      "message": "Con Postgsail, puedes monitorizar todos los datos disponibles en la red de tu barco Las fuentes de monitorización pueden ser organizadas en secciones de acuerdo a sus características tales como unidades de medida. POr ejemplo, una sección de 'Depósitos' puede agrupar las fuentes de datos de los depósitos de combustible agua dulce, aguas negras, etc, dando así una visión rápida y estructurada. Puedes crear tantas secciones como necesites"
     }
   },
   "faq": {
