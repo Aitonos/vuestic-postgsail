@@ -1,15 +1,58 @@
 <template>
   <div>
-    <va-card class="mb-3">
-      <va-card-title> {{ $t('faq.title') }} </va-card-title>
-      <va-card-content class="layout gutter--md">
-        <va-input>
-          <template #prepend>
-            <va-icon name="search" />
-          </template>
-        </va-input>
+    <va-card class="layout mx-auto my-6 p-6">
+      <va-card-title class="text-2xl font-bold text-primary mb-2"> 🚀 Support and Sponsor PostgSail </va-card-title>
+      <va-card-content class="text-base leading-relaxed">
+        <p class="mb-4">
+          <strong>PostgSail</strong> is more than a project—it's a movement towards smarter, faster, and more intuitive
+          spatial data experiences.
+        </p>
+
+        <p class="mb-4">
+          We're building a powerful open-source tool that enhances PostgreSQL + PostGIS environments, empowering
+          developers, researchers, and organizations to
+          <strong>navigate, visualize, and optimize spatial data like never before</strong>.
+        </p>
+
+        <va-divider class="my-4" />
+
+        <h3 class="text-xl font-semibold text-secondary mb-2">Why Sponsor PostgSail?</h3>
+        <ul class="list-disc ml-5 mb-4 space-y-1">
+          <li><strong>Innovative Impact</strong> – Cutting-edge tools for geospatial workflows.</li>
+          <li><strong>Open-Source Values</strong> – Transparent, community-driven development.</li>
+          <li><strong>Real-World Applications</strong> – Urban planning, logistics, mapping, and more.</li>
+          <li><strong>Brand Visibility</strong> – Get recognized as a supporter of open innovation.</li>
+        </ul>
+
+        <h3 class="text-xl font-semibold text-secondary mb-2">What We Need</h3>
+        <ul class="list-disc ml-5 mb-4 space-y-1">
+          <li><strong>Financial Support</strong> – Help us fund development and documentation.</li>
+          <li><strong>Infrastructure Resources</strong> – Cloud, servers, or development tools.</li>
+          <li><strong>Community Ambassadors</strong> – Spread the word, contribute, or teach!</li>
+        </ul>
+
+        <va-divider class="my-4" />
+
+        <p class="mb-4">
+          By supporting PostgSail, you're not just backing a tool—you’re investing in the future of spatial intelligence
+          and open innovation.
+        </p>
+
+        <p class="mb-6">
+          <strong>👉 Let’s build this journey together.</strong>
+        </p>
+
+        <a href="mailto:info@openplotter.cloud?subject=PostgSail is great" target="_blank">
+          <va-button color="primary" icon="email" to="mailto:info@openplotter.cloud" target="_blank">
+            Contact Us
+          </va-button>
+        </a>
+        <a href="https://github.com/sponsors/xbgmsharp" target="_blank">
+          <va-button color="success" icon="sponsor" target="_blank"> Sponsor on GitHub </va-button></a
+        >
       </va-card-content>
     </va-card>
+
     <va-card class="mb-3">
       <va-card-title> {{ $t('faq.desc') }} </va-card-title>
       <va-card-content class="layout gutter--md">
@@ -44,10 +87,6 @@
             <p>
               Your information stays private unless you explicitly decide to make it available publicly. If you choose
               to do so, your friends and others can access your logs, monitoring, statistics and timelapse.
-            </p>
-            <p>
-              PostgSail is hosted in a European sovereign cloud and is fully compliant with GDPR and is not impacted by
-              U.S. CLOUD Act law. You own your data.
             </p>
             <br />
           </va-collapse>
@@ -92,14 +131,17 @@
           <va-collapse header="No metrics, why?">
             <div class="pa-3">
               <p>
-                Postgsail ignore all metrics that does not provide valid GPS coordinates.<br />
-                Make sure your GPS device is connected to your OpenPlotter and that the GPS data is being sent to the
-                SignalK server.<br />
-                Postgsail ignore all metrics where the time is in the future. Make sure your time is sync with GPS or an
-                NTP server.<br />
-                Postgsail ignore all metrics that are in the past of the last entry.<br />
-                Postgsail ignore all metrics with an invalid status.<br />
-                Postgsail ignore all metrics where the SOG is over 40 knots.
+                Postgsail ignores all metrics that do not provide valid GPS coordinates. Ensure your GPS device is
+                connected to your OpenPlotter and that GPS data is being sent to the SignalK server.
+                <br />
+                Postgsail ignores all metrics with timestamps in the future. Make sure your system time is synchronized
+                with GPS or an NTP server.
+                <br />
+                Postgsail ignores all metrics dated earlier than the last entry.
+                <br />
+                Postgsail ignores all metrics with an invalid status.
+                <br />
+                Postgsail ignores all metrics where the Speed Over Ground (SOG) exceeds 40 knots.<br />
               </p>
             </div>
           </va-collapse>
@@ -287,6 +329,13 @@
               /></a>
               with monthly or one-time donations.<br />
               <h4>Every Contribution Matters</h4>
+              <p>Join our growing community of supporters and help us make this project even better!</p>
+            </div>
+          </va-collapse>
+          <va-collapse header="Where is store my data?">
+            <div class="pa-3">
+              PostgSail is hosted in a European sovereign cloud and is fully compliant with GDPR and is not impacted by
+              U.S. CLOUD Act law. You own your data.<br />
               <p>Join our growing community of supporters and help us make this project even better!</p>
             </div>
           </va-collapse>

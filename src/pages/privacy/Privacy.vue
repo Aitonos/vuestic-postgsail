@@ -27,12 +27,12 @@
               identifiable information, such as your:
             </p>
             <ul>
-              <li>First and Last Name</li>
-              <li>E-mail Address</li>
-              <li>Vessel Name and Details (e.g. MMSI)</li>
-              <li>VesselPosition Records (Latitude and Longitude)</li>
+              <li>- First and Last Name</li>
+              <li>- E-mail Address</li>
+              <li>- Vessel Name and Details (e.g. MMSI)</li>
+              <li>- VesselPosition Records (Latitude and Longitude)</li>
               <li>
-                Data available on the vessel network (depth, speed, heading, temperature, atmospheric pressure, etc.)
+                - Data available on the vessel network (depth, speed, heading, temperature, atmospheric pressure, etc.)
               </li>
             </ul>
             <p>
