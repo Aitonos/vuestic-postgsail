@@ -17,25 +17,30 @@
         ><h2>{{ key }}</h2></va-card-title
       >
       <va-card-content class="col-span-1">
-        <p>{{ item.description }}</p>
+        <template v-if="item.i18n == false">
+          <p>{{ t('badges.default') }} {{ key }}.</p>
+        </template>
+        <template v-else>
+          <p>{{ t(`badges.${key}`) }}</p>
+        </template>
         <template v-if="item.log">
-          <router-link class="va-link link" :to="'/log/' + item.log">logbook reference</router-link>
+          <router-link class="va-link link" :to="'/log/' + item.log">{{ t('badges.log_ref') }}</router-link>
         </template>
         <template v-if="item.date">
-          <p>date: {{ item.date }}</p>
+          <p>{{ t('badges.date') }}: {{ item.date }}</p>
         </template>
       </va-card-content>
       <template v-if="item.image">
         <va-image class="max-h-32 col-span-1" fit="contain" :src="item.image" />
       </template>
       <template v-else-if="item.svg">
-        <div>
-          <IconAward class="max-h-32 col-start-2" fit="contain" />
+        <div class="flex justify-center items-center h-32">
+          <IconAward class="max-h-32" fit="contain" />
         </div>
       </template>
       <template v-else>
-        <div>
-          <IconNavigation class="max-h-32 col-start-2" fit="contain" />
+        <div class="flex justify-center items-center h-32">
+          <IconNavigation class="max-h-32" fit="contain" />
         </div>
       </template>
     </va-card>

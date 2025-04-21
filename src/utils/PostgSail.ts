@@ -46,6 +46,7 @@ export async function userBadges(payload: undefined | any) {
       user_badges[key]['description'] = `${default_badge['default']['description']} ${key}!`
       user_badges[key]['disabled'] = false
       user_badges[key]['date'] = dateFormatUTC(user_badges[key]['date'])
+      user_badges[key]['i18n'] = false
     }
   }
   return user_badges
