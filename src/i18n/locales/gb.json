@@ -537,6 +537,14 @@
     "time": {
       "days": "{n} day | {n} days",
       "hours": "hour | hours | hours"
+    },
+    "temp": {
+      "celsius": "{n} °C",
+      "fahrenheit": "{n} °F"
+    },
+    "depth": {
+      "meters": "{n} m",
+      "feet": "{n} ft"
     }
   },
   "badges": {
@@ -553,7 +561,9 @@
     "Navigator Award": "Woohoo! You made it, Ticking off over 100NM in one go, well done sailor!",
     "Captain Award": "Congratulation, you reach over 1000NM, well done sailor!",
     "default": "Look at you sailing the",
-    "locked": "Locked"
+    "locked": "Locked",
+    "log_ref": "Logbook reference",
+    "date": "Date"
   },
   "nodata": {
     "nodata": "Nothing here yet! Please configure your signalk-instance and start sailing!",

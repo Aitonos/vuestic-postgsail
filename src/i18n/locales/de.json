@@ -529,6 +529,14 @@
     "time": {
       "days": "{n} Tag | {n} Tage",
       "hours": "Stunde | Stunden | Stunden"
+    },
+    "temp": {
+      "celsius": "{n} °C",
+      "fahrenheit": "{n} °F"
+    },
+    "depth": {
+      "meters": "{n} m",
+      "feet": "{n} ft"
     }
   },
   "badges": {
@@ -545,7 +553,9 @@
     "Navigator Award": "Juhu! Du hast es geschafft, über 100 Seemeilen auf einmal abzuhaken. Gut gemacht, Segler!",
     "Captain Award": "Herzlichen Glückwunsch, du hast über 1000 Seemeilen erreicht. Gut gemacht, Segler!",
     "default": "Schau dich segeln auf",
-    "locked": "Gesperrt"
+    "locked": "Gesperrt",
+    "log_ref": "Logbook reference",
+    "date": "Date"
   },
   "nodata": {
     "nodata": "Hier ist noch nichts! Bitte konfiguriere deine Signalk-Instanz und starte mit dem Segeln!",

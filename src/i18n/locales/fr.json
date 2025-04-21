@@ -90,16 +90,16 @@
     "overview": "Aperçu du journal de bord",
     "local_time": "Heure locale",
     "charts": {
-      "verticalBarChart": "Log entry per month",
-      "mixedChart": "Log entry per month per year",
-      "lineChart": "Log entry per year",
-      "HeatmapChart": "Log entry per month per weekday"
+      "verticalBarChart": "Journal de bord mensuel",
+      "mixedChart": "Journal de bord mensuel par année",
+      "lineChart": "Journal de bord annuel",
+      "HeatmapChart": "Journal de bord : mois / jour de la semaine"
     },
     "panel": {
       "battery": "Batterie",
       "solar": "Solaire",
       "power": "Energie",
-      "tank": "Reservoir"
+      "tank": "Réservoir"
     },
     "months": {
       "january": "Janvier",
@@ -130,22 +130,22 @@
   },
   "logs": {
     "list": {
-      "title": "Logs - Log Book for",
+      "title": "Journal de bord pour",
       "filter": {
         "title": "Search for log",
-        "name": "Filter by name...",
-        "date_range": "Filter by date range...",
-        "tags": "Filter by tags...",
-        "reset": "Reset",
-        "start_date": "Start date",
-        "end_date": "End date"
+        "name": "Filtrer par nom...",
+        "date_range": "Filtrer par plage de dates...",
+        "tags": "Filtrer par étiquettes...",
+        "reset": "Réinitialiser",
+        "start_date": "Date de début",
+        "end_date": "Date de fin"
       },
       "action": "Action",
-      "from": "From",
-      "from_time": "Started",
-      "tags": "Tags",
-      "to": "To",
-      "to_time": "Ended",
+      "from": "Départ",
+      "from_time": "Depart à",
+      "tags": "Étiquettes",
+      "to": "Arrivée",
+      "to_time": "Arrivée à",
       "edit": "Editer",
       "replay": "Replay",
       "delete": "Supprimer"
@@ -156,7 +156,7 @@
     "log": {
       "name": "Nom | Noms",
       "boat": "Navire | Navires",
-      "from": "Depart",
+      "from": "Départ",
       "from_time": "Depart à",
       "to": "Arrivée",
       "to_time": "Arrivée à",
@@ -179,7 +179,7 @@
       "metadata": "Métadonnées",
       "observations": "Observations",
       "share": "Partager",
-      "tags": "Tags",
+      "tags": "Étiquettes",
       "delete": "Delete Log Book"
     }
   },
@@ -188,9 +188,9 @@
       "title": "Stays - Moorage History of",
       "filter": {
         "title": "Search for stay",
-        "name": "Filter by name...",
-        "date_range": "Filter by date range...",
-        "stay_type": "Filter by stay type...",
+        "name": "Filtrer par nom...",
+        "date_range": "Filtrer par plage de dates...",
+        "stay_type": "Filtrer par stay type...",
         "reset": "Reset"
       }
     },
@@ -198,12 +198,12 @@
       "title": "Séjour"
     },
     "stay": {
-      "name": "Name | Names",
-      "moorage": "Moorage",
-      "departure": "Departure Time",
-      "arrival": "Arrival Time",
-      "departed": "Departed",
-      "arrived": "Arrived",
+      "name": "Nom | Noms",
+      "moorage": "Mouillages",
+      "departure": "Heure de départ",
+      "arrival": "Heure d'arrivée",
+      "departed": "Depart à",
+      "arrived": "Arrivée à",
       "stayed_at": "Séjourné à",
       "duration": "Durée",
       "duration_d": "Durée [j]",
@@ -220,11 +220,11 @@
   },
   "moorages": {
     "list": {
-      "title": "Amarrages de",
+      "title": "Mouillages de",
       "filter": {
         "title": "Search for moorage",
-        "name": "Filter by name...",
-        "stay_type": "Filter by stay type...",
+        "name": "Filtrer par nom...",
+        "stay_type": "Filtrer par stay type...",
         "reset": "Reset"
       },
       "moorage": "Amarrage",
@@ -236,30 +236,30 @@
       "title": "Arrivals and Departures for Moorage"
     },
     "map": {
-      "title": "Map of Moorages"
+      "title": "Carte des mouillages"
     },
     "details": {
-      "title": "Moorage"
+      "title": "Mouillage"
     },
     "moorage": {
-      "moorage": "Preferred Name",
-      "departed": "Default Stay Type",
-      "home": "Home",
-      "stayed_at": "Total Duration of Stay",
-      "arrivals": "Number of Arrivals & Departures",
-      "visits": "Number of Visits",
-      "first_seen": "Moorage first seen",
-      "last_seen": "Moorage last seen",
+      "moorage": "Nom préféré",
+      "departed": "Type de séjour par défaut",
+      "home": "Port de base",
+      "stayed_at": "Durée totale du séjour",
+      "arrivals": "Nombre d’arrivées et de départs",
+      "visits": "Nombre de visites",
+      "first_seen": "Premier repérage du mouillage",
+      "last_seen": "Dernier repérage du mouillage",
       "note": "Notes",
-      "delete": "Delete moorage"
+      "delete": "Supprimer le mouillage"
     }
   },
   "stats": {
     "stats": "Statistiques pour",
     "date_range": "Date Range",
     "badges": "Badges Awarded",
-    "logs": "Logs Statistics",
-    "moorages": "Moorages Statistics",
+    "logs": "Statistiques du journal de bord",
+    "moorages": "Statistiques des mouillages",
     "name": "Boat",
     "first": "First entry",
     "last": "Last entry",
@@ -287,9 +287,9 @@
     "top_logs_by_wind_speed": "Top Logs by Max Wind Speed",
     "top_moorages_by_duration": "Top Moorages by Stay Duration",
     "top_moorages_by_arrivals": "Top Moorages by Arrivals",
-    "underway": "Underway",
-    "away": "Away",
-    "home": "Home"
+    "underway": "En navigation",
+    "away": "Hors du port de base",
+    "home": "Port de base"
   },
   "boats": {
     "list": {
@@ -350,7 +350,7 @@
         "title": "Correlations"
       }
     },
-    "name": "Name",
+    "name": "Nom",
     "website": "Website",
     "windy_station": "Windy Station",
     "public_profile": "Public Profile",
@@ -530,6 +530,14 @@
     "time": {
       "days": "{n} day | {n} days",
       "hours": "hour | hours | hours"
+    },
+    "temp": {
+      "celsius": "{n} °C",
+      "fahrenheit": "{n} °F"
+    },
+    "depth": {
+      "meters": "{n} m",
+      "feet": "{n} ft"
     }
   },
   "badges": {
@@ -546,7 +554,9 @@
     "Navigator Award": "Woohoo! You made it, Ticking off over 100NM in one go, well done sailor!",
     "Captain Award": "Congratulation, you reach over 1000NM, well done sailor!",
     "default": "Regarde-toi naviguer sur",
-    "locked": "Verouillé"
+    "locked": "Verouillé",
+    "log_ref": "Logbook reference",
+    "date": "Date"
   },
   "nodata": {
     "nodata": "Rien ici encore! Veuillez configurer votre instance de signalk et commencer à naviguer!",
