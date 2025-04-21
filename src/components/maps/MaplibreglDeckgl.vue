@@ -197,7 +197,7 @@
                           <tr><td>Distance</td><td>${distance}</td></tr>
                           <tr><td>Duration</td><td>${duration} hours</td></tr>
                           <tr><td>Speed</td><td>avg ${avg_speed} / max ${max_speed}</td></tr>
-                          <tr><th>Wind</th><td>avg ${avg_tws} / max ${max_tws}</td></tr>
+                          <tr><td>Wind</td><td>avg ${avg_tws} / max ${max_tws}</td></tr>
                           <tr><td>Depth</td><td>avg ${avg_depth} / max ${max_depth}</td></tr>
                           <tr><td>Notes</td><td>${notes}</td></tr>
                         </tbody></table></br>
@@ -210,17 +210,20 @@
   function getOnClickDesc(feature) {
     // Is moorage
     if (feature.properties.default_stay_id) {
+      let duration = durationFormatHours(feature.properties.stays_sum_duration)
       let popup = `<div class='mpopup'><center><h4><a href="/moorage/${feature.properties.id}">${feature.properties.name}</a></h4></center>`
       popup += '<table class="data">'
+      popup +=
+        '<tr><th>Arrivals&Departures</th><td><a href="/moorage/arrivals-departures/' + feature.properties.id + '">'
+      popup += `${feature?.properties?.logs_count}`
+      popup += '</a></td></tr>'
       popup += '<tr><th>Visits</th><td><a href="/moorage/arrivals-departures/' + feature.properties.id + '">'
       popup += `${feature?.properties?.stays_count}`
       popup += '</a></td></tr>'
-      popup += '<tr><th>Stays</th><td>'
-      popup +=
-        '<a href="/stays/moorage/' + feature.properties.id + '">' + (feature?.properties?.total_stay || 0) + ' day'
-      if ((feature?.properties?.total_stay || 0) > 1) popup = popup + 's'
+      popup += '<tr><th>Duration</th><td>'
+      popup += '<a href="/stays/moorage/' + feature.properties.id + '">' + (duration || 0) + ' hour'
+      if ((duration || 0) > 1) popup = popup + 's'
       popup = popup + '</a></td></tr>'
-      //popup += `Preference: ${feature.properties.stay_code}`
       popup +=
         '<tr><th>Preference</th><td>' + stayed_at_options[feature.properties.default_stay_id - 1].text + '</td></tr>'
       if (feature?.properties?.notes) {
