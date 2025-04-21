@@ -19,6 +19,13 @@ export default {
       },
     },
     {
+      name: 'map-explorer',
+      displayName: 'menu.explore',
+      meta: {
+        icon: 'menu-explore-map',
+      },
+    },
+    {
       name: 'logs',
       displayName: 'menu.logs',
       meta: {
