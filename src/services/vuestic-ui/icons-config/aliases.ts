@@ -169,6 +169,11 @@ export default [
     color: 'primary',
   },
   {
+    name: 'menu-explore-map',
+    to: 'travel_explore',
+    color: 'primary',
+  },
+  {
     name: 'csv',
     component: shallowRef(IconCSV),
     //color: 'primary',

@@ -163,7 +163,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'settings',
         component: () => import('../pages/settings/Settings.vue'),
       },
-*/
+      */
       {
         name: 'help-menu',
         path: '/:boat(\\w+)?',
@@ -280,12 +280,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/eventlogs/Timelines.vue'),
         meta: { titleKey: 'menu.eventlogs' },
       },
-      /*
       {
         name: 'map-explorer',
         path: 'explore',
         component: () => import('../components/maps/leafletMapExplorer.vue'),
       },
+      /*
       {
         name: 'map-timedimension',
         path: 'timedimension',
