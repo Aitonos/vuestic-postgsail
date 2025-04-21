@@ -93,7 +93,7 @@
           <va-collapse header="Timelapse">
             <div class="pa-3">
               <p>
-                Timelapse takes several parameters that allow customization:<br />
+                Timelapse can be customized through several parameters:<br />
                 <br />
                 - color: Specifies the path color. Default: dodgerblue<br />
                 - start_log and end_log: Specified in the log entry. Default: None<br />
@@ -117,12 +117,12 @@
           </va-collapse>
           <va-collapse header="Time, Distance, Temperatures, Depth Units">
             <div class="pa-3">
-              All times from the backend are UTC. The frontend is doing the local conversion.<br />
-              All distances from the backend are in Nautical Miles.<br />
-              All temperatures from the backend are in Kelvin. The frontend will by default convert it to Celsius. To
-              use Fahrenheit enable "Use Imperial Units".<br />
-              All depth from the backend are in Meters. The frontend will by default display it as Meters. To use Foot
-              enable "Use Imperial Units".<br />
+              All times are stored in UTC. They are converted to local time within the user interface.<br />
+              All distances are stored in Nautical Miles. The user interface displays them directly in the same unit.<br />
+              All temperatures are stored in Kelvin. By default, they are converted to Celsius for display. To show
+              Fahrenheit instead, enable "Use Imperial Units."<br />
+              All depth values are stored in Meters. By default, they are shown in Meters, but can be converted to Feet
+              by enabling "Use Imperial Units."<br />
               Check the
               <router-link class="va-text-bold va-link link" :to="{ name: 'explore' }">explore page</router-link> to see
               your signalk path.
@@ -269,10 +269,10 @@
           <va-collapse header="Source Code">
             <div class="pa-3">
               <p>
-                The project is free and open-source and I welcome any contribution and happy to work together. There is
-                definitely some bugs and room for improvements. The movement detection from the signalk-plugin is done
-                via the auto-state plugin. as much as possible, I try to keep the technology stack simple, SQL and
-                Javascript with a bit of python. No middle ware to reduce code maintenance.
+                The project is free and open-source and I welcome any contribution and happy to work together.
+                Definitely, there are some bugs and room for improvements. The movement detection from the
+                signalk-plugin is done via the auto-state plugin. as much as possible, I try to keep the technology
+                stack simple, SQL and Javascript with a bit of python. No middle ware to reduce code maintenance.
               </p>
               <p>
                 Source:<br />
@@ -332,10 +332,11 @@
               <p>Join our growing community of supporters and help us make this project even better!</p>
             </div>
           </va-collapse>
-          <va-collapse header="Where is store my data?">
+          <va-collapse header="Where is my data stored?">
             <div class="pa-3">
               PostgSail is hosted in a European sovereign cloud and is fully compliant with GDPR and is not impacted by
-              U.S. CLOUD Act law. You own your data.<br />
+              U.S. CLOUD Act law.<br />
+              You own your data! You can request to delete your data at any time. You can also export your data.<br />
               <p>Join our growing community of supporters and help us make this project even better!</p>
             </div>
           </va-collapse>
