@@ -70,8 +70,7 @@
   import { computed, ref, onMounted } from 'vue'
   import { useI18n } from 'vue-i18n'
   import PostgSail from '../../services/api-client'
-  import { dateFormatUTC } from '../../utils/dateFormatter.js'
-  import moment from 'moment'
+  import { fromNow, dateFormatUTC } from '../../utils/dateFormatter.js'
   import VaTimelineItem from '../../components/VaTimelineItem.vue'
   const { t } = useI18n()
 
@@ -101,7 +100,7 @@
           processed: dateFormatUTC(row['processed']),
           payload: row['payload'],
           channel: row['channel'],
-          fromnow: row['processed'] ? moment(row['processed']).fromNow(true) : 'Pending',
+          fromnow: row['processed'] ? fromNow(row['processed']) : 'Pending',
           message: row['channel'] ? messages.value[row['channel']] : 'unknown',
           replay: row['channel'] === 'maplapse_video' ? row['payload'].substring(row['payload'].indexOf('?')) : null,
         }))
