@@ -445,7 +445,7 @@
     "temperature": {
       "headerString": "Temperature",
       "unitString": "°C",
-      "detailString": "Dehors: "
+      "detailString": "Exterieur: "
     },
     "battery": {
       "headerString": "Batterie",
@@ -455,7 +455,7 @@
     "humidity": {
       "headerString": "Humidité",
       "unitString": "%",
-      "detailString": "Dehors: "
+      "detailString": "Exterieur: "
     },
     "water": {
       "headerString": "L'eau",
