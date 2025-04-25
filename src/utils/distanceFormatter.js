@@ -40,3 +40,21 @@ export function milesToKm(val) {
 export function kmToMiles(val) {
   return parseFloat(val) * 0.539957
 }
+
+export const meterToFeet = (val) => {
+  if (val == null) {
+    return null
+  }
+  //console.log('imperialUnits', GlobalStore.imperialUnits)
+  return GlobalStore.imperialUnits ? val * 3.2808399 : val
+}
+
+export const depthFormatI18n = (val) => {
+  if (val == null) {
+    return null
+  }
+  //console.log('imperialUnits', GlobalStore.imperialUnits)
+  return GlobalStore.imperialUnits
+    ? t('units.depth.feet', { n: parseFloat(val * 3.2808399).toFixed(1) })
+    : t('units.depth.meters', { n: parseFloat(val).toFixed(1) })
+}

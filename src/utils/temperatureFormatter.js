@@ -1,5 +1,7 @@
 import useGlobalStore from '../stores/global-store'
 const GlobalStore = useGlobalStore()
+import i18n from '../i18n/index.ts'
+const { t } = i18n.global
 
 export const kelvinToCelsius = (deg) => {
   if (deg == null) {
@@ -21,4 +23,14 @@ export const kelvinToHuman = (deg) => {
   }
   //console.log('imperialUnits', GlobalStore.imperialUnits)
   return GlobalStore.imperialUnits ? kelvinToFahrenheit(deg) : kelvinToCelsius(deg)
+}
+
+export const kelvinToHumanI18n = (deg) => {
+  if (deg == null) {
+    return null
+  }
+  //console.log('imperialUnits', GlobalStore.imperialUnits)
+  return GlobalStore.imperialUnits
+    ? t('units.temp.fahrenheit', { n: kelvinToFahrenheit(deg) })
+    : t('units.temp.celsius', { n: kelvinToCelsius(deg) })
 }
