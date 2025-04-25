@@ -43,10 +43,13 @@
 
   import { defaultBaseMapType, baseMaps, overlayMaps, boatMarkerTypes } from './leafletHelpers.js'
 
-  import { dateFormatUTC, durationFormatHours } from '../../utils/dateFormatter.js'
-  import { distanceFormatMiles } from '../../utils/distanceFormatter.js'
+  import { dateFormatUTC, durationFormatHours, fromNow } from '../../utils/dateFormatter.js'
+  import { distanceFormatMiles, depthFormatI18n } from '../../utils/distanceFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
   import { awaFormat, angleFormat } from '../../utils/angleFormatter.js'
+  import { kelvinToHumanI18n } from '../../utils/temperatureFormatter.js'
+  import { pascalToHectoPascal } from '../../utils/presureFormatter.js'
+  import { floatToPercentage } from '../../utils/percentageFormatter.js'
 
   import { useGlobalStore } from '../../stores/global-store'
   import { useVesselStore } from '../../stores/vessel-store'
@@ -135,7 +138,7 @@
         centerLng = this.geoJsonFeature.geometry.coordinates[0]
         geojson = this.geoJsonFeature
       }
-
+      //console.debug('geoJsonFeatures', this.geoJsonFeatures)
       if (this.geoJsonFeatures && this.geoJsonFeatures.length > 0) {
         const midPoint = Math.round(this.geoJsonFeatures.length / 2)
         console.debug('length,midPoint', `${this.geoJsonFeatures.length} ${midPoint}`)
@@ -156,6 +159,7 @@
       this.map = L.map(this.id, { zoomControl: false }).setView([centerLat, centerLng], this.mapZoom)
 
       const textPopupPoint = (feature) => {
+        //console.debug('textPopupPoint', feature)
         let status = feature.properties.status || ''
         let time = dateFormatUTC(feature.properties.time)
         let sog = speedFormatKnots(feature.properties.speedoverground)
@@ -169,6 +173,22 @@
                           <table class='data'><tbody>
                             <tr><th>Time</th><td>${time}</td></tr>
                             <tr><th>Position</th><td>${latitude} ${longitude}</td></tr>`
+        // If monitoring moorage point
+        if (feature.properties.stay_code) {
+          let stay_type = ''
+          if (feature.properties.stay_code == 2) {
+            stay_type = 'At anchor in '
+          }
+          if (feature.properties.stay_code == 3) {
+            stay_type = 'At mooring buoy in '
+          }
+          if (feature.properties.stay_code == 4) {
+            stay_type = 'At dock in '
+          }
+          text += `<tr><th>Updated</th><td>${fromNow(feature.properties.time)}`
+          text += `<tr><th>Status</th><td>${stay_type} ${feature.properties.name}`
+          text += `<tr><th>Arrived</th><td>${dateFormatUTC(feature.properties.arrived)}`
+        }
         if (feature.properties.speedoverground) {
           text += `<tr><th>Speed</th><td>${sog}`
           if (feature.properties.courseovergroundtrue) {
@@ -187,19 +207,27 @@
           text += `<tr><th>AWA</th><td>${awa}</td></tr>`
         }
         if (feature.properties.depth) {
-          text += `<tr><th>Depth</th><td>${feature.properties.depth}</td></tr>`
+          text += `<tr><th>Depth</th><td>${depthFormatI18n(feature.properties.depth)}</td></tr>`
         }
         if (feature.properties.watertemperature) {
-          text += `<tr><th>Water Temperature</th><td>${feature.properties.watertemperature}</td></tr>`
+          text += `<tr><th>Water Temperature</th><td>${kelvinToHumanI18n(
+            feature.properties.watertemperature,
+          )}</td></tr>`
         }
         if (feature.properties.outsidetemperature) {
-          text += `<tr><th>outsidetemperature</th><td>${feature.properties.outsidetemperature}</td></tr>`
+          text += `<tr><th>Outside Temperature</th><td>${kelvinToHumanI18n(
+            feature.properties.outsidetemperature,
+          )}</td></tr>`
         }
         if (feature.properties.outsidepressure) {
-          text += `<tr><th>outsidepressure</th><td>${feature.properties.outsidepressure}</td></tr>`
+          text += `<tr><th>Outside Pressure</th><td>${pascalToHectoPascal(
+            feature.properties.outsidepressure,
+          )} hPa</td></tr>`
         }
         if (feature.properties.outsidehumidity) {
-          text += `<tr><th>outsidehumidity</th><td>${feature.properties.outsidehumidity}</td></tr>`
+          text += `<tr><th>Outside Humidity</th><td>${floatToPercentage(
+            feature.properties.outsidehumidity,
+          )} %</td></tr>`
         }
         text += `</tbody></table></div>`
 
@@ -220,7 +248,8 @@
       }
 
       const textPopupLine = (feature) => {
-        let time = dateFormatUTC(feature.properties._from_time)
+        let starttime = dateFormatUTC(feature.properties._from_time)
+        let endtime = dateFormatUTC(feature.properties._to_time)
         let duration = durationFormatHours(feature.properties.duration)
         let distance = distanceFormatMiles(feature.properties.distance)
         let avg_speed = speedFormatKnots(feature.properties.avg_speed)
@@ -231,7 +260,8 @@
         let text = `<div class='mpopup'>
                         <h4><a href="/log/${feature.properties.id}">${feature.properties.name}</a></h4><br/>
                         <table class='data'><tbody>
-                          <tr><th>Time</th><td>${time}</td></tr>
+                          <tr><th>Start Time</th><td>${starttime}</td></tr>
+                          <tr><th>End Time</th><td>${endtime}</td></tr>
                           <tr><th>Distance</th><td>${distance}</td></tr>
                           <tr><th>Duration</th><td>${duration} hours</td></tr>
                           <tr><th>Speed</th><td>avg ${avg_speed} / max ${max_speed}</td></tr>
