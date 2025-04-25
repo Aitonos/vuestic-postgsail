@@ -23,9 +23,6 @@
   const GlobalStore = useGlobalStore()
   const { isSidebarMinimized } = storeToRefs(GlobalStore)
 
-  import eChartBar from '../../components/echarts/progress.vue'
-  import eChartGauge from '../../components/echarts/gauge.vue'
-
   import { useI18n } from 'vue-i18n'
   const { t } = useI18n()
 
