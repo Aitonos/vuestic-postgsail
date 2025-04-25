@@ -282,21 +282,24 @@
     //console.log('onEachLineStringFeaturePopup', feature, layer)
     var popupContent = '<p>I started out as a GeoJSON ' + feature.geometry.type + ", but now I'm a Leaflet vector!</p>"
     if (feature.properties && feature.properties._from_time) {
-      let time = dateFormatUTC(feature.properties._from_time)
+      let starttime = dateFormatUTC(feature.properties._from_time)
+      let endtime = dateFormatUTC(feature.properties._to_time)
       let duration = durationFormatHours(feature.properties.duration)
       let distance = distanceFormatMiles(feature.properties.distance)
       let avg_speed = speedFormatKnots(feature.properties.avg_speed)
       let max_speed = speedFormatKnots(feature.properties.max_speed)
+      let avg_wind = speedFormatKnots(feature.properties.avg_wind_speed)
       let max_wind = speedFormatKnots(feature.properties.max_wind_speed)
       let notes = feature.properties?.notes || ''
       let text = `<div class='mpopup'>
                         <h4><a href="/log/${feature.properties.id}">${feature.properties.name}</a></h4><br/>
                         <table class='data'><tbody>
-                          <tr><th>Time</th><td>${time}</td></tr>
+                          <tr><th>Start Time</th><td>${starttime}</td></tr>
+                          <tr><th>End Time</th><td>${endtime}</td></tr>
                           <tr><th>Distance</th><td>${distance}</td></tr>
                           <tr><th>Duration</th><td>${duration} hours</td></tr>
                           <tr><th>Speed</th><td>avg ${avg_speed} / max ${max_speed}</td></tr>
-                          <tr><th>Wind</th><td>max ${max_wind}</td></tr>
+                          <tr><th>Wind</th><td>avg ${avg_wind} / max ${max_wind}</td></tr>
                           <tr><th>Notes</th><td>${notes}</td></tr>'
                         </tbody></table></br>
                         <a href="/timelapse/${feature.properties.id}">Replay</a>
