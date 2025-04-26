@@ -14,7 +14,7 @@
               { label: 'Table', value: 2 },
               //{ label: 'Map', value: 3 },
               //{ label: 'Mapgl', value: 4 },
-              { label: 'MapLibre-gl', value: 5 },
+              //{ label: 'MapLibre-gl', value: 5 },
             ]"
           />
         </div>
@@ -76,6 +76,7 @@
         @delete="onTripDeleted"
         @replay="replayTrip"
       />
+      <!--
       <logbook-map v-if="doShowAsCards === 3" :loading="isBusy" />
       <LogbookMapGl v-if="doShowAsCards === 4" :loading="isBusy" />
       <LogbookMapLibreGl v-if="doShowAsCards === 5" :loading="isBusy" />
@@ -90,6 +91,7 @@
           @click="handleCSV_all(items)"
         ></va-icon>
       </div>
+      -->
     </va-card-content>
   </va-card>
 </template>
@@ -108,8 +110,8 @@
   import LogbookCards from './widgets/Cards.vue'
   import LogbookTable from './widgets/Table.vue'
   import LogbookMap from './widgets/Map.vue'
-  import LogbookMapGl from '../../components/maps/leafletMapgl.vue'
-  import LogbookMapLibreGl from '../../components/maps/MaplibreglDeckgl.vue'
+  // LogbookMapGl from '../../components/maps/leafletMapgl.vue'
+  //import LogbookMapLibreGl from '../../components/maps/MaplibreglDeckgl.vue'
   import { useModal, useToast } from 'vuestic-ui'
   import { useRouter } from 'vue-router'
   import { useGlobalStore } from '../../stores/global-store'
