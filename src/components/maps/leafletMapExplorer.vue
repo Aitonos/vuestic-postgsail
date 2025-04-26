@@ -47,6 +47,7 @@
   const logsLayers = ref([])
   const mooragesList = ref([])
   const logsList = ref([])
+  const mapBounds = ref(null)
   const api_monitoring = ref({})
 
   onMounted(async () => {
@@ -79,6 +80,11 @@
       //center: [coords[1], coords[0]],
       zoom: currentZoom.value,
       zoomControl: false,
+      easeLinearity: 0.35, // Lower = smoother panning
+      zoomSnap: 0.25,
+      zoomDelta: 0.25,
+      zoomAnimation: true,
+      markerZoomAnimation: true,
     })
     // Track zoom level and hide/show labels based on zoom
     map.value.on('zoomend', () => {
@@ -244,6 +250,8 @@
     // Fit the map to the calculated bounds
     if (updatedBounds.isValid()) {
       map.value.fitBounds(updatedBounds)
+      // Save the bounds to the mapBounds ref
+      mapBounds.value = updatedBounds
     }
   }
 
@@ -262,7 +270,7 @@
     let max_tws = speedFormatKnots(feature.properties.max_tws)
     let notes = feature.properties?.notes || ''
     let text = `<div class='mpopup'>
-                          <h4>${feature.properties.name}</a><br/>
+                          <h4><a href="/log/${feature.properties.id}">${feature.properties.name}</a></h4><br/>
                           <table class='data'><tbody>
                           <tr><td>Start Time</td><td>${starttime}</td></tr>
                           <tr><td>End Time</td><td>${endtime}</td></tr>
@@ -415,14 +423,15 @@
   })
 
   const onLogClickNavigate = (coordinates, index) => {
+    if (isNaN(index)) return
     //console.log('onLogClickNavigate', index)
     logsLayers.value.forEach((geoJSONLayer, i) => {
       //console.log(geoJSONLayer, i, index)
       if (i === index) {
         map.value.addLayer(geoJSONLayer)
-        map.value.flyTo(coordinates, 10, { animate: true })
+        //map.value.flyTo(coordinates)
         setTimeout(() => {
-          map.value.fitBounds(geoJSONLayer.getBounds())
+          map.value.fitBounds(geoJSONLayer.getBounds(), { animate: true, duration: 0.5 })
           geoJSONLayer.eachLayer(function (featureLayer) {
             if (featureLayer.openPopup) {
               // Open the popup
@@ -431,25 +440,30 @@
               sidepanelToggleButton()
             }
           })
-        }, 1000)
+        }, 600)
       } else {
         map.value.removeLayer(geoJSONLayer)
       }
     })
   }
   const onMoorageClickNavigate = (coordinates, index) => {
+    if (isNaN(index)) return
     //console.log('onMoorageClickNavigate', coordinates, index)
     const latlng = L.latLng(coordinates[1], coordinates[0])
-    map.value.flyTo(latlng, 10, { animate: true })
+    //map.value.flyTo(latlng)
     // Find and open popup on the matching layer
     const layer = mooragesLayers.value[index]
     if (layer && layer.getLayers) {
       const markerLayer = layer.getLayers()[0] // assuming one marker per feature
       if (markerLayer && markerLayer.openPopup) {
         setTimeout(() => {
-          //map.value.fitBounds(layer.getBounds())
+          // Fit map on all moorages layer
+          map.value.fitBounds(mapBounds.value, { animate: true, duration: 0.5 })
+          // Open the popup
           markerLayer.openPopup()
-        }, 1000) // wait until flyTo animation completes
+          // Close the side panel
+          sidepanelToggleButton()
+        }, 600) // wait until flyTo animation completes
       }
     }
   }
@@ -457,12 +471,12 @@
   const onMoorageMouseEnter = (id) => {
     if (isNaN(id)) return
     const marker = mooragesMakers.value[id]
-    //console.log('onMoorageMouseEnter', marker)
     if (marker && !marker._icon.classList.contains('bouncing')) {
       marker._icon.classList.add('bouncing')
       marker._bouncingMotion.isBouncing = true
-      map.value.setZoom(7)
-      map.value.panTo(marker.getLatLng())
+
+      // Gently pan to marker instead of fitting bounds
+      map.value.panTo(marker.getLatLng(), { animate: true, duration: 0.5 })
     }
   }
   const stopBouncingMarker = (id) => {
@@ -474,16 +488,24 @@
     }
   }
   const onLogMouseEnter = (index) => {
-    //console.log('onLogMouseEnter', index)
     if (isNaN(index)) return
     logsLayers.value.forEach((layer, i) => {
-      //console.log(layer, i, index)
       if (i === index) {
         map.value.addLayer(layer)
-        map.value.setZoom(10)
-        map.value.panTo(layer.getBounds().getCenter())
-        //map.value.fitBounds(layer.getBounds(), { maxZoom: 17 })
-        layer.openPopup()
+
+        const center = layer.getBounds().getCenter()
+
+        // Instead of fitting the full bounds (jumps the zoom), just softly pan
+        map.value.panTo(center, { animate: true, duration: 0.5 })
+
+        // Optionally: If center is outside view, you can use panInsideBounds
+        /*
+      const bounds = layer.getBounds()
+      map.value.panInsideBounds(bounds, { animate: true, duration: 0.5, padding: [50, 50] })
+      */
+
+        // (Optional) Open the tooltip instead of popup to stay lightweight
+        layer.openTooltip()
       } else {
         map.value.removeLayer(layer)
       }
@@ -504,7 +526,7 @@
 
   const sidepanelToggleButton = () => {
     const toggleButton = document.querySelector('.sidepanel-toggle-button')
-    console.log('sidepanelToggleButton', toggleButton)
+    //console.log('sidepanelToggleButton', toggleButton)
     if (toggleButton) {
       toggleButton.click()
     }
@@ -658,11 +680,6 @@
                 <div class="sidepanel-content-wrapper">
                   <div class="sidepanel-content">
                     <div id="logs-list" class="sidepanel-tab-content" data-tab-content="tab-1">
-                      <!--
-                      <div class="sidepanel-reset-button">
-                        <VaButton color="primary" @click="onLogsResetClick"> {{ t('vuestic.reset') }} </VaButton>
-                      </div>
-                      -->
                       <div>
                         <ol>
                           <li
@@ -767,19 +784,5 @@
     to {
       transform: translate3d(0, 200px, 0);
     }
-  }
-  .zoom-display {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: white;
-    padding: 5px 10px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    font-weight: bold;
-  }
-  .sidepanel-reset-button {
-    text-align: center;
-    width: 350px;
   }
 </style>
