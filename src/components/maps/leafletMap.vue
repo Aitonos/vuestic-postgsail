@@ -34,7 +34,7 @@
 
 <script>
   import 'leaflet/dist/leaflet.css'
-  import 'leaflet.sidepanel/dist/style.css'
+  import 'leaflet.sidepanel/dist/leaflet.sidepanel.css'
   import L from 'leaflet'
   import 'leaflet-rotatedmarker'
   import 'leaflet.sidepanel'

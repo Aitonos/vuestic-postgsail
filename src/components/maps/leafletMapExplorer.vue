@@ -2,7 +2,7 @@
   /* eslint-disable */
   import { onMounted, ref, computed, watch, reactive } from 'vue'
   import 'leaflet/dist/leaflet.css'
-  import 'leaflet.sidepanel/dist/style.css'
+  import 'leaflet.sidepanel/dist/leaflet.sidepanel.css'
   import L from 'leaflet'
   import 'leaflet.sidepanel'
   import SmoothMarkerBouncing from 'leaflet.smooth_marker_bouncing'
@@ -190,7 +190,7 @@
       .map((feature) => feature.properties.starttimestamp)
   })
 
-  // Filter logs and update layers and set bounds
+  // Update layers (Logs and moorages) and set bounds
   const updateMap = () => {
     if (!map.value) return
 

@@ -1,7 +1,7 @@
 {
   "name": "vuestic-postgsail",
   "private": false,
-  "version": "0.1.0-beta14",
+  "version": "0.1.0-beta15",
   "scripts": {
     "prepare": "husky",
     "dev": "vite",
@@ -50,7 +50,7 @@
     "leaflet-rotatedmarker": "^0.2.0",
     "leaflet-timedimension": "^1.1.1",
     "leaflet.fullscreen": "^3.0.2",
-    "leaflet.sidepanel": "^1.2.1",
+    "leaflet.sidepanel": "^1.2.2",
     "leaflet.smooth_marker_bouncing": "^3.1.1",
     "lunarphase-js": "^2.0.3",
     "moment": "^2.30.1",
