@@ -4,12 +4,13 @@
       <va-alert color="danger" outline class="mb-4"> {{ $t('api.error') }}: {{ apiError }} </va-alert>
     </template>
     <template v-if="!offline && apiSuccess">
-      <template v-if="items.geojson && mapGeoJsonFeatures">
+      <template v-if="mapGeoJsonFeatures">
         <l-map
           id="monitoring-map"
-          :tabs="['steelseries', 'echarts']"
+          :tabs="['steelseries']"
           :tabs-auto-open="true"
-          :geo-json-feature="mapGeoJsonFeatures"
+          :geo-json-feature="Array.isArray(mapGeoJsonFeatures) ? null : mapGeoJsonFeatures"
+          :geo-json-features="Array.isArray(mapGeoJsonFeatures) ? mapGeoJsonFeatures : null"
           :map-zoom="13"
           map-type="Satellite"
         >
@@ -54,45 +55,6 @@
               <display-lcd id="battery" :display="items.battery"></display-lcd>
             </div>
           </template>
-
-          <template #tab-echarts>{{ items.vessel_name }}</template>
-          <template #content-echarts>
-            <h1 class="layout gutter--md text-center p-4">{{ msg_fromNow }}</h1>
-            <div style="font-size: 10pt; text-align: center">
-              <template v-if="sub_msg == 'Offline'">
-                <va-avatar size="small" color="warning" class="mr-6" /> Offline
-              </template>
-              <template v-else-if="sub_msg == 'Online'">
-                <va-avatar size="small" color="success" class="mr-6" /> Online
-              </template>
-            </div>
-            <div class="flex flex-col items-center p-4">
-              <div style="width: 180px; position: relative; margin: auto">
-                <div
-                  id="windDirection"
-                  style="
-                    display: true;
-                    position: absolute;
-                    left: 10px;
-                    top: 18px;
-                    height: 36px;
-                    width: 36px;
-                    z-index: 99;
-                  "
-                >
-                  <img
-                    id="windArrow"
-                    src="/wind_direction.png"
-                    style="height: 32px; width: 32px; opacity: 0.7"
-                    :style="windDirection"
-                  />
-                </div>
-                <display-lcd id="wind" :display="items.wind"></display-lcd>
-                <VChart :option="echartsDefault" style="width: 180px"></VChart>
-                <VChart :option="echartsBattery" style="width: 180px"></VChart>
-              </div>
-            </div>
-          </template>
         </l-map>
       </template>
     </template>
@@ -111,7 +73,7 @@
 
 <script setup>
   import 'leaflet/dist/leaflet.css'
-  import 'leaflet.sidepanel/dist/style.css'
+  import 'leaflet.sidepanel/dist/leaflet.sidepanel.css'
   import L from 'leaflet'
   import 'leaflet.sidepanel'
 
@@ -129,15 +91,6 @@
 
   import monitoringDatas from '../../data/monitoring.json'
   import useGlobalStore from '../../stores/global-store'
-
-  import VChart, { THEME_KEY } from 'vue-echarts'
-  import { use } from 'echarts/core'
-  import * as echarts from 'echarts/core'
-  import { GraphicComponent, TitleComponent, LegendComponent, TooltipComponent } from 'echarts/components'
-  import { CanvasRenderer } from 'echarts/renderers'
-  import { GaugeChart } from 'echarts/charts'
-
-  echarts.use([GraphicComponent, CanvasRenderer, TitleComponent, LegendComponent, GaugeChart, TooltipComponent])
 
   const GlobalStore = useGlobalStore()
   const { t } = useI18n()
@@ -207,6 +160,7 @@
           },
           vessel_name: apiData.row.name,
           geojson: apiData.row.geojson,
+          live: apiData.row.live,
         }
       : {}
   })
@@ -220,7 +174,10 @@
   })
 
   const mapGeoJsonFeatures = computed(() => {
-    return apiData.row.geojson
+    if (apiData.row.status != 'moored') {
+      return items.value.live.features
+    }
+    return apiData.row.live ? items.value.live : items.value.geojson
   })
 
   const tempUnit = computed(() => {
@@ -240,179 +197,6 @@
   const windDirection = computed(() => ({
     rotate: `${utils.radiantToDegrees(apiData.row.winddirectiontrue) - 180}deg`,
   }))
-
-  var progressLineLength = 180
-  var maxValue = 100
-  var value = 70
-  const echartsDefault = {
-    graphic: {
-      elements: [
-        {
-          type: 'group',
-          left: 'center',
-          top: 'center',
-          children: [
-            // Background bar
-            {
-              type: 'rect',
-              shape: {
-                x: 0,
-                y: 0,
-                width: progressLineLength,
-                height: 20, // Increased height for a thicker bar
-              },
-              style: {
-                fill: '#E5E5E5',
-              },
-            },
-            // Progress bar
-            {
-              type: 'rect',
-              shape: {
-                x: 0,
-                y: 0,
-                width: (progressLineLength * value) / maxValue,
-                height: 20, // Increased height for a thicker bar
-              },
-              style: {
-                fill: '#3874CB',
-              },
-              keyframeAnimation: {
-                duration: 1000,
-                loop: false,
-                keyframes: [
-                  {
-                    percent: 0,
-                    scaleX: 0,
-                  },
-                  {
-                    percent: 1,
-                    scaleX: 1,
-                  },
-                ],
-              },
-            },
-            // Value text above the bar
-            {
-              type: 'text',
-              left: (progressLineLength * value) / maxValue + 5, // Position text slightly above the bar
-              top: -25, // Adjust top to position the text above the bar
-              style: {
-                text: value.toString(), // Convert value to string for display
-                fill: '#000', // Text color
-                font: 'bold 16px sans-serif', // Adjust the font size and weight
-              },
-            },
-          ],
-        },
-      ],
-    },
-  }
-
-  const echartsBattery = {
-    tooltip: {
-      formatter: function (params) {
-        // Show tooltip for the Battery Level gauge
-        if (params.seriesIndex === 0) {
-          return `Battery Level: ${params.value}%`
-        }
-        return ''
-      },
-    },
-    graphic: {
-      type: 'text',
-      left: 'center',
-      top: '48%',
-      style: {
-        text: '14 V', // Example voltage value; replace with dynamic value if needed
-        textAlign: 'center',
-        fill: '#333', // Text color
-        font: '12px Arial', // Font size and family
-      },
-    },
-    series: [
-      {
-        name: 'Battery gauge',
-        type: 'gauge',
-        startAngle: 180,
-        endAngle: 0,
-        min: 0,
-        max: 100,
-        radius: '30%',
-        axisLine: {
-          roundCap: true,
-          lineStyle: {
-            width: 8,
-          },
-        },
-        progress: {
-          show: true,
-          roundCap: true,
-          width: 8,
-        },
-        pointer: {
-          show: false,
-        },
-        axisTick: {
-          splitNumber: 2,
-          lineStyle: {
-            width: 2,
-            color: '#999',
-          },
-          show: false,
-        },
-        splitLine: {
-          length: 12,
-          lineStyle: {
-            width: 3,
-            color: '#999',
-          },
-          show: false,
-        },
-        axisLabel: {
-          distance: 30,
-          color: '#999',
-          fontSize: 12,
-          show: false,
-        },
-        title: {
-          show: true,
-        },
-        detail: {
-          show: false, // Do not show detail value
-          backgroundColor: '#fff',
-          //borderColor: '#999',
-          //borderWidth: 2,
-          width: '30%',
-          lineHeight: 40,
-          height: 40,
-          borderRadius: 6,
-          offsetCenter: [0, '-20%'],
-          valueAnimation: true,
-          formatter: function (value) {
-            return '{value|' + value.toFixed(0) + '}{tempUnit|C}'
-          },
-          rich: {
-            value: {
-              fontSize: 20,
-              fontWeight: 'bolder',
-              color: '#777',
-            },
-            unit: {
-              fontSize: 5,
-              color: '#999',
-              padding: [0, 0, -20, 10],
-            },
-          },
-        },
-        data: [
-          {
-            value: 65,
-          },
-        ],
-      },
-    ],
-  }
 
   onMounted(async () => {
     isBusy.value = true
