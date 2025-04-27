@@ -9,7 +9,7 @@
 
   import PostgSail from '../../services/api-client'
   import { dateFormatUTC, durationFormatHours, fromNow, nowUTC } from '../../utils/dateFormatter.js'
-  import { distanceFormatMiles, distanceFormat } from '../../utils/distanceFormatter.js'
+  import { distanceFormatMiles, distanceFormat, depthFormatI18n } from '../../utils/distanceFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
   import { stayed_at_options } from '../../utils/PostgSail.ts'
   import { kelvinToHuman } from '../../utils/temperatureFormatter.js'
@@ -17,6 +17,9 @@
   import { floatToPercentage } from '../../utils/percentageFormatter.js'
   import { default as utils } from '../../utils/utils.js'
   import { baseMaps, overlayMaps } from './leafletHelpers.js'
+
+  import echartsProgress from '../../components/echarts/progress.vue'
+  import echartsGauge from '../../components/echarts/gauge.vue'
 
   import { storeToRefs } from 'pinia'
   import { useGlobalStore } from '../../stores/global-store'
@@ -130,6 +133,7 @@
       .addTo(map.value)
 
     map.value.whenReady(function () {
+      addResetViewControl()
       const sidepanel = document.getElementById('sidepanelLeft')
 
       // Watch class changes
@@ -253,6 +257,35 @@
       // Save the bounds to the mapBounds ref
       mapBounds.value = updatedBounds
     }
+  }
+
+  const addResetViewControl = () => {
+    if (!map.value) return
+
+    const resetControl = L.control({ position: 'topright' })
+
+    resetControl.onAdd = function (mapInstance) {
+      const button = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom')
+      button.innerHTML = '<i class="va-icon material-icons">refresh</i>'
+      button.title = 'Reset View'
+      button.style.width = '34px'
+      button.style.height = '34px'
+      button.style.fontSize = '20px'
+      button.style.lineHeight = '34px'
+      button.style.textAlign = 'center'
+      button.style.cursor = 'pointer'
+      button.style.backgroundColor = 'white'
+
+      L.DomEvent.on(button, 'click', function (e) {
+        L.DomEvent.stopPropagation(e)
+        L.DomEvent.preventDefault(e)
+        updateMap()
+      })
+
+      return button
+    }
+
+    resetControl.addTo(map.value)
   }
 
   const onEachLogFeaturePopup = (feature, layer) => {
@@ -499,10 +532,8 @@
         map.value.panTo(center, { animate: true, duration: 0.5 })
 
         // Optionally: If center is outside view, you can use panInsideBounds
-        /*
-      const bounds = layer.getBounds()
-      map.value.panInsideBounds(bounds, { animate: true, duration: 0.5, padding: [50, 50] })
-      */
+        const bounds = layer.getBounds()
+        map.value.panInsideBounds(bounds, { animate: true, duration: 0.5, padding: [50, 50] })
 
         // (Optional) Open the tooltip instead of popup to stay lightweight
         layer.openTooltip()
@@ -547,10 +578,11 @@
     console.log('Moorages tab clicked')
     // Show all Moorages
   }
-  const onMonitoringTabClick = (event) => {
+  const onMonitoringTabClick = async (event) => {
     event.preventDefault() // if you're preventing default anchor behavior
     console.log('Monitoring tab clicked')
-    //fetchMonitoring()
+    await fetchMonitoring()
+    displayMonitoring()
   }
   const fetchMonitoring = async () => {
     // fetch the monitoring tab content
@@ -579,47 +611,71 @@
     }
   }
 
+  const displayMonitoring = async () => {
+    // Remove all logs layers from map
+    logsLayers.value.forEach((layer) => map.value.removeLayer(layer))
+    const boat = L.geoJSON(items.live, {
+      pointToLayer: markerIcon,
+      onEachFeature: onEachMoorageFeaturePopup,
+    })
+    //map.value.addLayer(boat)
+  }
+
   const items = computed(() => {
-    console.log('items', api_monitoring.value)
-    return api_monitoring.value.data
+    console.log('items api_monitoring', api_monitoring.value)
+    return api_monitoring.value
       ? {
           time: nowUTC(api_monitoring.value.time),
           updated: fromNow(api_monitoring.value.time),
           wind: {
-            speed: utils.metersToKnots(api_monitoring.value.data.wind.speed) || 0,
-            direction: utils.radiantToDegrees(api_monitoring.value.data.wind.direction) || 0,
+            //speed: 11,
+            speed: utils.metersToKnots(api_monitoring.value.windspeedoverground) || null,
+            direction: utils.radiantToDegrees(api_monitoring.value.winddirectiontrue) || null,
           },
           temperature: {
-            inside: kelvinToHuman(api_monitoring.value.data.temperature.inside) || 0.0,
-            outside: kelvinToHuman(api_monitoring.value.data.temperature.outside) || 0.0,
+            inside: kelvinToHuman(api_monitoring.value.insidetemperature) || null,
+            outside: kelvinToHuman(api_monitoring.value.outsidetemperature) || null,
           },
           water: {
-            depth: api_monitoring.value.data.water.depth || 0,
-            temperature: kelvinToHuman(api_monitoring.value.data.water.temperature) || 0.0,
+            depth: depthFormatI18n(api_monitoring.value.depth) || null,
+            temperature: kelvinToHuman(api_monitoring.value.watertemperature) || null,
           },
           battery: {
-            charge: floatToPercentage(api_monitoring.value.data.battery.charge) || 0,
-            voltage: api_monitoring.value.data.battery.voltage || 0,
+            charge: floatToPercentage(api_monitoring.value.batterycharge) || null,
+            voltage: parseFloat(api_monitoring.value.batteryvoltage).toFixed(1) || null,
           },
           humidity: {
-            inside: floatToPercentage(api_monitoring.value.data.humidity.inside) || 0,
-            outside: floatToPercentage(api_monitoring.value.data.humidity.outside) || 0,
+            inside: floatToPercentage(api_monitoring.value.insidehumidity) || null,
+            outside: floatToPercentage(api_monitoring.value.outsidehumidity) || null,
           },
-          /*
           pressure: {
-            inside: pascalToHectoPascal(api_monitoring.value.data.pressure.inside) || 0.0,
-            outside: pascalToHectoPascal(api_monitoring.value.data.pressure.outside) || 0.0,
+            inside: pascalToHectoPascal(api_monitoring.value.insidepressure) || null,
+            outside: pascalToHectoPascal(api_monitoring.value.outsidepressure) || null,
           },
-*/
           solar: {
-            voltage: api_monitoring.value.data.solar.voltage || 0,
-            current: api_monitoring.value.data.solar.current || 0,
+            voltage: parseFloat(api_monitoring.value.solarvoltage).toFixed(1) || null,
+            power: parseInt(api_monitoring.value.solarpower) || null,
+          },
+          tank: {
+            level: floatToPercentage(api_monitoring.value.tanklevel) || null,
           },
           vessel_name: api_monitoring.value.name,
           geojson: api_monitoring.value.geojson,
           live: api_monitoring.value.live,
+          alarm: GlobalStore.settings.preferences.alerting,
         }
       : {}
+  })
+
+  const getSpeedColor = (speed) => {
+    if (speed <= 10) return '#91cc75'
+    if (speed <= 20) return '#fac858'
+    return '#ee6666'
+  }
+  const circumference = 2 * Math.PI * 45 // r = 38 now
+  const dashArray = computed(() => {
+    if (!items.value?.wind?.speed) return `0, ${circumference}`
+    return `${(items.value.wind.speed / 30) * circumference}, ${circumference}`
   })
 </script>
 
@@ -654,13 +710,11 @@
                     <li class="sidepanel-tab">
                       <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-1" @click="onLogsTabClick">
                         <va-icon name="menu-logs" />
-                        {{ t('menu.logs') }}
                       </a>
                     </li>
                     <li class="sidepanel-tab">
                       <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-2" @click="onMooragesTabClick">
                         <va-icon name="menu-moorages" />
-                        {{ t('menu.moorages') }}
                       </a>
                     </li>
                     <li class="sidepanel-tab">
@@ -672,7 +726,6 @@
                         @click="onMonitoringTabClick"
                       >
                         <va-icon name="menu-monitoring" />
-                        {{ t('menu.monitoring_realtime') }}
                       </a>
                     </li>
                   </ul>
@@ -689,7 +742,7 @@
                             v-for="(log, index) in logsList"
                             :key="index"
                           >
-                            Trip #{{ index + 1 }}
+                            {{ index + 1 }}.
                             <a
                               class="va-link"
                               @mouseenter="onLogMouseEnter(log.properties.logIndex)"
@@ -713,7 +766,7 @@
                           >
                             {{ index + 1 }}.
                             <a
-                              class="va-link line-item"
+                              class="va-link"
                               @mouseenter="onMoorageMouseEnter(moorage.properties.moorageIndex)"
                               @mouseleave="stopBouncingMarker(moorage.properties.moorageIndex)"
                               @click="
@@ -723,6 +776,116 @@
                             >
                           </li>
                         </ol>
+                      </div>
+                    </div>
+                    <div id="real-time" class="sidepanel-tab-content" data-tab-content="tab-3">
+                      <div class="w-full" v-if="items">
+                        <h2 class="">{{ items.updated }} <span class="dot"></span></h2>
+                        <hr class="cool-hr" />
+                        <h3 class="font-semibold">Wind & Depth</h3>
+                        <div class="w-full flex justify-center items-center">
+                          <div class="flex items-center space-x-4" v-if="items.wind.speed">
+                            <!-- Left Column -->
+                            <div class="flex flex-col text-sm space-y-1 min-w-[100px]">
+                              <div>Depth: {{ items.water.depth }}</div>
+                              <div>Wind Speed: {{ items.wind.speed }} Kt</div>
+                              <div>Wind Direction: {{ items.wind.direction }}°</div>
+                            </div>
+
+                            <!-- Right Column (Wind Compass) -->
+                            <div
+                              class="wind-compass group relative"
+                              :title="`Wind: ${items.wind.speed} Kt, ${items.wind.direction} deg`"
+                              v-if="items.wind.speed && items.wind.direction"
+                            >
+                              <!-- Value on top (optional, you might remove this if redundant) -->
+                              <div
+                                class="absolute -top-7 left-1/2 transform -translate-x-1/2 text-sm font-medium text-center px-1 max-w-[6rem] truncate"
+                              >
+                                {{ items.wind.speed }} Kt – {{ items.wind.direction }}°
+                              </div>
+
+                              <!-- Circular wind speed ring -->
+                              <svg class="speed-circle" viewBox="0 0 100 100">
+                                <circle class="bg" cx="50" cy="50" r="45" />
+                                <circle
+                                  class="progress"
+                                  :stroke="getSpeedColor(items.wind.speed)"
+                                  cx="50"
+                                  cy="50"
+                                  r="45"
+                                  :stroke-dasharray="dashArray"
+                                  stroke-dashoffset="0"
+                                />
+                              </svg>
+
+                              <!-- Rotating Arrow -->
+                              <svg
+                                class="arrow-svg"
+                                :style="{ transform: `rotate(${items.wind.direction}deg)` }"
+                                viewBox="0 0 36 36"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  x="3"
+                                  y="3"
+                                  width="25"
+                                  height="25"
+                                  transform="rotate(-249.5,15.5,15.5)"
+                                  fill="#145da0"
+                                  d="M26.675824776131577 2.519999999999989L2.500000600307402 13.822982731554148 2.500000600307402 14.764897959183662 10.46703356734037 18.728791208791197ZM11.291209391516192 19.55296703296702L15.25510264112373 27.51999999999999 16.197017868753242 27.51999999999999 27.500000600307402 3.3441758241758133Z"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+
+                        <hr class="cool-hr" />
+                        <h3 class="font-semibold">Temperature</h3>
+                        <div class="w-full h-24" v-if="items.temperature.inside">
+                          <echartsProgress
+                            :series="[items.temperature.inside]"
+                            title="Inside"
+                            :alarm="items.alarm.low_indoor_temperature_threshold"
+                          />
+                        </div>
+                        <div class="w-full h-24" v-if="items.temperature.outside">
+                          <echartsProgress
+                            :series="[items.temperature.outside]"
+                            title="Outside"
+                            :alarm="items.alarm.low_outdoor_temperature_threshold"
+                          />
+                        </div>
+                        <div class="w-full h-24" v-if="items.water.temperature">
+                          <echartsProgress
+                            :series="[items.water.temperature]"
+                            title="Water"
+                            :alarm="items.alarm.low_water_temperature_threshold"
+                          />
+                        </div>
+                        <hr class="cool-hr" />
+                        <h3 class="font-semibold">Humidity</h3>
+                        <div class="w-full h-24" v-if="items.humidity.inside">
+                          <echartsProgress :series="[items.humidity.inside]" title="Inside" :max="100" unit="%" />
+                        </div>
+                        <div class="w-full h-24" v-if="items.humidity.outside">
+                          <echartsProgress :series="[items.humidity.inside]" title="Outside" :max="100" unit="%" />
+                        </div>
+                        <hr class="cool-hr" />
+                        <h3 class="font-semibold">Battery</h3>
+                        <div class="w-full h-28" v-if="items.battery.charge">
+                          <echartsGauge :series="[parseInt(items.battery.charge), items.battery.voltage]" />
+                        </div>
+                        <hr class="cool-hr" />
+                        <h3 class="font-semibold">Solar</h3>
+                        <div class="w-full h-28" v-if="items.solar.power">
+                          <echartsGauge :series="[items.solar.power, items.solar.voltage]" unit="W" />
+                        </div>
+                        <hr class="cool-hr" />
+                        <h3 class="font-semibold">Tank</h3>
+                        <div class="w-full h-28" v-if="items.tank.level">
+                          <echartsGauge :series="[items.tank.level, items.tank.level]" unit="%" />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -784,5 +947,68 @@
     to {
       transform: translate3d(0, 200px, 0);
     }
+  }
+
+  .wind-compass {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+
+  .speed-circle {
+    width: 80px;
+    height: 80px;
+    transform: rotate(-90deg);
+  }
+
+  circle.bg {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 12;
+  }
+
+  circle.progress {
+    fill: none;
+    stroke-width: 12;
+    transition: stroke 0.3s;
+  }
+
+  .arrow-svg {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 56px;
+    height: 56px;
+    opacity: 0.8;
+    transition: transform 0.5s ease;
+    transform-origin: center center;
+  }
+
+  .dot {
+    display: inline-block; /* Ensures it's on the same line as the text */
+    width: 10px; /* Size of the dot */
+    height: 10px; /* Size of the dot */
+    background-color: green; /* Green color for the dot */
+    border-radius: 50%; /* Makes it circular */
+    animation: pulseAnimation 1s infinite; /* Makes it pulse */
+    margin-left: 10px; /* Adds space between the text and the dot */
+  }
+
+  @keyframes pulseAnimation {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.5); /* Increase the size slightly */
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  .cool-hr {
+    margin: 5px;
   }
 </style>
