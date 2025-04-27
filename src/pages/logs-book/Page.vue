@@ -80,6 +80,7 @@
       <logbook-map v-if="doShowAsCards === 3" :loading="isBusy" />
       <LogbookMapGl v-if="doShowAsCards === 4" :loading="isBusy" />
       <LogbookMapLibreGl v-if="doShowAsCards === 5" :loading="isBusy" />
+      -->
       <div v-if="doShowAsCards < 3" class="flex mt-4">
         <va-icon
           v-if="items.length > 0"
@@ -91,7 +92,6 @@
           @click="handleCSV_all(items)"
         ></va-icon>
       </div>
-      -->
     </va-card-content>
   </va-card>
 </template>
@@ -109,8 +109,8 @@
   import logsData from '../../data/logs.json'
   import LogbookCards from './widgets/Cards.vue'
   import LogbookTable from './widgets/Table.vue'
-  import LogbookMap from './widgets/Map.vue'
-  // LogbookMapGl from '../../components/maps/leafletMapgl.vue'
+  //import LogbookMap from './widgets/Map.vue'
+  //import LogbookMapGl from '../../components/maps/leafletMapgl.vue'
   //import LogbookMapLibreGl from '../../components/maps/MaplibreglDeckgl.vue'
   import { useModal, useToast } from 'vuestic-ui'
   import { useRouter } from 'vue-router'
