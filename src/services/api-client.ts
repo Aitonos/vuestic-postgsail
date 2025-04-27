@@ -299,6 +299,9 @@ class ApiClient extends HttpClient {
     */
     return this.get(`monitoring_view2`)
   }
+  async monitoring_live() {
+    return this.get(`monitoring_live`)
+  }
 
   async explore() {
     return this.get(`explore_view`)
