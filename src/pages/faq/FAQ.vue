@@ -180,6 +180,9 @@
                 - 'electrical.batteries.House.capacity.stateOfCharge' AS batteryCharge<br />
                 - 'electrical.batteries.House.voltage' AS batteryVoltage<br />
                 - 'environment.depth.belowTransducer' AS depth<br />
+                - 'electrical.solar.Main.panelVoltage AS solarVoltage<br />
+                - 'electrical.solar.Main.panelPower AS solarPower<br />
+                - 'tanks.fuel.20.currentLevel' AS tankLevel<br />
                 Check the
                 <router-link class="va-text-bold va-link link" :to="{ name: 'explore' }">explore page</router-link> to
                 see your signalk path.<br />
