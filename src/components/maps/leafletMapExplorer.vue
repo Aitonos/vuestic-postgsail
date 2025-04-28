@@ -309,14 +309,14 @@
     let text = `<div class='mpopup'>
                           <h4><a href="/log/${feature.properties.id}">${feature.properties.name}</a></h4><br/>
                           <table class='data'><tbody>
-                          <tr><td>Start Time</td><td>${starttime}</td></tr>
-                          <tr><td>End Time</td><td>${endtime}</td></tr>
-                          <tr><td>Distance</td><td>${distance}</td></tr>
-                          <tr><td>Duration</td><td>${duration} hours</td></tr>
-                          <tr><td>Speed</td><td>avg ${avg_speed} / max ${max_speed}</td></tr>
-                          <tr><td>Wind</td><td>avg ${avg_tws} / max ${max_tws}</td></tr>
-                          <tr><td>Depth</td><td>avg ${avg_depth} / max ${max_depth}</td></tr>
-                          <tr><td>Notes</td><td>${notes}</td></tr>
+                          <tr><th>Start Time</th><td>${starttime}</td></tr>
+                          <tr><th>End Time</th><td>${endtime}</td></tr>
+                          <tr><th>Distance</th><td>${distance}</td></tr>
+                          <tr><th>Duration</th><td>${duration} hours</td></tr>
+                          <tr><th>Speed</th><td>avg ${avg_speed} / max ${max_speed}</td></tr>
+                          <tr><th>Wind</th><td>avg ${avg_tws} / max ${max_tws}</td></tr>
+                          <tr><th>Depth</th><td>avg ${avg_depth} / max ${max_depth}</td></tr>
+                          <tr><th>Notes</th><td>${notes}</td></tr>
                           </tbody></table></br>
                           <a href="/timelapse/${feature.properties.id}">Replay</a>
                         </div>`
@@ -920,11 +920,12 @@
     padding: 0.5rem 2rem 0.5rem 2rem;
   }
   .mpopup {
-    td:nth-child(1) {
+    th {
       text-align: right;
       padding-right: 5px;
+      font-weight: normal;
     }
-    td:nth-child(2) {
+    td {
       font-weight: bold;
     }
     a {
