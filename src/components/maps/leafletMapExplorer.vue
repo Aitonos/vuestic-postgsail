@@ -24,7 +24,9 @@
 
   import { storeToRefs } from 'pinia'
   import { useGlobalStore } from '../../stores/global-store'
+  import { useCacheStore } from '../../stores/cache-store'
   const GlobalStore = useGlobalStore()
+  const CacheStore = useCacheStore()
   const { isSidebarMinimized } = storeToRefs(GlobalStore)
 
   const { currentTheme } = useGlobalStore()
@@ -587,7 +589,6 @@
     event.preventDefault() // if you're preventing default anchor behavior
     console.log('Monitoring tab clicked')
     await fetchMonitoring()
-    displayMonitoring()
   }
   const fetchMonitoring = async () => {
     // fetch the monitoring tab content
@@ -616,16 +617,6 @@
     }
   }
 
-  const displayMonitoring = async () => {
-    // Remove all logs layers from map
-    logsLayers.value.forEach((layer) => map.value.removeLayer(layer))
-    const boat = L.geoJSON(items.live, {
-      pointToLayer: markerIcon,
-      onEachFeature: onEachMoorageFeaturePopup,
-    })
-    //map.value.addLayer(boat)
-  }
-
   const items = computed(() => {
     console.log('items api_monitoring', api_monitoring.value)
     return api_monitoring.value
@@ -633,8 +624,9 @@
           time: nowUTC(api_monitoring.value.time),
           updated: fromNow(api_monitoring.value.time),
           wind: {
-            //speed: 11,
-            speed: utils.metersToKnots(api_monitoring.value.windspeedoverground) || null,
+            speed: isNaN(api_monitoring.value.windspeedoverground)
+              ? null
+              : utils.metersToKnots(api_monitoring.value.windspeedoverground),
             direction: utils.radiantToDegrees(api_monitoring.value.winddirectiontrue) || null,
           },
           temperature: {
@@ -659,7 +651,7 @@
           },
           solar: {
             voltage: parseFloat(api_monitoring.value.solarvoltage).toFixed(1) || null,
-            power: parseInt(api_monitoring.value.solarpower) || null,
+            power: isNaN(api_monitoring.value.solarpower) ? null : parseInt(api_monitoring.value.solarpower), // 0 is treat as false
           },
           tank: {
             level: floatToPercentage(api_monitoring.value.tanklevel) || null,
@@ -682,6 +674,43 @@
     if (!items.value?.wind?.speed) return `0, ${circumference}`
     return `${(items.value.wind.speed / 30) * circumference}, ${circumference}`
   })
+
+  /* todo tags issue in html template */
+  const tagsOptions = CacheStore.getTags()
+  const filter = reactive({
+    tags: [],
+  })
+
+  const displayMonitoring = () => {
+    if (!items.value.live || !items.value.live.geometry) {
+      console.log('Live items not ready yet')
+      return
+    }
+
+    // Remove all logs layers from map but keep moorages layers
+    logsLayers.value.forEach((layer) => map.value.removeLayer(layer))
+
+    const boat = L.geoJSON(items.value.live, {
+      pointToLayer: markerIcon,
+      onEachFeature: onEachMoorageFeaturePopup,
+    })
+    map.value.addLayer(boat)
+    if (boat.getBounds().isValid()) {
+      map.value.fitBounds(boat.getBounds(), { animate: true, duration: 0.5 })
+    }
+
+    console.log('displayMonitoring done')
+  }
+
+  watch(
+    () => items.value.live,
+    (newVal) => {
+      if (newVal) {
+        console.log('items.value.live', newVal)
+        displayMonitoring()
+      }
+    },
+  )
 </script>
 
 <template>
@@ -764,7 +793,10 @@
                     <hr class="cool-hr" />
                     <h3 class="font-semibold">Wind & Depth</h3>
                     <div class="w-full flex justify-center items-center">
-                      <div class="flex items-center space-x-4" v-if="items.wind.speed">
+                      <div
+                        class="flex items-center space-x-4"
+                        v-if="items.wind.speed !== null && items.wind.speed !== undefined"
+                      >
                         <!-- Left Column -->
                         <div class="flex flex-col text-sm space-y-1 min-w-[100px]">
                           <div>Wind Speed: {{ speedFormatKnots(items.wind.speed) }}</div>
@@ -776,7 +808,6 @@
                         <div
                           class="wind-compass group relative"
                           :title="`Wind: ${items.wind.speed} Kt, ${items.wind.direction} deg`"
-                          v-if="items.wind.speed && items.wind.direction"
                         >
                           <!-- Circular wind speed ring -->
                           <svg class="speed-circle" viewBox="0 0 100 100">
@@ -847,11 +878,11 @@
                     <hr class="cool-hr" />
                     <h3 class="font-semibold">Battery</h3>
                     <div class="w-full h-28" v-if="items.battery.charge">
-                      <echartsGauge :series="[parseInt(items.battery.charge), items.battery.voltage]" />
+                      <echartsGauge :series="[items.battery.charge, items.battery.voltage]" />
                     </div>
                     <hr class="cool-hr" />
                     <h3 class="font-semibold">Solar</h3>
-                    <div class="w-full h-28" v-if="items.solar.power">
+                    <div class="w-full h-28" v-if="items.solar.power !== null && items.solar.power !== undefined">
                       <echartsGauge :series="[items.solar.power, items.solar.voltage]" unit="W" />
                     </div>
                     <hr class="cool-hr" />
