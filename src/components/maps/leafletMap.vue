@@ -489,6 +489,7 @@
   }
   .sidepanel {
     z-index: 10;
+    width: 320px;
   }
   .sidebar-tab-link.active,
   .sidebar-tab-link:hover {

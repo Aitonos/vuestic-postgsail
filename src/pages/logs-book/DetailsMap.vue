@@ -473,9 +473,9 @@
     height: calc(100vh - 4.5rem);
   }
   .sidepanel {
-    width: 350px;
+    width: 320px;
     .sidepanel-content {
-      width: 350px;
+      width: 320px;
     }
   }
   .va-input-wrapper__field.va-input-wrapper__text.va-input__content__input {

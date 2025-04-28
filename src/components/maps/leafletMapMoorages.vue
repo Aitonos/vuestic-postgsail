@@ -433,6 +433,12 @@
       font-weight: bold;
     }
   }
+  .sidepanel {
+    width: 320px;
+    .sidepanel-content {
+      width: 320px;
+    }
+  }
   .sidebar-tab-link.active,
   .sidebar-tab-link:hover {
     color: var(--va-primary) !important;
