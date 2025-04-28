@@ -244,8 +244,10 @@
   }
   .sidepanel {
     width: 240px;
+    height: 100%;
     .sidepanel-content {
       width: 240px;
+      height: 100%;
     }
   }
 </style>

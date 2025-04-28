@@ -435,8 +435,10 @@
   }
   .sidepanel {
     width: 320px;
+    height: 100%;
     .sidepanel-content {
       width: 320px;
+      height: 100%;
     }
   }
   .sidebar-tab-link.active,

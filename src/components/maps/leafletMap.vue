@@ -490,6 +490,7 @@
   .sidepanel {
     z-index: 10;
     width: 320px;
+    height: 100%;
   }
   .sidebar-tab-link.active,
   .sidebar-tab-link:hover {
