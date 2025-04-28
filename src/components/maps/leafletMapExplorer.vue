@@ -928,6 +928,7 @@
     border-bottom-color: var(--va-primary) !important;
   }
   .date-slider {
+    color: var(--va-primary) !important;
     padding: 0.5rem 2rem 0.5rem 2rem;
   }
   .mpopup {
