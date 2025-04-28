@@ -174,6 +174,7 @@
     if (!api_geojson.value?.features) return []
     return api_geojson.value.features
       .filter((feature) => feature.geometry.type === 'Point')
+      .sort((a, b) => b.geometry.coordinates[1] - a.geometry.coordinates[1]) // north to south
       .map((feature, index) => {
         feature.properties['moorageIndex'] = index // keep original index
         return feature
