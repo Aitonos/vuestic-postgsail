@@ -10,6 +10,7 @@
   import PostgSail from '../../services/api-client'
   import { dateFormatUTC, durationFormatHours, fromNow, nowUTC } from '../../utils/dateFormatter.js'
   import { distanceFormatMiles, distanceFormat, depthFormatI18n } from '../../utils/distanceFormatter.js'
+  import { angleFormat } from '../../utils/angleFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
   import { stayed_at_options } from '../../utils/PostgSail.ts'
   import { kelvinToHuman } from '../../utils/temperatureFormatter.js'
@@ -766,9 +767,9 @@
                       <div class="flex items-center space-x-4" v-if="items.wind.speed">
                         <!-- Left Column -->
                         <div class="flex flex-col text-sm space-y-1 min-w-[100px]">
-                          <div>Depth: {{ items.water.depth }}</div>
-                          <div>Wind Speed: {{ items.wind.speed }} Kt</div>
-                          <div>Wind Direction: {{ items.wind.direction }}°</div>
+                          <div>Wind Speed: {{ speedFormatKnots(items.wind.speed) }}</div>
+                          <div>Wind Direction: {{ angleFormat(items.wind.direction) }}</div>
+                          <div>Depth: {{ depthFormatI18n(items.water.depth) }}</div>
                         </div>
 
                         <!-- Right Column (Wind Compass) -->
@@ -777,13 +778,6 @@
                           :title="`Wind: ${items.wind.speed} Kt, ${items.wind.direction} deg`"
                           v-if="items.wind.speed && items.wind.direction"
                         >
-                          <!-- Value on top (optional, you might remove this if redundant) -->
-                          <div
-                            class="absolute -top-7 left-1/2 transform -translate-x-1/2 text-sm font-medium text-center px-1 max-w-[6rem] truncate"
-                          >
-                            {{ items.wind.speed }} Kt – {{ items.wind.direction }}°
-                          </div>
-
                           <!-- Circular wind speed ring -->
                           <svg class="speed-circle" viewBox="0 0 100 100">
                             <circle class="bg" cx="50" cy="50" r="45" />
