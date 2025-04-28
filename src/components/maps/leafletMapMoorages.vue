@@ -77,7 +77,9 @@
   import { useI18n } from 'vue-i18n'
   const { t } = useI18n()
 
+  import { useGlobalStore } from '../../stores/global-store'
   import { useVesselStore } from '../../stores/vessel-store'
+  const { currentTheme } = useGlobalStore()
   const { vesselName, vesselType } = useVesselStore()
 
   const isBusy = ref(false),
@@ -263,7 +265,7 @@
           hasTabs: true,
           tabsPosition: 'top',
           pushControls: true,
-          //darkMode: currentTheme === 'dark',
+          darkMode: currentTheme === 'dark',
           startTab: 'tab-moorages1',
         })
         .addTo(map.value)
@@ -429,6 +431,14 @@
     }
     h4 {
       font-weight: bold;
+    }
+  }
+  .sidepanel {
+    width: 320px;
+    height: 100%;
+    .sidepanel-content {
+      width: 320px;
+      height: 100%;
     }
   }
   .sidebar-tab-link.active,
