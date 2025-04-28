@@ -942,6 +942,9 @@
     a {
       cursor: pointer;
     }
+    h4 {
+      font-weight: bold;
+    }
   }
   .line-item:hover {
     background-color: yellow;

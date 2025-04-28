@@ -474,6 +474,9 @@
     a {
       cursor: pointer;
     }
+    h4 {
+      font-weight: bold;
+    }
   }
   #saveNoteButton {
     width: 50%;
