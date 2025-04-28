@@ -45,8 +45,6 @@
   const api_geojson = ref({})
   const map = ref(null)
   const currentZoom = ref(7)
-  const tabs = ['Logs', 'Moorages']
-  const sidepanelLeft = ref(null)
   const mooragesLayers = ref([])
   const mooragesMakers = ref([])
   const logsLayers = ref([])
@@ -127,18 +125,20 @@
     })
 
     // Create a side panel on the left
-    sidepanelLeft.value = L.control
-      .sidepanel('sidepanelLeft', {
+    L.control
+      .sidepanel('sidepanel', {
+        panelPosition: 'left',
+        hasTabs: true,
         tabsPosition: 'top',
-        startTab: 'tab-1',
         pushControls: true,
         darkMode: currentTheme === 'dark',
+        startTab: 'tab-1',
       })
       .addTo(map.value)
 
     map.value.whenReady(function () {
       addResetViewControl()
-      const sidepanel = document.getElementById('sidepanelLeft')
+      const sidepanel = document.getElementById('sidepanel')
 
       // Watch class changes
       const observer = new MutationObserver((mutations) => {
@@ -690,8 +690,7 @@
   <va-inner-loading v-if="logsList.length > 0 || isBusy" :loading="isBusy">
     <div class="explore-maps leaflet-map__full">
       <div>
-        <!-- Side Panel left -->
-        <div id="sidepanelLeft" class="sidepanel" aria-label="side panel" aria-hidden="false">
+        <div id="sidepanel" class="sidepanel" aria-label="side panel" aria-hidden="false">
           <div class="sidepanel-inner-wrapper">
             <nav class="sidepanel-tabs-wrapper" aria-label="sidepanel tab navigation">
               <ul class="sidepanel-tabs">
@@ -875,8 +874,7 @@
             <button class="sidepanel-toggle-button" type="button" aria-label="toggle side panel"></button>
           </div>
         </div>
-
-        <div id="explore-map" class=""></div>
+        <div id="explore-map" class="leaflet-map"></div>
       </div>
     </div>
     <template v-if="logsSlider.length > 1">
