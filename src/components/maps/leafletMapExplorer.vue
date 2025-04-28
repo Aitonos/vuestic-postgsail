@@ -682,7 +682,7 @@
   })
 
   const displayMonitoring = () => {
-    if (!items.value.live || !items.value.live.geometry) {
+    if (!items.value.live || (!items.value.live.geometry && !items.value.live.features)) {
       console.log('Live items not ready yet')
       return
     }
@@ -692,7 +692,7 @@
 
     const boat = L.geoJSON(items.value.live, {
       pointToLayer: markerIcon,
-      onEachFeature: onEachMoorageFeaturePopup,
+      onEachFeature: onBoatFeaturePopup,
     })
     map.value.addLayer(boat)
     if (boat.getBounds().isValid()) {
@@ -711,6 +711,56 @@
       }
     },
   )
+  const onBoatFeaturePopup = function (feature, layer) {
+    //console.log(feature)
+    var popupContent = '<p>I started out as a GeoJSON ' + feature.geometry.type + ", but now I'm a Leaflet vector!</p>"
+    if (feature.properties.stay_code) {
+      // moorage point live stay
+      let text = `<div class='mpopup'><h4>${vesselName}: ${status}</h4><br/>
+                          <table class='data'><tbody>
+                            <tr><th>Time</th><td>${dateFormatUTC(time)}</td></tr>
+                            <tr><th>Position</th><td>${latitude} ${longitude}</td></tr>`
+      let stay_type = ''
+      if (feature.properties.stay_code == 2) {
+        stay_type = 'At anchor in '
+      }
+      if (feature.properties.stay_code == 3) {
+        stay_type = 'At mooring buoy in '
+      }
+      if (feature.properties.stay_code == 4) {
+        stay_type = 'At dock in '
+      }
+      text += `<tr><th>Updated</th><td>${fromNow(feature.properties.time)}`
+      text += `<tr><th>Status</th><td>${stay_type} ${feature.properties.name}`
+      text += `<tr><th>Arrived</th><td>${dateFormatUTC(feature.properties.arrived)}`
+      text += '</tbody></table></br></div>'
+      popupContent = text
+    } else if (feature.properties.status) {
+      // moorage point + current linestring live trip
+      let starttime = dateFormatUTC(feature.properties._from_time)
+      let duration = durationFormatHours(feature.properties.duration)
+      let distance = distanceFormatMiles(feature.properties.distance)
+      let avg_speed = speedFormatKnots(feature.properties.avg_speed)
+      let max_speed = speedFormatKnots(feature.properties.max_speed)
+      let avg_wind = speedFormatKnots(feature.properties.avg_wind_speed)
+      let max_wind = speedFormatKnots(feature.properties.max_wind_speed)
+      let notes = feature.properties?.notes || ''
+      popupContent = `<div class='mpopup'>
+                      <table class='data'><tbody>
+                        <tr><th>Start Time</th><td>${starttime}</td></tr>
+                        <tr><th>Updated</th><td>${fromNow(starttime)}</td></tr>
+                        <tr><th>Distance</th><td>${distance}</td></tr>
+                        <tr><th>Duration</th><td>${duration} hours</td></tr>
+                        <tr><th>Speed</th><td>avg ${avg_speed} / max ${max_speed}</td></tr>
+                        <tr><th>Wind</th><td>avg ${avg_wind} / max ${max_wind}</td></tr>
+                      </tbody></table></br>
+                    </div>`
+    }
+    layer.bindPopup(popupContent, {
+      autoPan: true,
+      autoPanPadding: [30, 30], // optional: adds padding so popup isn’t too close to edge
+    })
+  }
 </script>
 
 <template>
@@ -746,13 +796,7 @@
                 <div id="logs-list" class="sidepanel-tab-content" data-tab-content="tab-1">
                   <div>
                     <ol>
-                      <li
-                        class="line-item"
-                        id="lists"
-                        v-if="logsList.length > 0"
-                        v-for="(log, index) in logsList"
-                        :key="index"
-                      >
+                      <li class="line-item" v-if="logsList.length > 0" v-for="(log, index) in logsList" :key="index">
                         {{ index + 1 }}.
                         <a
                           class="va-link"
@@ -770,7 +814,6 @@
                     <ol>
                       <li
                         class="line-item"
-                        id="lists"
                         v-if="mooragesList.length > 0"
                         v-for="(moorage, index) in mooragesList"
                         :key="index"
