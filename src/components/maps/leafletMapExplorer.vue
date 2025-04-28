@@ -26,6 +26,8 @@
   const GlobalStore = useGlobalStore()
   const { isSidebarMinimized } = storeToRefs(GlobalStore)
 
+  const { currentTheme } = useGlobalStore()
+
   import { useI18n } from 'vue-i18n'
   const { t } = useI18n()
 
@@ -129,6 +131,8 @@
       .sidepanel('sidepanelLeft', {
         tabsPosition: 'top',
         startTab: 'tab-1',
+        pushControls: true,
+        darkMode: currentTheme === 'dark',
       })
       .addTo(map.value)
 
@@ -680,242 +684,242 @@
 </script>
 
 <template>
-  <VaCard
-    ><VaCardContent>
-      <template v-if="apiError">
-        <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
-      </template>
-      <va-inner-loading v-if="logsList.length > 0 || isBusy" :loading="isBusy">
-        <div class="explore-maps leaflet-map__full">
-          <template v-if="logsSlider.length > 1">
-            <va-slider
-              v-if="logsSlider.length > 1"
-              v-model="selectedRange"
-              :range="true"
-              :min="0"
-              :max="logsSlider.length - 1"
-              :step="1"
-              show-markers
-              :tooltip="true"
-              :tooltip-label="tooltipLabel"
-            />
-            {{ formattedDateRange }}
-          </template>
-          <div>
-            <!-- Side Panel left -->
-            <div id="sidepanelLeft" class="sidepanel" aria-label="side panel" aria-hidden="false">
-              <div class="sidepanel-inner-wrapper">
-                <nav class="sidepanel-tabs-wrapper" aria-label="sidepanel tab navigation">
-                  <ul class="sidepanel-tabs">
-                    <li class="sidepanel-tab">
-                      <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-1" @click="onLogsTabClick">
-                        <va-icon name="menu-logs" />
-                      </a>
-                    </li>
-                    <li class="sidepanel-tab">
-                      <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-2" @click="onMooragesTabClick">
-                        <va-icon name="menu-moorages" />
-                      </a>
-                    </li>
-                    <li class="sidepanel-tab">
-                      <a
-                        href="#"
-                        class="sidebar-tab-link"
-                        role="tab"
-                        data-tab-link="tab-3"
-                        @click="onMonitoringTabClick"
+  <template v-if="apiError">
+    <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
+  </template>
+  <va-inner-loading v-if="logsList.length > 0 || isBusy" :loading="isBusy">
+    <div class="explore-maps leaflet-map__full">
+      <div>
+        <!-- Side Panel left -->
+        <div id="sidepanelLeft" class="sidepanel" aria-label="side panel" aria-hidden="false">
+          <div class="sidepanel-inner-wrapper">
+            <nav class="sidepanel-tabs-wrapper" aria-label="sidepanel tab navigation">
+              <ul class="sidepanel-tabs">
+                <li class="sidepanel-tab">
+                  <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-1" @click="onLogsTabClick">
+                    <va-icon name="timeline" />
+                  </a>
+                </li>
+                <li class="sidepanel-tab">
+                  <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-2" @click="onMooragesTabClick">
+                    <va-icon name="anchor" />
+                  </a>
+                </li>
+                <li class="sidepanel-tab">
+                  <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-3" @click="onMonitoringTabClick">
+                    <va-icon name="my_location" />
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            <div class="sidepanel-content-wrapper">
+              <div class="sidepanel-content">
+                <div id="logs-list" class="sidepanel-tab-content" data-tab-content="tab-1">
+                  <div>
+                    <ol>
+                      <li
+                        class="line-item"
+                        id="lists"
+                        v-if="logsList.length > 0"
+                        v-for="(log, index) in logsList"
+                        :key="index"
                       >
-                        <va-icon name="menu-monitoring" />
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-                <div class="sidepanel-content-wrapper">
-                  <div class="sidepanel-content">
-                    <div id="logs-list" class="sidepanel-tab-content" data-tab-content="tab-1">
-                      <div>
-                        <ol>
-                          <li
-                            class="line-item"
-                            id="lists"
-                            v-if="logsList.length > 0"
-                            v-for="(log, index) in logsList"
-                            :key="index"
+                        {{ index + 1 }}.
+                        <a
+                          class="va-link"
+                          @mouseenter="onLogMouseEnter(log.properties.logIndex)"
+                          @click="onLogClickNavigate(log.properties.centercoords, log.properties.logIndex)"
+                          >{{ log.properties.name }} • {{ durationFormatHours(log.properties.duration) }}H •
+                          {{ distanceFormatMiles(log.properties.distance) }}
+                        </a>
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+                <div id="moorages-list" class="sidepanel-tab-content" data-tab-content="tab-2">
+                  <div>
+                    <ol>
+                      <li
+                        class="line-item"
+                        id="lists"
+                        v-if="mooragesList.length > 0"
+                        v-for="(moorage, index) in mooragesList"
+                        :key="index"
+                      >
+                        {{ index + 1 }}.
+                        <a
+                          class="va-link"
+                          @mouseenter="onMoorageMouseEnter(moorage.properties.moorageIndex)"
+                          @mouseleave="stopBouncingMarker(moorage.properties.moorageIndex)"
+                          @click="onMoorageClickNavigate(moorage.geometry.coordinates, moorage.properties.moorageIndex)"
+                          >{{ moorage.properties.name }}</a
+                        >
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+                <div id="real-time" class="sidepanel-tab-content" data-tab-content="tab-3">
+                  <div class="w-full" v-if="items">
+                    <h2 class="">{{ items.updated }} <span class="dot"></span></h2>
+                    <hr class="cool-hr" />
+                    <h3 class="font-semibold">Wind & Depth</h3>
+                    <div class="w-full flex justify-center items-center">
+                      <div class="flex items-center space-x-4" v-if="items.wind.speed">
+                        <!-- Left Column -->
+                        <div class="flex flex-col text-sm space-y-1 min-w-[100px]">
+                          <div>Depth: {{ items.water.depth }}</div>
+                          <div>Wind Speed: {{ items.wind.speed }} Kt</div>
+                          <div>Wind Direction: {{ items.wind.direction }}°</div>
+                        </div>
+
+                        <!-- Right Column (Wind Compass) -->
+                        <div
+                          class="wind-compass group relative"
+                          :title="`Wind: ${items.wind.speed} Kt, ${items.wind.direction} deg`"
+                          v-if="items.wind.speed && items.wind.direction"
+                        >
+                          <!-- Value on top (optional, you might remove this if redundant) -->
+                          <div
+                            class="absolute -top-7 left-1/2 transform -translate-x-1/2 text-sm font-medium text-center px-1 max-w-[6rem] truncate"
                           >
-                            {{ index + 1 }}.
-                            <a
-                              class="va-link"
-                              @mouseenter="onLogMouseEnter(log.properties.logIndex)"
-                              @click="onLogClickNavigate(log.properties.centercoords, log.properties.logIndex)"
-                              >{{ log.properties.name }} • {{ durationFormatHours(log.properties.duration) }}H •
-                              {{ distanceFormatMiles(log.properties.distance) }}
-                            </a>
-                          </li>
-                        </ol>
-                      </div>
-                    </div>
-                    <div id="moorages-list" class="sidepanel-tab-content" data-tab-content="tab-2">
-                      <div>
-                        <ol>
-                          <li
-                            class="line-item"
-                            id="lists"
-                            v-if="mooragesList.length > 0"
-                            v-for="(moorage, index) in mooragesList"
-                            :key="index"
-                          >
-                            {{ index + 1 }}.
-                            <a
-                              class="va-link"
-                              @mouseenter="onMoorageMouseEnter(moorage.properties.moorageIndex)"
-                              @mouseleave="stopBouncingMarker(moorage.properties.moorageIndex)"
-                              @click="
-                                onMoorageClickNavigate(moorage.geometry.coordinates, moorage.properties.moorageIndex)
-                              "
-                              >{{ moorage.properties.name }}</a
-                            >
-                          </li>
-                        </ol>
-                      </div>
-                    </div>
-                    <div id="real-time" class="sidepanel-tab-content" data-tab-content="tab-3">
-                      <div class="w-full" v-if="items">
-                        <h2 class="">{{ items.updated }} <span class="dot"></span></h2>
-                        <hr class="cool-hr" />
-                        <h3 class="font-semibold">Wind & Depth</h3>
-                        <div class="w-full flex justify-center items-center">
-                          <div class="flex items-center space-x-4" v-if="items.wind.speed">
-                            <!-- Left Column -->
-                            <div class="flex flex-col text-sm space-y-1 min-w-[100px]">
-                              <div>Depth: {{ items.water.depth }}</div>
-                              <div>Wind Speed: {{ items.wind.speed }} Kt</div>
-                              <div>Wind Direction: {{ items.wind.direction }}°</div>
-                            </div>
-
-                            <!-- Right Column (Wind Compass) -->
-                            <div
-                              class="wind-compass group relative"
-                              :title="`Wind: ${items.wind.speed} Kt, ${items.wind.direction} deg`"
-                              v-if="items.wind.speed && items.wind.direction"
-                            >
-                              <!-- Value on top (optional, you might remove this if redundant) -->
-                              <div
-                                class="absolute -top-7 left-1/2 transform -translate-x-1/2 text-sm font-medium text-center px-1 max-w-[6rem] truncate"
-                              >
-                                {{ items.wind.speed }} Kt – {{ items.wind.direction }}°
-                              </div>
-
-                              <!-- Circular wind speed ring -->
-                              <svg class="speed-circle" viewBox="0 0 100 100">
-                                <circle class="bg" cx="50" cy="50" r="45" />
-                                <circle
-                                  class="progress"
-                                  :stroke="getSpeedColor(items.wind.speed)"
-                                  cx="50"
-                                  cy="50"
-                                  r="45"
-                                  :stroke-dasharray="dashArray"
-                                  stroke-dashoffset="0"
-                                />
-                              </svg>
-
-                              <!-- Rotating Arrow -->
-                              <svg
-                                class="arrow-svg"
-                                :style="{ transform: `rotate(${items.wind.direction}deg)` }"
-                                viewBox="0 0 36 36"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  x="3"
-                                  y="3"
-                                  width="25"
-                                  height="25"
-                                  transform="rotate(-249.5,15.5,15.5)"
-                                  fill="#145da0"
-                                  d="M26.675824776131577 2.519999999999989L2.500000600307402 13.822982731554148 2.500000600307402 14.764897959183662 10.46703356734037 18.728791208791197ZM11.291209391516192 19.55296703296702L15.25510264112373 27.51999999999999 16.197017868753242 27.51999999999999 27.500000600307402 3.3441758241758133Z"
-                                />
-                              </svg>
-                            </div>
+                            {{ items.wind.speed }} Kt – {{ items.wind.direction }}°
                           </div>
-                        </div>
 
-                        <hr class="cool-hr" />
-                        <h3 class="font-semibold">Temperature</h3>
-                        <div class="w-full h-24" v-if="items.temperature.inside">
-                          <echartsProgress
-                            :series="[items.temperature.inside]"
-                            title="Inside"
-                            :alarm="items.alarm.low_indoor_temperature_threshold"
-                          />
-                        </div>
-                        <div class="w-full h-24" v-if="items.temperature.outside">
-                          <echartsProgress
-                            :series="[items.temperature.outside]"
-                            title="Outside"
-                            :alarm="items.alarm.low_outdoor_temperature_threshold"
-                          />
-                        </div>
-                        <div class="w-full h-24" v-if="items.water.temperature">
-                          <echartsProgress
-                            :series="[items.water.temperature]"
-                            title="Water"
-                            :alarm="items.alarm.low_water_temperature_threshold"
-                          />
-                        </div>
-                        <hr class="cool-hr" />
-                        <h3 class="font-semibold">Humidity</h3>
-                        <div class="w-full h-24" v-if="items.humidity.inside">
-                          <echartsProgress :series="[items.humidity.inside]" title="Inside" :max="100" unit="%" />
-                        </div>
-                        <div class="w-full h-24" v-if="items.humidity.outside">
-                          <echartsProgress :series="[items.humidity.inside]" title="Outside" :max="100" unit="%" />
-                        </div>
-                        <hr class="cool-hr" />
-                        <h3 class="font-semibold">Battery</h3>
-                        <div class="w-full h-28" v-if="items.battery.charge">
-                          <echartsGauge :series="[parseInt(items.battery.charge), items.battery.voltage]" />
-                        </div>
-                        <hr class="cool-hr" />
-                        <h3 class="font-semibold">Solar</h3>
-                        <div class="w-full h-28" v-if="items.solar.power">
-                          <echartsGauge :series="[items.solar.power, items.solar.voltage]" unit="W" />
-                        </div>
-                        <hr class="cool-hr" />
-                        <h3 class="font-semibold">Tank</h3>
-                        <div class="w-full h-28" v-if="items.tank.level">
-                          <echartsGauge :series="[items.tank.level, items.tank.level]" unit="%" />
+                          <!-- Circular wind speed ring -->
+                          <svg class="speed-circle" viewBox="0 0 100 100">
+                            <circle class="bg" cx="50" cy="50" r="45" />
+                            <circle
+                              class="progress"
+                              :stroke="getSpeedColor(items.wind.speed)"
+                              cx="50"
+                              cy="50"
+                              r="45"
+                              :stroke-dasharray="dashArray"
+                              stroke-dashoffset="0"
+                            />
+                          </svg>
+
+                          <!-- Rotating Arrow -->
+                          <svg
+                            class="arrow-svg"
+                            :style="{ transform: `rotate(${items.wind.direction}deg)` }"
+                            viewBox="0 0 36 36"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              x="3"
+                              y="3"
+                              width="25"
+                              height="25"
+                              transform="rotate(-249.5,15.5,15.5)"
+                              fill="#145da0"
+                              d="M26.675824776131577 2.519999999999989L2.500000600307402 13.822982731554148 2.500000600307402 14.764897959183662 10.46703356734037 18.728791208791197ZM11.291209391516192 19.55296703296702L15.25510264112373 27.51999999999999 16.197017868753242 27.51999999999999 27.500000600307402 3.3441758241758133Z"
+                            />
+                          </svg>
                         </div>
                       </div>
+                    </div>
+
+                    <hr class="cool-hr" />
+                    <h3 class="font-semibold">Temperature</h3>
+                    <div class="w-full h-24" v-if="items.temperature.inside">
+                      <echartsProgress
+                        :series="[items.temperature.inside]"
+                        title="Inside"
+                        :alarm="items.alarm.low_indoor_temperature_threshold"
+                      />
+                    </div>
+                    <div class="w-full h-24" v-if="items.temperature.outside">
+                      <echartsProgress
+                        :series="[items.temperature.outside]"
+                        title="Outside"
+                        :alarm="items.alarm.low_outdoor_temperature_threshold"
+                      />
+                    </div>
+                    <div class="w-full h-24" v-if="items.water.temperature">
+                      <echartsProgress
+                        :series="[items.water.temperature]"
+                        title="Water"
+                        :alarm="items.alarm.low_water_temperature_threshold"
+                      />
+                    </div>
+                    <hr class="cool-hr" />
+                    <h3 class="font-semibold">Humidity</h3>
+                    <div class="w-full h-24" v-if="items.humidity.inside">
+                      <echartsProgress :series="[items.humidity.inside]" title="Inside" :max="100" unit="%" />
+                    </div>
+                    <div class="w-full h-24" v-if="items.humidity.outside">
+                      <echartsProgress :series="[items.humidity.inside]" title="Outside" :max="100" unit="%" />
+                    </div>
+                    <hr class="cool-hr" />
+                    <h3 class="font-semibold">Battery</h3>
+                    <div class="w-full h-28" v-if="items.battery.charge">
+                      <echartsGauge :series="[parseInt(items.battery.charge), items.battery.voltage]" />
+                    </div>
+                    <hr class="cool-hr" />
+                    <h3 class="font-semibold">Solar</h3>
+                    <div class="w-full h-28" v-if="items.solar.power">
+                      <echartsGauge :series="[items.solar.power, items.solar.voltage]" unit="W" />
+                    </div>
+                    <hr class="cool-hr" />
+                    <h3 class="font-semibold">Tank</h3>
+                    <div class="w-full h-28" v-if="items.tank.level">
+                      <echartsGauge :series="[items.tank.level, items.tank.level]" unit="%" />
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="sidepanel-toggle-container">
-                <button class="sidepanel-toggle-button" type="button" aria-label="toggle side panel"></button>
-              </div>
             </div>
-
-            <div id="explore-map" class=""></div>
+          </div>
+          <div class="sidepanel-toggle-container">
+            <button class="sidepanel-toggle-button" type="button" aria-label="toggle side panel"></button>
           </div>
         </div>
-      </va-inner-loading> </VaCardContent
-  ></VaCard>
+
+        <div id="explore-map" class=""></div>
+      </div>
+    </div>
+    <template v-if="logsSlider.length > 1">
+      <div class="date-slider">
+        <va-slider
+          v-if="logsSlider.length > 1"
+          v-model="selectedRange"
+          :range="true"
+          :min="0"
+          :max="logsSlider.length - 1"
+          :step="1"
+          show-markers
+          :tooltip="true"
+          :tooltip-label="tooltipLabel"
+        />
+        {{ formattedDateRange }}
+      </div>
+    </template>
+  </va-inner-loading>
 </template>
 
-<style>
+<style lang="scss">
   #explore-map {
+    z-index: 0;
     width: 100%;
-    height: calc(91vh - 5rem);
+    height: calc(91vh - 4rem);
   }
   .sidepanel {
-    width: 350px;
-    height: calc(91vh - 5rem);
+    z-index: 10;
+    width: 320px;
+    height: calc(91vh - 4rem);
     .sidepanel-content {
-      width: 350px;
-      height: calc(91vh - 5rem);
+      width: 320px;
+      height: calc(91vh - 4rem);
     }
-    z-index: 999999 !important;
+  }
+  .sidebar-tab-link.active,
+  .sidebar-tab-link:hover {
+    color: var(--va-primary) !important;
+    border-bottom-color: var(--va-primary) !important;
+  }
+  .date-slider {
+    padding: 0.5rem 2rem 0.5rem 2rem;
   }
   .mpopup {
     td:nth-child(1) {
