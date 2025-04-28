@@ -728,7 +728,7 @@
                           class="va-link"
                           @mouseenter="onLogMouseEnter(log.properties.logIndex)"
                           @click="onLogClickNavigate(log.properties.centercoords, log.properties.logIndex)"
-                          >{{ log.properties.name }} • {{ durationFormatHours(log.properties.duration) }}H •
+                          >{{ log.properties.name }} • {{ durationFormatHours(log.properties.duration) }} h •
                           {{ distanceFormatMiles(log.properties.distance) }}
                         </a>
                       </li>
