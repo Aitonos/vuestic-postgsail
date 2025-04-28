@@ -124,7 +124,6 @@
       })
     })
 
-    // Create a side panel on the left
     L.control
       .sidepanel('sidepanel', {
         panelPosition: 'left',
@@ -897,18 +896,30 @@
 </template>
 
 <style lang="scss">
-  #explore-map {
+  $map-height: calc(91vh - 3.5rem);
+  $map-height-mobile: calc(80vh - 3rem);
+
+  .leaflet-map {
     z-index: 0;
     width: 100%;
-    height: calc(91vh - 4rem);
+    height: $map-height;
+    @media (max-width: 768px) {
+      height: $map-height-mobile;
+    }
   }
   .sidepanel {
     z-index: 10;
     width: 320px;
-    height: calc(91vh - 4rem);
+    height: $map-height;
+    @media (max-width: 768px) {
+      height: $map-height-mobile;
+    }
     .sidepanel-content {
       width: 320px;
-      height: calc(91vh - 4rem);
+      height: $map-height;
+      @media (max-width: 768px) {
+        height: $map-height-mobile;
+      }
     }
   }
   .sidebar-tab-link.active,
