@@ -874,7 +874,6 @@
     <template v-if="logsSlider.length > 1">
       <div class="date-slider">
         <va-slider
-          v-if="logsSlider.length > 1"
           v-model="selectedRange"
           :range="true"
           :min="0"
