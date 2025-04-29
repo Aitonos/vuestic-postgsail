@@ -5,6 +5,7 @@
   import 'leaflet.sidepanel/dist/leaflet.sidepanel.css'
   import L from 'leaflet'
   import 'leaflet.sidepanel'
+  import 'leaflet-rotatedmarker'
   import SmoothMarkerBouncing from 'leaflet.smooth_marker_bouncing'
 
   import PostgSail from '../../services/api-client'
@@ -17,7 +18,7 @@
   import { pascalToHectoPascal } from '../../utils/presureFormatter.js'
   import { floatToPercentage } from '../../utils/percentageFormatter.js'
   import { default as utils } from '../../utils/utils.js'
-  import { baseMaps, overlayMaps } from './leafletHelpers.js'
+  import { baseMaps, overlayMaps, boatMarkerTypes } from './leafletHelpers.js'
 
   import echartsProgress from '../../components/echarts/progress.vue'
   import echartsGauge from '../../components/echarts/gauge.vue'
@@ -25,11 +26,14 @@
   import { storeToRefs } from 'pinia'
   import { useGlobalStore } from '../../stores/global-store'
   import { useCacheStore } from '../../stores/cache-store'
+  import { useVesselStore } from '../../stores/vessel-store'
+
   const GlobalStore = useGlobalStore()
   const CacheStore = useCacheStore()
   const { isSidebarMinimized } = storeToRefs(GlobalStore)
 
   const { currentTheme } = useGlobalStore()
+  const { vesselName, vesselType } = useVesselStore()
 
   import { useI18n } from 'vue-i18n'
   const { t } = useI18n()
@@ -308,8 +312,8 @@
     let distance = distanceFormatMiles(feature.properties.distance)
     let avg_speed = speedFormatKnots(feature.properties.avg_sog)
     let max_speed = speedFormatKnots(feature.properties.max_sog)
-    let avg_depth = distanceFormat(feature.properties.avg_depth)
-    let max_depth = distanceFormat(feature.properties.max_depth)
+    let avg_depth = depthFormatI18n(feature.properties.avg_depth)
+    let max_depth = depthFormatI18n(feature.properties.max_depth)
     let avg_tws = speedFormatKnots(feature.properties.avg_tws)
     let max_tws = speedFormatKnots(feature.properties.max_tws)
     let notes = feature.properties?.notes || ''
@@ -338,9 +342,6 @@
       let duration = durationFormatHours(feature.properties.stays_sum_duration)
       let popup = `<div class='mpopup'><center><h4><a href="/moorage/${feature.properties.id}">${feature.properties.name}</a></h4></center>`
       popup += '<table class="data">'
-      popup +=
-        '<tr><th>Arrivals&Departures</th><td><a href="/moorage/arrivals-departures/' + feature.properties.id + '">'
-      popup += `${feature?.properties?.logs_count}`
       popup += '</a></td></tr>'
       popup += '<tr><th>Visits</th><td><a href="/moorage/arrivals-departures/' + feature.properties.id + '">'
       popup += `${feature?.properties?.stays_count}`
@@ -701,8 +702,11 @@
     // Remove all logs layers from map but keep moorages layers
     logsLayers.value.forEach((layer) => map.value.removeLayer(layer))
 
+    const boatTypes = boatMarkerTypes()
+    const boatIcon = vesselType === 'Sailing' ? boatTypes['Sailboat'] : boatTypes['Powerboat']
+
     const boat = L.geoJSON(items.value.live, {
-      pointToLayer: markerIcon,
+      pointToLayer: boatIcon,
       onEachFeature: onBoatFeaturePopup,
     })
     map.value.addLayer(boat)
@@ -940,21 +944,27 @@
                     <div class="w-full h-24" v-if="items.humidity.outside">
                       <echartsProgress :series="[items.humidity.inside]" title="Outside" :max="100" unit="%" />
                     </div>
-                    <hr class="cool-hr" />
-                    <h3 class="font-semibold">Battery</h3>
-                    <div class="w-full h-28" v-if="items.battery.charge">
-                      <echartsGauge :series="[items.battery.charge, items.battery.voltage]" />
-                    </div>
-                    <hr class="cool-hr" />
-                    <h3 class="font-semibold">Solar</h3>
-                    <div class="w-full h-28" v-if="items.solar.power !== null && items.solar.power !== undefined">
-                      <echartsGauge :series="[items.solar.power, items.solar.voltage]" unit="W" />
-                    </div>
-                    <hr class="cool-hr" />
-                    <h3 class="font-semibold">Tank</h3>
-                    <div class="w-full h-28" v-if="items.tank.level">
-                      <echartsGauge :series="[items.tank.level, items.tank.level]" unit="%" />
-                    </div>
+                    <template v-if="items.battery.charge">
+                      <hr class="cool-hr" />
+                      <h3 class="font-semibold">Battery</h3>
+                      <div class="w-full h-28">
+                        <echartsGauge :series="[items.battery.charge, items.battery.voltage]" />
+                      </div>
+                    </template>
+                    <template v-if="items.solar.power">
+                      <hr class="cool-hr" />
+                      <h3 class="font-semibold">Solar</h3>
+                      <div class="w-full h-28">
+                        <echartsGauge :series="[items.solar.power, items.solar.voltage]" unit="W" />
+                      </div>
+                    </template>
+                    <template v-if="items.tank.level">
+                      <hr class="cool-hr" />
+                      <h3 class="font-semibold">Tank</h3>
+                      <div class="w-full h-28">
+                        <echartsGauge :series="[items.tank.level, items.tank.level]" unit="%" />
+                      </div>
+                    </template>
                   </div>
                 </div>
               </div>
