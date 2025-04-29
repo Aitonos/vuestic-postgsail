@@ -17,7 +17,7 @@
   import { pascalToHectoPascal } from '../../utils/presureFormatter.js'
   import { floatToPercentage } from '../../utils/percentageFormatter.js'
   import { default as utils } from '../../utils/utils.js'
-  import { baseMaps, overlayMaps } from './leafletHelpers.js'
+  import { baseMaps, overlayMaps, boatMarkerTypes } from './leafletHelpers.js'
 
   import echartsProgress from '../../components/echarts/progress.vue'
   import echartsGauge from '../../components/echarts/gauge.vue'
@@ -25,11 +25,14 @@
   import { storeToRefs } from 'pinia'
   import { useGlobalStore } from '../../stores/global-store'
   import { useCacheStore } from '../../stores/cache-store'
+  import { useVesselStore } from '../../stores/vessel-store'
+
   const GlobalStore = useGlobalStore()
   const CacheStore = useCacheStore()
   const { isSidebarMinimized } = storeToRefs(GlobalStore)
 
   const { currentTheme } = useGlobalStore()
+  const { vesselName, vesselType } = useVesselStore()
 
   import { useI18n } from 'vue-i18n'
   const { t } = useI18n()
@@ -690,8 +693,11 @@
     // Remove all logs layers from map but keep moorages layers
     logsLayers.value.forEach((layer) => map.value.removeLayer(layer))
 
+    const boatTypes = boatMarkerTypes()
+    const boatIcon = vesselType === 'Sailing' ? boatTypes['Sailboat'] : boatTypes['Powerboat']
+
     const boat = L.geoJSON(items.value.live, {
-      pointToLayer: markerIcon,
+      pointToLayer: boatIcon,
       onEachFeature: onBoatFeaturePopup,
     })
     map.value.addLayer(boat)
