@@ -338,9 +338,6 @@
       let duration = durationFormatHours(feature.properties.stays_sum_duration)
       let popup = `<div class='mpopup'><center><h4><a href="/moorage/${feature.properties.id}">${feature.properties.name}</a></h4></center>`
       popup += '<table class="data">'
-      popup +=
-        '<tr><th>Arrivals&Departures</th><td><a href="/moorage/arrivals-departures/' + feature.properties.id + '">'
-      popup += `${feature?.properties?.logs_count}`
       popup += '</a></td></tr>'
       popup += '<tr><th>Visits</th><td><a href="/moorage/arrivals-departures/' + feature.properties.id + '">'
       popup += `${feature?.properties?.stays_count}`
