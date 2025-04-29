@@ -922,21 +922,27 @@
                     <div class="w-full h-24" v-if="items.humidity.outside">
                       <echartsProgress :series="[items.humidity.inside]" title="Outside" :max="100" unit="%" />
                     </div>
-                    <hr class="cool-hr" />
-                    <h3 class="font-semibold">Battery</h3>
-                    <div class="w-full h-28" v-if="items.battery.charge">
-                      <echartsGauge :series="[items.battery.charge, items.battery.voltage]" />
-                    </div>
-                    <hr class="cool-hr" />
-                    <h3 class="font-semibold">Solar</h3>
-                    <div class="w-full h-28" v-if="items.solar.power !== null && items.solar.power !== undefined">
-                      <echartsGauge :series="[items.solar.power, items.solar.voltage]" unit="W" />
-                    </div>
-                    <hr class="cool-hr" />
-                    <h3 class="font-semibold">Tank</h3>
-                    <div class="w-full h-28" v-if="items.tank.level">
-                      <echartsGauge :series="[items.tank.level, items.tank.level]" unit="%" />
-                    </div>
+                    <template v-if="items.battery.charge">
+                      <hr class="cool-hr" />
+                      <h3 class="font-semibold">Battery</h3>
+                      <div class="w-full h-28">
+                        <echartsGauge :series="[items.battery.charge, items.battery.voltage]" />
+                      </div>
+                    </template>
+                    <template v-if="items.solar.power">
+                      <hr class="cool-hr" />
+                      <h3 class="font-semibold">Solar</h3>
+                      <div class="w-full h-28">
+                        <echartsGauge :series="[items.solar.power, items.solar.voltage]" unit="W" />
+                      </div>
+                    </template>
+                    <template v-if="items.tank.level">
+                      <hr class="cool-hr" />
+                      <h3 class="font-semibold">Tank</h3>
+                      <div class="w-full h-28">
+                        <echartsGauge :series="[items.tank.level, items.tank.level]" unit="%" />
+                      </div>
+                    </template>
                   </div>
                 </div>
               </div>
