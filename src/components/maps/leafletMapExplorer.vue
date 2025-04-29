@@ -5,6 +5,7 @@
   import 'leaflet.sidepanel/dist/leaflet.sidepanel.css'
   import L from 'leaflet'
   import 'leaflet.sidepanel'
+  import 'leaflet-rotatedmarker'
   import SmoothMarkerBouncing from 'leaflet.smooth_marker_bouncing'
 
   import PostgSail from '../../services/api-client'
