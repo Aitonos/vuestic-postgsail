@@ -304,8 +304,8 @@
     let distance = distanceFormatMiles(feature.properties.distance)
     let avg_speed = speedFormatKnots(feature.properties.avg_sog)
     let max_speed = speedFormatKnots(feature.properties.max_sog)
-    let avg_depth = distanceFormat(feature.properties.avg_depth)
-    let max_depth = distanceFormat(feature.properties.max_depth)
+    let avg_depth = depthFormatI18n(feature.properties.avg_depth)
+    let max_depth = depthFormatI18n(feature.properties.max_depth)
     let avg_tws = speedFormatKnots(feature.properties.avg_tws)
     let max_tws = speedFormatKnots(feature.properties.max_tws)
     let notes = feature.properties?.notes || ''
