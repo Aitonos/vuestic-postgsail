@@ -10,7 +10,7 @@
   import PostgSail from '../../services/api-client'
   import { dateFormatUTC, durationFormatHours, fromNow, nowUTC } from '../../utils/dateFormatter.js'
   import { distanceFormatMiles, distanceFormat, depthFormatI18n } from '../../utils/distanceFormatter.js'
-  import { angleFormat } from '../../utils/angleFormatter.js'
+  import { awaFormat, angleFormat } from '../../utils/angleFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
   import { stayed_at_options } from '../../utils/PostgSail.ts'
   import { kelvinToHuman } from '../../utils/temperatureFormatter.js'
@@ -224,6 +224,10 @@
     const logStart = new Date(logsListFull.value[startIdx].properties.starttimestamp)
     const logEnd = new Date(logsListFull.value[endIdx].properties.endtimestamp)
 
+    console.log('filter.tags', filter.tags)
+    console.log('CacheStore.logs', CacheStore.logs)
+    console.log('logsListFull', logsListFull.value)
+
     // Add logs in range
     for (let i = startIdx; i <= endIdx; i++) {
       const logFeature = logsListFull.value[i]
@@ -430,7 +434,7 @@
   // Watch for changes in dateArray and update selectedRange accordingly
   watch(selectedRange, (newValue) => {
     const [start, end] = newValue
-    console.log('selectedRange', [start, end])
+    console.log('newValue selectedRange', [start, end])
     updateMap()
   })
 
@@ -678,7 +682,14 @@
   /* todo tags issue in html template */
   const tagsOptions = CacheStore.getTags()
   const filter = reactive({
+    dateRange: null,
     tags: [],
+  })
+
+  // Watch for changes in dateArray and update selectedRange accordingly
+  watch(filter, (newValue) => {
+    console.log('newValue filter', newValue)
+    updateMap()
   })
 
   const displayMonitoring = () => {
@@ -737,13 +748,16 @@
       popupContent = text
     } else if (feature.properties.status) {
       // moorage point + current linestring live trip
-      let starttime = dateFormatUTC(feature.properties._from_time)
-      let duration = durationFormatHours(feature.properties.duration)
-      let distance = distanceFormatMiles(feature.properties.distance)
-      let avg_speed = speedFormatKnots(feature.properties.avg_speed)
-      let max_speed = speedFormatKnots(feature.properties.max_speed)
-      let avg_wind = speedFormatKnots(feature.properties.avg_wind_speed)
-      let max_wind = speedFormatKnots(feature.properties.max_wind_speed)
+      let starttime = dateFormatUTC(feature.properties.time)
+      let duration = durationFormatHours(feature.properties.time - nowUTC())
+      let distance = distanceFormatMiles(feature.properties.distance) || 'todo'
+      let sog = speedFormatKnots(feature.properties.speedoverground)
+      let cog = angleFormat(feature.properties.courseovergroundtrue)
+      let twd = angleFormat(feature.properties.truewinddirection)
+      let aws = speedFormatKnots(feature.properties.windspeedapparent)
+      let awa = awaFormat(feature.properties.truewinddirection, feature.properties.courseovergroundtrue)
+      let latitude = parseFloat(feature.geometry.coordinates[0]).toFixed(3)
+      let longitude = parseFloat(feature.geometry.coordinates[1]).toFixed(3)
       let notes = feature.properties?.notes || ''
       popupContent = `<div class='mpopup'>
                       <table class='data'><tbody>
@@ -751,8 +765,10 @@
                         <tr><th>Updated</th><td>${fromNow(starttime)}</td></tr>
                         <tr><th>Distance</th><td>${distance}</td></tr>
                         <tr><th>Duration</th><td>${duration} hours</td></tr>
-                        <tr><th>Speed</th><td>avg ${avg_speed} / max ${max_speed}</td></tr>
-                        <tr><th>Wind</th><td>avg ${avg_wind} / max ${max_wind}</td></tr>
+                        <tr><th>Speed</th><td>${cog} / ${sog}</td></tr>
+                        <tr><th>Wind</th><td>${aws} / ${twd}</td></tr>
+                        <tr><th>AWA</th><td>${awa}</td></tr>
+                        <tr><th>Position</th><td>${latitude} ${longitude}</td></tr>
                       </tbody></table></br>
                     </div>`
     }
@@ -768,6 +784,12 @@
     <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
   </template>
   <va-inner-loading v-if="logsList.length > 0 || isBusy" :loading="isBusy">
+    <template #loader>
+      <div class="custom-loading">
+        <img src="/life-boat.gif" alt="Loading" />
+        <p>Still loading... 🌀 Blame the slowness on a lack of sponsors. 😅 Wanna help?</p>
+      </div>
+    </template>
     <div class="explore-maps leaflet-map__full">
       <div>
         <div id="sidepanel" class="sidepanel" aria-label="side panel" aria-hidden="false">
@@ -946,18 +968,44 @@
       </div>
     </div>
     <template v-if="logsSlider.length > 1">
-      <div class="date-slider">
-        <va-slider
-          v-model="selectedRange"
-          :range="true"
-          :min="0"
-          :max="logsSlider.length - 1"
-          :step="1"
-          show-markers
-          :tooltip="true"
-          :tooltip-label="tooltipLabel"
-        />
-        {{ formattedDateRange }}
+      <div class="map-controls">
+        <div class="date-slider">
+          <va-slider
+            v-model="selectedRange"
+            :range="true"
+            :min="0"
+            :max="logsSlider.length - 1"
+            :step="1"
+            show-markers
+            :tooltip="true"
+            :tooltip-label="tooltipLabel"
+          />
+          {{ formattedDateRange }}
+        </div>
+
+        <div class="tag-selector">
+          <va-select
+            v-model="filter.tags"
+            :placeholder="$t('logs.list.filter.tags')"
+            :options="tagsOptions"
+            multiple
+            text-by="text"
+          >
+            <template #content="{ value }">
+              <va-chip
+                v-for="chip in value"
+                :key="chip.text"
+                size="small"
+                class="xs-chip mr-2"
+                outline
+                closeable
+                @update:modelValue="deleteChip(chip)"
+              >
+                {{ chip }}
+              </va-chip>
+            </template>
+          </va-select>
+        </div>
       </div>
     </template>
   </va-inner-loading>
@@ -1096,5 +1144,31 @@
   }
   .cool-hr {
     margin: 5px;
+  }
+  .map-controls {
+    position: absolute;
+    //bottom: 10px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000; /* Make sure it's above Leaflet map */
+  }
+
+  .date-slider {
+    flex: 1;
+  }
+
+  .tag-selector {
+    margin-left: 20px;
+    width: 300px;
+  }
+
+  .va-input-wrapper__field.va-input-wrapper__text.va-input__content__input {
+    z-index: 9999 !important;
+  }
+  .va-dropdown__content.va-select-dropdown__content.va-dropdown__content-wrapper {
+    z-index: 9999 !important;
   }
 </style>
