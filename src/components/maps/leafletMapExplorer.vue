@@ -9,7 +9,13 @@
   import SmoothMarkerBouncing from 'leaflet.smooth_marker_bouncing'
 
   import PostgSail from '../../services/api-client'
-  import { dateFormatUTC, durationFormatHours, fromNow, nowUTC } from '../../utils/dateFormatter.js'
+  import {
+    dateFormatUTC,
+    durationFormatHours,
+    fromNow,
+    nowUTC,
+    durationI18nDaysHours,
+  } from '../../utils/dateFormatter.js'
   import { distanceFormatMiles, distanceFormat, depthFormatI18n } from '../../utils/distanceFormatter.js'
   import { awaFormat, angleFormat } from '../../utils/angleFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
@@ -167,13 +173,21 @@
       // Optional: open sidepanel initially
       const toggleButton = document.querySelector('.sidepanel-toggle-button')
       if (toggleButton) toggleButton.click()
+      // trigger map resize
+      map.value.invalidateSize()
     })
+
+    observer.observe(document.getElementById('explore-map'))
 
     // Add initial logs and moorages layer
     updateMap()
 
     // Minimize sidebar
     isSidebarMinimized.value = true
+  })
+
+  const observer = new ResizeObserver(() => {
+    map.value.invalidateSize()
   })
 
   // Extract all geometry Point from geojson to get a list of moorage geojson feature for map
@@ -711,7 +725,7 @@
     })
     map.value.addLayer(boat)
     if (boat.getBounds().isValid()) {
-      map.value.fitBounds(boat.getBounds(), { animate: true, duration: 0.5 })
+      map.value.fitBounds(boat.getBounds(), { animate: true, duration: 0.5, padding: [30, 30], maxZoom: 17 })
     }
 
     console.log('displayMonitoring done')
@@ -752,8 +766,9 @@
       popupContent = text
     } else if (feature.properties.status) {
       // moorage point + current linestring live trip
+      const now = moment.utc(new Date())
       let starttime = dateFormatUTC(feature.properties.time)
-      let duration = durationFormatHours(feature.properties.time - nowUTC())
+      let duration = durationI18nDaysHours(now.diff(feature.properties.time))
       let distance = distanceFormatMiles(feature.properties.distance) || 'todo'
       let sog = speedFormatKnots(feature.properties.speedoverground)
       let cog = angleFormat(feature.properties.courseovergroundtrue)
@@ -768,7 +783,7 @@
                         <tr><th>Start Time</th><td>${starttime}</td></tr>
                         <tr><th>Updated</th><td>${fromNow(starttime)}</td></tr>
                         <tr><th>Distance</th><td>${distance}</td></tr>
-                        <tr><th>Duration</th><td>${duration} hours</td></tr>
+                        <tr><th>Duration</th><td>${duration}</td></tr>
                         <tr><th>Speed</th><td>${cog} / ${sog}</td></tr>
                         <tr><th>Wind</th><td>${aws} / ${twd}</td></tr>
                         <tr><th>AWA</th><td>${awa}</td></tr>
@@ -788,12 +803,6 @@
     <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
   </template>
   <va-inner-loading v-if="logsList.length > 0 || isBusy" :loading="isBusy">
-    <template #loader>
-      <div class="custom-loading">
-        <img src="/life-boat.gif" alt="Loading" />
-        <p>Still loading... 🌀 Blame the slowness on a lack of sponsors. 😅 Wanna help?</p>
-      </div>
-    </template>
     <div class="explore-maps leaflet-map__full">
       <div>
         <div id="sidepanel" class="sidepanel" aria-label="side panel" aria-hidden="false">
