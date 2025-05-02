@@ -449,8 +449,13 @@
     additionalSections.value.push({ name: `Section ${additionalSections.value.length + 1}`, key: '' })
   }
 
-  const deleteSection = (index) => {
+  const deleteSection = async (index) => {
+    console.log('deleteSection', additionalSections.value[index])
+    let section_name = additionalSections.value[index].name
     additionalSections.value.splice(index, 1)
+    delete monitoring_keys.value[section_name]
+    console.log('updateSelectedKey', additionalSections.value)
+    await UpdatePref(monitoring_keys.value, null, null)
   }
 
   const updateSelectedKey = async (index, key) => {
@@ -470,19 +475,32 @@
     console.debug('Correlation Tab UpdatePref', `Updating ${map}: ${value}`)
     let obj = {}
     obj[map] = value
+    if (map == null && value == null) {
+      // remove entry
+      obj = {}
+    }
     let payload = { ...key, ...obj }
     // Read by Signalk plugin
     payload['additionalSections'] = additionalSections.value
     payload['additionalDataKeys'] = Object.values(additionalSections.value.map((section) => section.key))
     console.debug(JSON.stringify(payload))
     const response = await api.update_vessel_monitoring({ patch: payload })
+    let msg = `${response ? 'Successfully updated' : 'Error updating'} ${map} with ${value}`
+    if (map == null && value == null) {
+      // remove entry
+      msg = `${response ? 'Successfully removed' : 'Error removing'}`
+    }
     // Notify user on success or failure using va-toast.
     initToast({
-      message: `${response ? 'Successfully updated' : 'Error updating'} ${map} with ${value}`,
+      message: msg,
       position: 'top-right',
       color: 'primary',
       //color: response.ok ? 'success' : 'warning',
     })
+    // Save the new value in the local state
+    if (map != null && value != null) {
+      monitoring_keys.value[map] = value
+    }
   }
 
   onMounted(async () => {
