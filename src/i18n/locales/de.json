@@ -409,8 +409,8 @@
     "monitoring": {
       "depthKey": "Depth Source",
       "waterTemperatureKey": "Water Temperature Source",
-      "windSpeedKey": "Wind Speed Source",
-      "windDirectionKey": "Wind Direction Source",
+      "windSpeedKey": "True Wind Speed Source",
+      "windDirectionKey": "True Wind Direction Source",
       "insidePressureKey": "Inside Barometer Source",
       "outsidePressureKey": "Outside Barometer Source",
       "insideTemperatureKey": "Inside Temperature Source",
@@ -465,6 +465,11 @@
       "headerString": "Druck",
       "unitString": "hPa",
       "detailString": "1-Tages-Durchschnitt:"
+    },
+    "solar": {
+      "headerString": "Solar",
+      "unitString": "W",
+      "detailString": "Voltage: "
     },
     "offline": {
       "offline": "Ihr Schiff ist offline. Echtzeitüberwachung erfordert eine Internetverbindung.",

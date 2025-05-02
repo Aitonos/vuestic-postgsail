@@ -411,8 +411,8 @@
     "monitoring": {
       "depthKey": "Sonda",
       "waterTemperatureKey": "Temperatura del agua",
-      "windSpeedKey": "Velocidad del viento",
-      "windDirectionKey": "Dirección del viento",
+      "windSpeedKey": "Velocidad verdadera del viento",
+      "windDirectionKey": "Dirección verdadera del viento",
       "insidePressureKey": "Presión atmosférica en interior",
       "outsidePressureKey": "Presión atmosférica en exterior",
       "insideTemperatureKey": "Temperatura en interior",
@@ -466,6 +466,11 @@
       "headerString": "Barómetro",
       "unitString": "hPa",
       "detailString": "Promedio 24h:"
+    },
+    "solar": {
+      "headerString": "Solar",
+      "unitString": "W",
+      "detailString": "Voltage: "
     },
     "offline": {
       "offline": "Su embarcación está fuera de línea. La monitorización en tiempo real requiere una conexión a Internet.",
