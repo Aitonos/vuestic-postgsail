@@ -314,6 +314,10 @@
       value: 3,
       text: 'Statistics',
     },
+    {
+      value: 4,
+      text: 'Map Explorer',
+    },
   ])
   // TODO should be computed?
   console.log(`First Last: ${settings.value.first} ${settings.value.last}`)

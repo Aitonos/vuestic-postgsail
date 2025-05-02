@@ -263,7 +263,9 @@ export const useGlobalStore = defineStore('global', {
     validEmail: (state) => state.settings?.preferences?.email_valid,
     hasVessel: (state) => state.settings?.has_vessel,
     preferredHomepage: (state) =>
-      ['dashboard', 'logs', 'monitoring', 'stats'][state.settings?.preferences?.preferred_homepage || 0],
+      ['dashboard', 'logs', 'monitoring', 'stats', 'map-explorer'][
+        state.settings?.preferences?.preferred_homepage || 0
+      ],
     imperialUnits: (state) => state.settings?.preferences?.use_imperial_units || false,
     doubleCount: (state) => state.count * 2,
     Monitoring2: (state) => state.monitoring2,
