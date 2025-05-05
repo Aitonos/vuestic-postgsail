@@ -265,7 +265,7 @@
                     map="tankLevelKey"
                     @clickFromChildComponent="UpdatePref"
                   /><br />
-                  <div>eg: tanks.freshWater.currentLevel</div>
+                  <div>eg: tanks.0.currentLevel</div>
                 </td>
               </tr>
               <tr v-for="(section, index) in additionalSections" :key="index">
