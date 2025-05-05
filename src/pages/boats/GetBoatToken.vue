@@ -27,20 +27,21 @@
             </template>
             <!-- TODO use better CSS -->
             <div style="mb-4">
-              <vaInput
+              <vaTextarea
                 ref="clone"
                 v-model="boatToken"
                 type="textarea"
                 :label="t('boats.boat.token_modal.token') + ':'"
                 placeholder="Readonly Token"
                 :min-rows="3"
-                :max-rows="5"
+                :max-rows="4"
+                readonly="true"
                 @focus="$event.target.select()"
               >
                 <template #appendInner>
                   <va-icon name="content_copy" @click="$vaToast.init({ message: copyToClipboard, color: 'primary' })" />
                 </template>
-              </vaInput>
+              </vaTextarea>
               <va-alert color="warning" outline class="mb-4">{{ t('boats.boat.token_modal.message') }}</va-alert>
             </div>
           </va-inner-loading>
@@ -115,4 +116,8 @@
   }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  .va-input-wrapper.va-input-wrapper--labeled.va-textarea {
+    width: 100%;
+  }
+</style>
