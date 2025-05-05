@@ -228,12 +228,6 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/monitoring/Windy.vue'),
             meta: { titleKey: 'monitoring.windy.title' },
           },
-          {
-            name: 'polar',
-            path: 'monitoring/polar',
-            component: () => import('../pages/monitoring/Polar_d3.vue'),
-            meta: { titleKey: 'monitoring.polar.title' },
-          },
         ],
       },
       {
