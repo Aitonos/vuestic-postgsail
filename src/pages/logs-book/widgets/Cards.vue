@@ -24,6 +24,7 @@
     (event: 'edit', log: Log): void
     (event: 'delete', log: Log): void
     (event: 'replay', log: Log): void
+    (event: 'merge', log: Log): void
   }>()
 </script>
 
@@ -78,6 +79,15 @@
                         @click="$emit('delete', log)"
                       >
                         {{ t('logs.list.delete') }}
+                      </va-button>
+                      <va-button
+                        class="grid grid-cols-1"
+                        preset="secondary"
+                        icon="merge"
+                        color="secondary"
+                        @click="$emit('merge', log)"
+                      >
+                        {{ t('logs.list.merge') }}
                       </va-button>
                     </div>
                   </va-dropdown-content>

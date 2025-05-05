@@ -64,6 +64,7 @@
         @edit="editTrip"
         @delete="onTripDeleted"
         @replay="replayTrip"
+        @merge="mergeTrip"
       />
       <logbook-table
         v-if="doShowAsCards === 2"
@@ -75,6 +76,7 @@
         @edit="editTrip"
         @delete="onTripDeleted"
         @replay="replayTrip"
+        @merge="mergeTrip"
       />
       <!--
       <logbook-map v-if="doShowAsCards === 3" :loading="isBusy" />
@@ -94,6 +96,47 @@
       </div>
     </va-card-content>
   </va-card>
+
+  <va-modal v-model="showModal" no-padding>
+    <template #content="{ cancel }">
+      <va-card-title>
+        {{ t('logs.list.merge_modal.title') }}
+      </va-card-title>
+      <va-card-content>
+        <va-inner-loading :loading="isBusy">
+          <p class="mb-3 font-bold text-warning">⚠️ {{ t('logs.list.merge_modal.title') }}</p>
+          <va-alert color="warning" outline class="mb-3">
+            {{ t('logs.list.merge_modal.message') }}
+          </va-alert>
+
+          <va-alert color="danger" outline class="mb-3">
+            {{ t('logs.list.merge_modal.danger') }}
+          </va-alert>
+
+          <template v-if="apiError">
+            <va-alert color="danger" outline class="mb-4"> {{ t('api.error') }}: {{ apiError }} </va-alert>
+          </template>
+
+          <div class="mb-4">
+            from/start log:
+            {{ start_trip.name }} - {{ dateFormatUTC(start_trip.fromTime) }}
+          </div>
+          <div class="mb-4">
+            to/end log:
+            {{ end_trip.name }} - {{ dateFormatUTC(end_trip.fromTime) }}
+          </div>
+        </va-inner-loading>
+      </va-card-content>
+      <va-card-actions style="display: flex; justify-content: flex-end !important; gap: 0.5rem">
+        <va-button color="danger" @click="cancel">
+          {{ t('vuestic.cancel') }}
+        </va-button>
+        <va-button color="primary" @click="handleMerge">
+          {{ t('vuestic.ok') }} {{ t('logs.list.merge_modal.title') }}
+        </va-button>
+      </va-card-actions>
+    </template>
+  </va-modal>
 </template>
 
 <script setup>
@@ -103,7 +146,7 @@
   import { useCacheStore } from '../../stores/cache-store'
   import { setAppTitle } from '../../utils/app.js'
   import { distanceFormat } from '../../utils/distanceFormatter.js'
-  import { durationFormatHours } from '../../utils/dateFormatter.js'
+  import { durationFormatHours, dateFormatUTC } from '../../utils/dateFormatter.js'
   import { asBusy, handleExport } from '../../utils/handleExports'
   import { useRoute } from 'vue-router'
   import logsData from '../../data/logs.json'
@@ -130,6 +173,9 @@
   const sorting = ref({ sortBy: 'started', sortingOrder: 'desc' })
   const { confirm } = useModal()
   const { init: notify } = useToast()
+  const showModal = ref(false)
+  const start_trip = ref(null)
+  const end_trip = ref(null)
 
   // If mobile display as card by default.
   if (isMobile.value) {
@@ -367,6 +413,78 @@
   const tagsOptions = CacheStore.getTags()
   function deleteChip(chip) {
     filter.tags = filter.tags.filter((v) => v !== chip)
+  }
+
+  function findAdjacentLogs(logId) {
+    const index = items.value.findIndex((log) => log.id === logId)
+    if (index === -1) return null
+
+    return items.value[index - 1] ?? null
+  }
+
+  const mergeTrip = async (log) => {
+    console.log('mergeTrip', log)
+    start_trip.value = log
+    end_trip.value = findAdjacentLogs(log.id)
+    if (!end_trip.value) {
+      notify({
+        message: `No adjacent log found`,
+        position: 'top-right',
+        color: 'warning',
+      })
+      return
+    }
+    console.log('mergeTrip', start_trip.value, end_trip.value)
+    showModal.value = true
+    return
+  }
+
+  async function handleMerge() {
+    if (!start_trip.value || !end_trip.value) {
+      notify({
+        message: `handleMerge ignore`,
+        position: 'top-right',
+        color: 'warning',
+      })
+      return
+    }
+    if (start_trip.value.id > end_trip.value.id) {
+      notify({
+        message: `handleMerge ignore`,
+        position: 'top-right',
+        color: 'warning',
+      })
+      return
+    }
+    console.log('mergeTrip', start_trip.value, end_trip.value)
+    const api = new PostgSail()
+    try {
+      const response = await api.logs_merge({ id_start: start_trip.value.id, id_end: end_trip.value.id })
+      if (response) {
+        console.log('log_merge success', response)
+        // Clean CacheStore and force refresh
+        await CacheStore.resetCache()
+        const resp = await CacheStore.getAPI('logs')
+        if (Array.isArray(resp)) {
+          rowsData.value.splice(0, rowsData.value.length || [])
+          rowsData.value.push(...resp)
+          console.log('Logs list', rowsData.value)
+        }
+        CacheStore.refresh = 'false' // restore network cache, default 5min form api.
+      } else {
+        throw { response }
+      }
+    } catch (err) {
+      console.log('log_merge failed', err)
+      apiError.value = err.message
+    } finally {
+      isBusy.value = false
+      notify({
+        message: apiError.value ? `Error merging log entry` : `Successfully merged log entry`,
+        position: 'top-right',
+        color: apiError.value ? 'warning' : 'success',
+      })
+    }
   }
 </script>
 
