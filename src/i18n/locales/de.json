@@ -152,7 +152,14 @@
       "to_time": "Ended",
       "edit": "Edit",
       "replay": "Replay",
-      "delete": "Delete"
+      "delete": "Delete",
+      "merge": "Merge",
+      "merge_modal": {
+        "title": "Merge Logs",
+        "message": "Start log must be earlier than End log and they must be adjacent (previous or next).",
+        "danger": "This operation is irreversible. Are you sure you want to continue?",
+        "success": "Logs merged successfully."
+      }
     },
     "details": {
       "title": "Protokolldetails"
@@ -309,6 +316,12 @@
         "token": "Token",
         "message": "Kopieren Sie diesen Token in Ihre PostgSail-Plugin-Instanz von Signalk."
       },
+      "polar": {
+        "submit": "Save Polar",
+        "title": "Boat's Polar",
+        "placeholder": "Paste ORC polar CSV data here...",
+        "message": "Copy/paste the csv content of the polar in http://jieter.github.io/orc-data/site/ style."
+      },
       "beam": "Breite",
       "height": "Höhe",
       "length": "Länge",
@@ -318,7 +331,11 @@
       "plugin_version": "Plugin version",
       "signalk_version": "Signalk version",
       "signalk": "This data is pulled from the Vessel Base Data with SignalK.",
-      "platform": "Platform"
+      "platform": "Platform",
+      "configuration": "Configuration Signalk Mapping",
+      "make_model": "Make and Model",
+      "photo": "Photo",
+      "last_updated": "Last updated"
     },
     "errors": {
       "name": "Name ist erforderlich",
@@ -666,6 +683,10 @@
     "switch": "Switch",
     "inputField": "Input field",
     "fileTypeIncorrect": "File type is incorrect",
-    "select": "Select an option"
+    "select": "Select an option",
+    "themeSelect": {
+      "dark": "Dark",
+      "light": "Light"
+    }
   }
 }
