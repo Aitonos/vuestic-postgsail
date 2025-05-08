@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
   import { useColors } from 'vuestic-ui'
-  import { ref, watch, computed, onBeforeUnmount } from 'vue'
+  import { ref, watch, computed, onMounted, onBeforeUnmount } from 'vue'
   import { storeToRefs } from 'pinia'
   import { useGlobalStore } from '../../../../stores/global-store'
 
@@ -33,7 +33,7 @@
       return currentPresetName.value
     },
     set(newVal) {
-      applyPreset(newVal)
+      updateTheme(newVal)
     },
   })
 
@@ -43,13 +43,15 @@
   })
 
   function updateTheme(newVal: string) {
-    console.log('updateTheme', newVal)
+    //console.log('updateTheme', newVal)
     /* Update iconTheme based on the current preset */
     isLightIconTheme.value = newVal !== 'dark'
     /* Update global store on the current preset */
     currentTheme.value = newVal !== 'dark' ? 'light' : 'dark'
+    /* Update Vuestic Theme based on the current preset */
+    applyPreset(currentTheme.value)
     const isDark = newVal === 'dark'
-    console.log('isDark', isDark)
+    //console.log('isDark', isDark)
     syncTailwindDarkClass(isDark)
     syncSidepanelDarkClass(isDark)
   }
@@ -84,8 +86,11 @@
   const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
   darkModePreference.addEventListener('change', updateThemeBasedOnSystem)
 
-  // Initial theme sync with system preference
-  updateTheme(darkModePreference.matches ? 'dark' : 'light')
+  onMounted(() => {
+    //console.debug('applying theme...')
+    // Initial theme sync with system preference
+    updateTheme(darkModePreference.matches ? 'dark' : 'light')
+  })
 
   onBeforeUnmount(() => {
     darkModePreference.removeEventListener('change', updateThemeBasedOnSystem)
