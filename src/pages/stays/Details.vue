@@ -28,7 +28,7 @@
                         v-model="formData.name"
                         outline
                         :rules="[(value) => (value && value.length > 0) || 'Field is required']"
-                        class="inputbox w-full md:w-2/3 max-w-md"
+                        cclass="w-full md:w-2/3 max-w-md"
                         @change="handleSubmit"
                       />
                       <span v-else>
@@ -319,10 +319,6 @@
 </script>
 
 <style lang="scss" scoped>
-  .inputbox {
-    background: white;
-    border: 1px solid #ccc;
-  }
   .va-input-wrapper.va-textarea {
     width: 100%;
   }
