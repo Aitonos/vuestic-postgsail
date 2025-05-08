@@ -53,8 +53,10 @@
 
   import { useGlobalStore } from '../../stores/global-store'
   import { useVesselStore } from '../../stores/vessel-store'
+  import { storeToRefs } from 'pinia'
 
-  const { currentTheme } = useGlobalStore()
+  const GlobalStore = useGlobalStore()
+  const { currentTheme } = storeToRefs(GlobalStore)
   const { vesselName, vesselType } = useVesselStore()
 
   const GeoJSONbasemapObj = ref({})
@@ -405,7 +407,7 @@
             hasTabs: true,
             tabsPosition: 'top',
             pushControls: true,
-            darkMode: currentTheme === 'dark',
+            darkMode: currentTheme.value === 'dark',
             startTab: 'tab-1',
           })
           .addTo(this.map)

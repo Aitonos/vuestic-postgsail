@@ -79,7 +79,10 @@
 
   import { useGlobalStore } from '../../stores/global-store'
   import { useVesselStore } from '../../stores/vessel-store'
-  const { currentTheme } = useGlobalStore()
+  import { storeToRefs } from 'pinia'
+
+  const GlobalStore = useGlobalStore()
+  const { currentTheme } = storeToRefs(GlobalStore)
   const { vesselName, vesselType } = useVesselStore()
 
   const isBusy = ref(false),
@@ -265,7 +268,7 @@
           hasTabs: true,
           tabsPosition: 'top',
           pushControls: true,
-          darkMode: currentTheme === 'dark',
+          darkMode: currentTheme.value === 'dark',
           startTab: 'tab-moorages1',
         })
         .addTo(map.value)
