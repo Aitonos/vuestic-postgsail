@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; align-items: center">
     <va-switch
-      v-model="currentTheme"
+      v-model="theme"
       color="#5123a1"
       off-color="#ffd300"
       style="--va-switch-checker-background-color: #252723"
@@ -10,44 +10,84 @@
     >
       <template #innerLabel>
         <div class="va-text-center">
-          <va-icon size="24px" :name="value ? 'light_mode' : 'dark_mode'" />
+          <va-icon size="24px" :name="isLightIconTheme ? 'light_mode' : 'dark_mode'" />
         </div>
       </template>
     </va-switch>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { useColors } from 'vuestic-ui'
-  import { ref, watchEffect, watch, computed } from 'vue'
+  import { ref, watch, computed, onBeforeUnmount } from 'vue'
   import { storeToRefs } from 'pinia'
   import { useGlobalStore } from '../../../../stores/global-store'
 
   const GlobalStore = useGlobalStore()
-  const { applyPreset } = useColors()
+  const { applyPreset, currentPresetName } = useColors()
   const { currentTheme } = storeToRefs(GlobalStore)
-  const value = ref(true)
-  watchEffect(() => {
-    applyPreset(currentTheme.value)
+  const isLightIconTheme = ref(true)
+
+  const theme = computed({
+    get() {
+      return currentPresetName.value
+    },
+    set(newVal) {
+      applyPreset(newVal)
+    },
   })
 
-  function activateDarkMode() {
-    console.log('matchMedia ref changed!')
-    currentTheme.value = 'dark'
+  watch(currentPresetName, (newVal) => {
+    console.log('currentPresetName changed', newVal)
+    updateTheme(newVal)
+  })
+
+  function updateTheme(newVal: string) {
+    console.log('updateTheme', newVal)
+    /* Update iconTheme based on the current preset */
+    isLightIconTheme.value = newVal !== 'dark'
+    /* Update global store on the current preset */
+    currentTheme.value = newVal !== 'dark' ? 'light' : 'dark'
+    const isDark = newVal === 'dark'
+    console.log('isDark', isDark)
+    syncTailwindDarkClass(isDark)
+    syncSidepanelDarkClass(isDark)
   }
+
+  // Syncs the Vuestic theme with Tailwind dark mode class
+  function syncTailwindDarkClass(isDark: boolean) {
+    console.log('syncTailwindDarkClass', isDark)
+    const html = document.documentElement
+    if (!html) return
+    html.classList.toggle('dark', isDark)
+  }
+
+  // Syncs the Leaflet.sidepanel dark mode class
+  function syncSidepanelDarkClass(isDark: boolean) {
+    console.log('syncSidepanelDarkClass', isDark)
+    const panelEl = document.getElementById('sidepanel')
+    if (!panelEl) return
+    panelEl.classList.toggle('sidepanel-dark', isDark)
+  }
+
+  // Syncs the system preferences with dark mode class
+  function updateThemeBasedOnSystem(e: MediaQueryListEvent) {
+    if (e.matches) {
+      // System switched to dark
+      updateTheme('dark')
+    } else {
+      // System switched to light
+      updateTheme('light')
+    }
+  }
+
   const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
-  darkModePreference.addEventListener('change', (e) => e.matches && activateDarkMode())
+  darkModePreference.addEventListener('change', updateThemeBasedOnSystem)
 
-  watch(currentTheme, () => {
-    console.log('currentTheme ref changed!')
-    console.log('currentTheme:', currentTheme.value)
-    GlobalStore.$state.currentTheme = currentTheme.value
-  })
+  // Initial theme sync with system preference
+  updateTheme(darkModePreference.matches ? 'dark' : 'light')
 
-  /*
-  computed(() => {
-    console.log('currentTheme set to system!')
-    GlobalStore.$state.currentTheme = darkModePreference.value ? 'light' : 'dark'
+  onBeforeUnmount(() => {
+    darkModePreference.removeEventListener('change', updateThemeBasedOnSystem)
   })
-  */
 </script>
