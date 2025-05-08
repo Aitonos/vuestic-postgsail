@@ -1,54 +1,62 @@
 <template>
-  <div>
-    <va-card class="mb-3">
-      <va-card-content>
+  <div class="p-4 dark:text-white">
+    <va-card class="shadow-lg rounded-lg">
+      <va-card-content class="mb-4">
         <Map style="width: 100%; height: 40vh" :map-zoom="13" :moorage-map-id="Number.parseInt(route.params.id)" />
       </va-card-content>
     </va-card>
-    <va-card class="mb-3">
-      <va-card-title>{{ $t('moorages.details.title') }}</va-card-title>
+    <va-card class="p-4 dark:text-white">
+      <va-card-title class="text-xl font-bold dark:text-white">{{ $t('moorages.details.title') }}</va-card-title>
       <va-card-content>
         <template v-if="apiError">
           <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
         </template>
         <va-inner-loading :loading="isBusy">
+          <!-- Details Grid -->
           <template v-if="item">
             <va-form ref="form" @submit.prevent="handleSubmit" @validation="formData.isValid = $event">
-              <dl class="dl-details row mb-3">
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.moorage') }}</dt>
-                <dd class="flex xs12 md6 pa-1">
-                  <VaValue v-slot="v">
-                    <input
-                      v-if="v.value"
-                      v-model="formData.name"
-                      outline
-                      :rules="[(value) => (value && value.length > 0) || 'Field is required']"
-                      style="min-width: 100px; max-width: 50%"
-                      class="inputbox"
-                      @change="handleSubmit"
-                    />
-                    <span v-else>
-                      {{ formData.name }}
-                    </span>
+              <dl class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 text-md md:text-base">
+                <!-- Name -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('moorages.moorage.moorage') }}</dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <VaValue v-slot="v">
+                      <input
+                        v-if="v.value"
+                        v-model="formData.name"
+                        outline
+                        :rules="[(value) => (value && value.length > 0) || 'Field is required']"
+                        class="inputbox w-full md:w-2/3 max-w-md"
+                        @change="handleSubmit"
+                      />
+                      <span v-else>
+                        {{ formData.name }}
+                      </span>
 
-                    <VaButton
-                      :icon="v.value ? 'save' : 'edit'"
-                      preset="plain"
-                      size="small"
-                      @click="v.value = !v.value"
-                    />
-                  </VaValue>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.departed') }}</dt>
-                <dd class="flex">
-                  <div>
-                    <StayAt
-                      v-if="item.default_stay_id"
-                      :id="parseInt(route.params.id)"
-                      :data="parseInt(item.default_stay_id)"
-                      @clickFromChildComponent="updateDefaultStay($event)"
-                    />
-                    <!--
+                      <VaButton
+                        :icon="v.value ? 'save' : 'edit'"
+                        preset="plain"
+                        size="medium"
+                        @click="v.value = !v.value"
+                      />
+                    </VaValue>
+                  </dd>
+                </div>
+
+                <!-- Default Stay Type -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">
+                    {{ $t('moorages.moorage.departed') }}
+                  </dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <div>
+                      <StayAt
+                        v-if="item.default_stay_id"
+                        :id="parseInt(route.params.id)"
+                        :data="parseInt(item.default_stay_id)"
+                        @clickFromChildComponent="updateDefaultStay($event)"
+                      />
+                      <!--
                     <va-select
                       v-model="stayed_at_options[item.default_stay_id]"
                       :options="stayed_at_options"
@@ -56,45 +64,88 @@
                       class="mb-6"
                       @update:modelValue="runBusy(updateDefaultStay, route.params.id, $event)"
                     />
-                    -->
-                  </div>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.home') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  <va-switch v-model="item.home" size="small" @update:modelValue="runBusy(updateHome, $event)" />
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.stayed_at') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  <router-link class="va-link link" :to="{ name: 'moorage-stays', params: { id: item.id } }">
-                    {{ durationI18nDaysHours(item.total_duration) }}
-                  </router-link>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.arrivals') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  <router-link
-                    class="va-link link"
-                    :to="{ name: 'moorage-arrivals-departures', params: { id: item.id } }"
-                  >
-                    {{ item.arrivals_departures }}
-                  </router-link>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.visits') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  {{ item.visits }}
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.first_seen') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  {{ dateFormatUTC(item.first_seen) }}
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.last_seen') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  {{ dateFormatUTC(item.last_seen) }}
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('moorages.moorage.note') }}</dt>
-                <dd class="flex xs12 md6 pa-1">
-                  <VaTextarea v-model="formData.notes" outline placeholder="Note" @change="handleSubmit" />
-                </dd>
+                    --></div>
+                  </dd>
+                </div>
+
+                <!-- Home -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">
+                    {{ $t('moorages.moorage.home') }}
+                  </dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <va-switch v-model="item.home" size="small" @update:modelValue="runBusy(updateHome, $event)" />
+                  </dd>
+                </div>
+
+                <!-- total_duration -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">
+                    {{ $t('moorages.moorage.stayed_at') }}
+                  </dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <router-link class="va-link link" :to="{ name: 'moorage-stays', params: { id: item.id } }">
+                      {{ durationI18nDaysHours(item.total_duration) }}
+                    </router-link>
+                  </dd>
+                </div>
+
+                <!-- arrivals -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">
+                    {{ $t('moorages.moorage.arrivals') }}
+                  </dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <router-link
+                      class="va-link link"
+                      :to="{ name: 'moorage-arrivals-departures', params: { id: item.id } }"
+                    >
+                      {{ item.arrivals_departures }}
+                    </router-link>
+                  </dd>
+                </div>
+
+                <!-- visits -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">
+                    {{ $t('moorages.moorage.visits') }}
+                  </dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    {{ item.visits }}
+                  </dd>
+                </div>
+
+                <!-- first_seen -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">
+                    {{ $t('moorages.moorage.first_seen') }}
+                  </dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    {{ dateFormatUTC(item.first_seen) }}
+                  </dd>
+                </div>
+
+                <!-- last_seen -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">
+                    {{ $t('moorages.moorage.last_seen') }}
+                  </dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    {{ dateFormatUTC(item.last_seen) }}
+                  </dd>
+                </div>
+
+                <!-- first_seen_id -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">
+                    {{ $t('moorages.moorage.note') }}
+                  </dt>
+                  <dd class="w-full text-gray-800 dark:text-white">
+                    <VaTextarea v-model="formData.notes" outline placeholder="Note" @change="handleSubmit" />
+                  </dd>
+                </div>
               </dl>
+
               <template v-if="updateError">
                 <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ updateError }}</va-alert>
               </template>
@@ -104,7 +155,7 @@
                   <va-button :disabled="!canSubmit" @click="handleSubmit">Save</va-button>
                 </div>
                 -->
-                <div class="flex flex-row pa-2">
+                <div class="flex flex-row pa-2 p-2">
                   <va-button color="danger" style="width: 100%" @click="handleDelete">{{
                     $t('moorages.moorage.delete')
                   }}</va-button>
@@ -359,16 +410,11 @@
 </script>
 
 <style lang="scss" scoped>
-  .dl-details {
-    > dt:nth-child(4n + 3) {
-      &,
-      & + dd {
-        background-color: var(--va-background-primary);
-      }
-    }
-  }
   .inputbox {
     background: white;
     border: 1px solid #ccc;
+  }
+  .va-input-wrapper.va-textarea {
+    width: 100%;
   }
 </style>

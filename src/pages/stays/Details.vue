@@ -1,67 +1,81 @@
 <template>
-  <div>
-    <va-card class="mb-3">
+  <div class="p-4 dark:text-white">
+    <va-card class="shadow-lg rounded-lg">
       <template v-if="item && item.moorage_id">
-        <va-card-content>
+        <va-card-content class="mb-4">
           <Map style="width: 100%; height: 40vh" :map-zoom="13" :moorage-map-id="Number.parseInt(item.moorage_id)" />
         </va-card-content>
       </template>
     </va-card>
-    <va-card class="mb-3">
-      <va-card-title>{{ $t('stays.details.title') }}</va-card-title>
+    <va-card class="p-4 dark:text-white">
+      <va-card-title class="text-xl font-bold dark:text-white">{{ $t('stays.details.title') }}</va-card-title>
       <va-card-content>
         <template v-if="apiError">
           <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
         </template>
         <va-inner-loading :loading="isBusy">
+          <!-- Details Grid -->
           <template v-if="item && item.moorage_id">
             <va-form ref="form" @submit.prevent="handleSubmit" @validation="formData.isValid = $event">
-              <dl class="dl-details row mb-3">
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('stays.stay.name') }}</dt>
-                <dd class="flex xs12 md6 pa-1">
-                  <VaValue v-slot="v">
-                    <input
-                      v-if="v.value"
-                      v-model="formData.name"
-                      outline
-                      :rules="[(value) => (value && value.length > 0) || 'Field is required']"
-                      style="min-width: 100px; max-width: 50%"
-                      class="inputbox"
-                      @change="handleSubmit"
-                    />
-                    <span v-else>
-                      {{ formData.name }}
-                    </span>
+              <dl class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 text-md md:text-base">
+                <!-- Name -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('stays.stay.name') }}</dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <VaValue v-slot="v">
+                      <input
+                        v-if="v.value"
+                        v-model="formData.name"
+                        outline
+                        :rules="[(value) => (value && value.length > 0) || 'Field is required']"
+                        class="inputbox w-full md:w-2/3 max-w-md"
+                        @change="handleSubmit"
+                      />
+                      <span v-else>
+                        {{ formData.name }}
+                      </span>
 
-                    <VaButton
-                      :icon="v.value ? 'save' : 'edit'"
-                      preset="plain"
-                      size="small"
-                      @click="v.value = !v.value"
-                    />
-                  </VaValue>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('stays.stay.moorage') }}</dt>
-                <!--<dd class="flex xs12 md6 pa-2">{{ item.moorage }}</dd>-->
-                <dd class="flex xs12 md6 pa-2">
-                  <router-link class="link" :to="{ name: 'moorage-details', params: { id: item.moorage_id } }">
-                    {{ item.moorage }}
-                  </router-link>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('stays.stay.duration') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  {{ durationI18nDaysHours(item.duration) }}
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('stays.stay.stayed_at') }}</dt>
-                <dd class="flex">
-                  <div>
-                    <StayAt
-                      v-if="item.stayed_at_id"
-                      :id="parseInt(route.params.id)"
-                      :data="parseInt(item.stayed_at_id)"
-                      @clickFromChildComponent="updateStayedAt"
-                    />
-                    <!--
+                      <VaButton
+                        :icon="v.value ? 'save' : 'edit'"
+                        preset="plain"
+                        size="medium"
+                        @click="v.value = !v.value"
+                      />
+                    </VaValue>
+                  </dd>
+                </div>
+
+                <!-- Moorage -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('stays.stay.moorage') }}</dt>
+                  <!--<dd class="flex xs12 md6 pa-2">{{ item.moorage }}</dd>-->
+                  <dd class="text-gray-800 dark:text-white">
+                    <router-link class="link" :to="{ name: 'moorage-details', params: { id: item.moorage_id } }">
+                      {{ item.moorage }}
+                    </router-link>
+                  </dd>
+                </div>
+
+                <!-- Duration -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('stays.stay.duration') }}</dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    {{ durationI18nDaysHours(item.duration) }}
+                  </dd>
+                </div>
+
+                <!-- stayed_at -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('stays.stay.stayed_at') }}</dt>
+                  <dd class="flex">
+                    <div>
+                      <StayAt
+                        v-if="item.stayed_at_id"
+                        :id="parseInt(route.params.id)"
+                        :data="parseInt(item.stayed_at_id)"
+                        @clickFromChildComponent="updateStayedAt"
+                      />
+                      <!--
                     <va-select
                       v-model="stayed_at_options[item.stayed_at_id]"
                       :options="stayed_at_options"
@@ -69,49 +83,68 @@
                       outline
                       @update:modelValue="runBusy(updateStayedAt, route.params.id, $event)"
                     />
-                    -->
-                  </div>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('stays.stay.arrived') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  <router-link
-                    class="link"
-                    :to="{ name: 'moorage-details', params: { id: item.departed_to_moorage_id } }"
-                  >
-                    {{ item.departed_to_moorage_name }}
-                  </router-link>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('stays.stay.arrival') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  <router-link class="link" :to="{ name: 'log-map', params: { id: item.arrived_log_id } }">
-                    {{ dateFormatUTC(item.arrived) }}
-                  </router-link>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('stays.stay.departed') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  <router-link
-                    class="link"
-                    :to="{ name: 'moorage-details', params: { id: item.arrived_from_moorage_id } }"
-                  >
-                    {{ item.arrived_from_moorage_name }}
-                  </router-link>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('stays.stay.departure') }}</dt>
-                <dd class="flex xs12 md6 pa-2">
-                  <router-link class="link" :to="{ name: 'log-map', params: { id: item.departed_log_id } }">
-                    {{ dateFormatUTC(item.departed) }}
-                  </router-link>
-                </dd>
-                <dt class="flex xs12 md6 pa-2 va-text-bold">{{ $t('stays.stay.note') }}</dt>
-                <dd class="flex xs12 md6 pa-1">
-                  <VaTextarea
-                    v-model="formData.notes"
-                    outline
-                    placeholder="Note"
-                    type="textarea"
-                    @change="handleSubmit"
-                  />
-                </dd>
+                    --></div>
+                  </dd>
+                </div>
+
+                <!-- departed_to_moorage_name -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('stays.stay.arrived') }}</dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <router-link
+                      class="link"
+                      :to="{ name: 'moorage-details', params: { id: item.departed_to_moorage_id } }"
+                    >
+                      {{ item.departed_to_moorage_name }}
+                    </router-link>
+                  </dd>
+                </div>
+
+                <!-- arrived -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('stays.stay.arrival') }}</dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <router-link class="link" :to="{ name: 'log-map', params: { id: item.arrived_log_id } }">
+                      {{ dateFormatUTC(item.arrived) }}
+                    </router-link>
+                  </dd>
+                </div>
+
+                <!-- arrived_from_moorage_name -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('stays.stay.departed') }}</dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <router-link
+                      class="link"
+                      :to="{ name: 'moorage-details', params: { id: item.arrived_from_moorage_id } }"
+                    >
+                      {{ item.arrived_from_moorage_name }}
+                    </router-link>
+                  </dd>
+                </div>
+
+                <!-- departed -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('stays.stay.departure') }}</dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <router-link class="link" :to="{ name: 'log-map', params: { id: item.departed_log_id } }">
+                      {{ dateFormatUTC(item.departed) }}
+                    </router-link>
+                  </dd>
+                </div>
+
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('stays.stay.note') }}</dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <VaTextarea
+                      v-model="formData.notes"
+                      outline
+                      placeholder="Note"
+                      type="textarea"
+                      @change="handleSubmit"
+                    />
+                  </dd>
+                </div>
               </dl>
               <template v-if="updateError">
                 <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ updateError }}</va-alert>
@@ -286,16 +319,11 @@
 </script>
 
 <style lang="scss" scoped>
-  .dl-details {
-    > dt:nth-child(4n + 3) {
-      &,
-      & + dd {
-        background-color: var(--va-background-primary);
-      }
-    }
-  }
   .inputbox {
     background: white;
     border: 1px solid #ccc;
+  }
+  .va-input-wrapper.va-textarea {
+    width: 100%;
   }
 </style>
