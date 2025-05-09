@@ -146,9 +146,15 @@ const routes: Array<RouteRecordRaw> = [
         meta: { titleKey: 'boats.details.title' },
       },
       {
-        name: 'boat-profile',
+        name: 'boat-mapping',
         path: 'boat/mapping',
         component: () => import('../pages/boats/Correlations.vue'),
+        meta: { titleKey: 'boats.details.title' },
+      },
+      {
+        name: 'boat-polar',
+        path: 'boat/polar',
+        component: () => import('../pages/boats/Polar.vue'),
         meta: { titleKey: 'boats.details.title' },
       },
       {
