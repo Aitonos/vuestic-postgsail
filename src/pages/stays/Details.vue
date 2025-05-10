@@ -28,7 +28,7 @@
                         v-model="formData.name"
                         outline
                         :rules="[(value) => (value && value.length > 0) || 'Field is required']"
-                        cclass="w-full md:w-2/3 max-w-md"
+                        class="w-full md:w-2/3 max-w-md"
                         @change="handleSubmit"
                       />
                       <span v-else>
