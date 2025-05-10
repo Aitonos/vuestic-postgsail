@@ -1,92 +1,177 @@
 <template>
-  <div>
-    <va-card>
-      <va-card-title>{{ $t('boats.details.title') }}</va-card-title>
+  <div class="p-4 dark:text-white">
+    <va-card class="shadow-lg rounded-lg">
+      <va-card-content class="mb-4">
+        <!-- Map -->
+        <template v-if="!isBusy && item.geoJson">
+          <l-map id="boat-map" :geo-json-feature="mapGeoJsonFeatures" map-type="Satellite" :map-zoom="14" />
+        </template>
+      </va-card-content>
+    </va-card>
+    <va-card class="p-4 dark:text-white">
+      <va-card-title class="text-xl font-bold dark:text-white">
+        {{ $t('boats.details.title') }}
+      </va-card-title>
       <va-card-content>
         <template v-if="apiError">
-          <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
+          <va-alert color="danger" outline class="mb-4"> {{ $t('api.error') }}: {{ apiError }} </va-alert>
         </template>
+
         <va-inner-loading :loading="isBusy">
-          <div class="mb-3 my-3">
-            <template v-if="!isBusy && item.geoJson">
-              <l-map id="boat-map" :geo-json-feature="mapGeoJsonFeatures" map-type="Satellite" :map-zoom="14" />
-            </template>
-          </div>
-          <div class="mb-3 my-3" style="text-align: center">
+          <!-- Signalk Message -->
+          <div class="mb-4 text-center text-gray-700 dark:text-gray-300 text-base font-medium">
             {{ $t('boats.boat.signalk') }}
           </div>
+
+          <!-- Details Grid -->
           <template v-if="item">
-            <dl class="dl-details row">
-              <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.name') }}</dt>
-              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.name }}</dd>
-              <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.mmsi') }}</dt>
-              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.mmsi }}</dd>
-              <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.last_contact') }}</dt>
-              <dd class="flex xs12 md6 pa-2">{{ item.lastContact }}</dd>
-              <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.first_contact') }}</dt>
-              <dd class="flex xs12 md6 pa-2">{{ item.firstContact }}</dd>
-              <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.created_at') }}</dt>
-              <dd class="flex xs12 md6 pa-2">{{ item.createdAt }}</dd>
-              <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.beam') }}</dt>
-              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.beam }}</dd>
-              <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.height') }}</dt>
-              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.height }}</dd>
-              <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.length') }}</dt>
-              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.length }}</dd>
-              <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.country') }}</dt>
-              <template v-if="item.country">
-                <dd class="flex xs12 md6 pa-2">
-                  {{ item.country }}
-                  <va-icon :name="getFlagIcon(item.flag.toLocaleLowerCase(), 'small')" />
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 text-md md:text-base">
+              <template v-for="(label, key) in boatFields" :key="key">
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">
+                    {{ $t(label) }}
+                  </dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    {{ item[key] || '-' }}
+                  </dd>
+                </div>
+              </template>
+
+              <!-- Country with flag -->
+              <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                <dt class="font-semibold text-gray-800 dark:text-white">
+                  {{ $t('boats.boat.country') }}
+                </dt>
+                <dd class="text-gray-700 dark:text-white flex items-center gap-2">
+                  <span>{{ item.country || '-' }}</span>
+                  <va-icon v-if="item.flag" :name="getFlagIcon(item.flag.toLocaleLowerCase(), 'small')" />
                 </dd>
-              </template>
-              <template v-else>
-                <dd class="flex xs12 md6 pa-2 empty-field"></dd>
-              </template>
-              <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.ship_type') }}</dt>
-              <dd class="flex xs12 md6 pa-2 empty-field">{{ item.ship_type }}</dd>
-              <template v-if="item.plugin_version">
-                <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.plugin_version') }}</dt>
-                <dd class="flex">
-                  <template v-if="item.plugin_version === '0.4.0'">
-                    <va-chip color="success" class="mr-6 mb-2">
+              </div>
+
+              <!-- Plugin Version with chip -->
+              <div v-if="item.plugin_version" class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                <dt class="font-semibold text-gray-800 dark:text-white">
+                  {{ $t('boats.boat.plugin_version') }}
+                </dt>
+                <dd class="text-gray-800 dark:text-white">
+                  <a href="https://www.npmjs.com/package/signalk-postgsail" target="_blank">
+                    <va-chip :color="item.plugin_version === '0.4.0' ? 'success' : 'warning'" class="cursor-pointer">
                       {{ item.plugin_version }}
-                    </va-chip> </template
-                  ><template v-else>
-                    <va-popover icon="warning" :message="$t('boats.messages.plugin_version')">
-                      <va-chip color="warning" class="mr-6 mb-2">
-                        {{ item.plugin_version }}
-                      </va-chip>
-                    </va-popover>
-                  </template>
+                    </va-chip>
+                  </a>
                 </dd>
-              </template>
-              <template v-if="item.platform">
-                <dt class="flex xs12 md6 pa-2 font-bold">{{ $t('boats.boat.platform') }}</dt>
-                <dd class="flex empty-field">
-                  {{ item.platform }}
-                </dd>
-              </template>
-              <template v-if="item.mmsi">
-                <dt class="flex xs12 md6 pa-2 font-bold">VesselFinder</dt>
-                <dd class="flex xs12 md6 pa-2">
+              </div>
+
+              <!-- VesselFinder & MarineVesselTraffic -->
+              <div v-if="item.mmsi" class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                <dt class="font-semibold text-gray-800 dark:text-white">VesselFinder</dt>
+                <dd class="text-gray-800 dark:text-white">
                   <a
                     :href="`https://www.vesselfinder.com/vessels?name=${item.mmsi}`"
                     target="_blank"
-                    class="va-link link"
-                    >VesselFinder <va-icon name="fa-external-link" size="small"
-                  /></a>
+                    class="text-blue-600 hover:underline dark:text-blue-400"
+                  >
+                    VesselFinder
+                    <va-icon name="fa-external-link" size="small" />
+                  </a>
                 </dd>
-                <dt class="flex xs12 md6 pa-2 font-bold">MarineVesselTraffic</dt>
-                <dd class="flex xs12 md6 pa-2">
+              </div>
+
+              <div v-if="item.mmsi" class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                <dt class="font-semibold text-gray-800 dark:text-white">MarineVesselTraffic</dt>
+                <dd class="text-gray-800 dark:text-white">
                   <a
                     :href="`https://www.marinevesseltraffic.com/2013/06/mmsi-number-search.html?mmsi=${item.mmsi}`"
                     target="_blank"
-                    class="va-link link"
-                    >MarineVesselTraffic <va-icon name="fa-external-link" size="small"
-                  /></a>
+                    class="text-blue-600 hover:underline dark:text-blue-400"
+                  >
+                    MarineVesselTraffic
+                    <va-icon name="fa-external-link" size="small" />
+                  </a>
                 </dd>
-              </template>
+              </div>
+
+              <!-- Offline -->
+              <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                <dt class="font-semibold text-gray-800 dark:text-white">
+                  {{ $t('boats.boat.status') }}
+                </dt>
+                <dd class="text-gray-800 dark:text-white">
+                  <router-link :to="{ name: 'monitoring' }">
+                    <va-chip :color="!item.offline ? 'success' : 'warning'" class="cursor-pointer">
+                      {{ offline_msg }}
+                    </va-chip>
+                  </router-link>
+                </dd>
+              </div>
+
+              <!-- Configuration -->
+              <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                <dt class="font-semibold text-gray-800 dark:text-white">
+                  {{ $t('boats.boat.configuration') }}
+                </dt>
+                <dd class="text-gray-800 dark:text-white">
+                  <router-link :to="{ name: 'boat-mapping' }">
+                    <va-chip :color="item.configuration ? 'success' : 'warning'" class="cursor-pointer">
+                      {{ configuration_msg }}
+                    </va-chip>
+                  </router-link>
+                </dd>
+              </div>
+
+              <!-- Make & Model -->
+              <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                <dt class="font-semibold text-gray-800 dark:text-white">
+                  {{ $t('boats.boat.make_model') }}
+                </dt>
+                <dd>
+                  <VaValue>
+                    <vaInput
+                      v-if="isEditing"
+                      v-model="formData.make_model"
+                      outline
+                      class="w-full md:w-2/3 max-w-md"
+                      @change="handleSubmit"
+                    />
+                    <span v-else>{{ formData.make_model }}</span>
+                    <VaButton
+                      :icon="isEditing ? 'save' : 'edit'"
+                      preset="plain"
+                      size="medium"
+                      class="ml-2"
+                      @click="toggleEdit"
+                    />
+                  </VaValue>
+                </dd>
+              </div>
+
+              <!-- Photo Upload/Preview -->
+              <div class="col-span-full mt-6 p-3 rounded transition hover:bg-gray-100 dark:hover:bg-gray-800">
+                <dt class="font-semibold text-gray-800 dark:text-white">
+                  {{ $t('boats.boat.photo') }}
+                </dt>
+                <dd class="mt-2">
+                  <template v-if="!item.image_url">
+                    <input type="file" accept="image/*" @change="onFileChange" />
+                    <div v-if="imgPreview" class="mt-4">
+                      <p class="text-sm text-gray-500 mb-2">Preview:</p>
+                      <img :src="imgPreview" class="w-full max-h-48 object-contain border rounded" />
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div v-if="item.image_url" class="relative">
+                      <VaButton
+                        icon="delete"
+                        color="secondary"
+                        class="absolute top-2 right-2 text-red-500"
+                        @click="submitImage(null, null)"
+                      />
+                      <img :src="item.image_url" class="w-full max-h-48 object-contain border rounded" />
+                      <p class="text-sm text-gray-400 mt-1">Last updated: {{ item.image_updated_at }}</p>
+                    </div>
+                  </template>
+                </dd>
+              </div>
             </dl>
           </template>
         </va-inner-loading>
@@ -96,22 +181,38 @@
 </template>
 
 <script setup>
-  import { computed, ref, reactive, onMounted } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { computed, ref, reactive, onMounted, onBeforeUnmount } from 'vue'
   import { setAppTitle } from '../../utils/app.js'
   import { useI18n } from 'vue-i18n'
   import PostgSail from '../../services/api-client'
   import { dateFormatUTC } from '../../utils/dateFormatter.js'
   import lMap from '../../components/maps/leafletMap.vue'
+  import { useToast } from 'vuestic-ui'
 
   import vesselData from '../../data/boat.json'
 
   const { t } = useI18n()
 
-  const route = useRoute()
   const isBusy = ref(false)
   const apiError = ref(null)
   const apiData = reactive({ row: null })
+  const formData = ref({ make_model: '' })
+  const fileUpload = ref(null)
+  const imgPreview = ref(null)
+  const isEditing = ref(false)
+  const { init: initToast } = useToast()
+  const boatFields = {
+    name: 'boats.boat.name',
+    mmsi: 'boats.boat.mmsi',
+    lastContact: 'boats.boat.last_contact',
+    firstContact: 'boats.boat.first_contact',
+    createdAt: 'boats.boat.created_at',
+    beam: 'boats.boat.beam',
+    height: 'boats.boat.height',
+    length: 'boats.boat.length',
+    ship_type: 'boats.boat.ship_type',
+    platform: 'boats.boat.platform',
+  }
 
   const item = computed(() => {
     return apiData.row
@@ -130,6 +231,12 @@
           ship_type: apiData.row.ship_type,
           plugin_version: apiData.row.plugin_version,
           platform: apiData.row.platform,
+          offline: apiData.row.offline,
+          configuration: apiData.row.configuration,
+          image_url: apiData.row.has_image ? apiData.row.image_url : null,
+          image_updated_at: apiData.row.image_updated_at ? dateFormatUTC(apiData.row.image_updated_at) : null,
+          make_model: apiData.row.make_model,
+          has_polar: apiData.row.has_polar,
         }
       : {}
   })
@@ -139,11 +246,17 @@
     return item.value.geoJson
   })
 
+  const offline_msg = computed(() => {
+    return !item.value.offline ? 'Online' : 'Offline'
+  })
+  const configuration_msg = computed(() => {
+    return item.value.configuration ? 'Present' : 'Missing'
+  })
+
   onMounted(async () => {
     isBusy.value = true
     apiError.value = null
     const api = new PostgSail()
-    //const mmsi = route.params.mmsi
     try {
       const response = await api.vessel_get()
       // API return null when vessel is pending metadata
@@ -152,7 +265,9 @@
         if (apiData.row.name) {
           document.title = setAppTitle(t('boats.details.title') + ': ' + apiData.row.name)
         }
-        //console.log(`geoJson ${apiData.row.geojson}`)
+        if (apiData.row.make_model) {
+          formData.value.make_model = apiData.row.make_model
+        }
       } else {
         throw { response }
       }
@@ -161,7 +276,7 @@
       apiError.value = response.message
       if (!import.meta.env.PROD) {
         console.warn('Fallback using sample data from local json...', apiError.value)
-        const row = vesselData.find((row) => row.id == route.params.id)
+        const row = vesselData.vessel
         apiData.row = row
       }
     } finally {
@@ -172,48 +287,128 @@
   function getFlagIcon(code, size) {
     return `flag-icon-${code} ${size}`
   }
+
+  function onFileChange(event) {
+    const selected = event.target.files[0]
+    if (!selected) {
+      fileUpload.value = null
+      imgPreview.value = null
+      apiError.value = null
+      return
+    }
+
+    if (!selected.type.startsWith('image/')) {
+      apiError.value = 'Please select a valid image file.'
+      fileUpload.value = null
+      return
+    }
+
+    fileUpload.value = selected
+    apiError.value = null
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      imgPreview.value = e.target.result
+      //console.debug(selected)
+      submitImage(e.target.result, selected.type)
+    }
+    reader.readAsDataURL(selected)
+  }
+
+  async function submitImage(img, type) {
+    //if (!fileUpload.value) return
+    let isDelete = false
+    if (item.value.image_url && !img && !type) {
+      console.debug('Removing image')
+      isDelete = true
+      fileUpload.value = null
+      imgPreview.value = null
+      apiError.value = null
+      item.value.image_url = null
+    }
+
+    isBusy.value = true
+    apiError.value = null
+    const api = new PostgSail()
+    const payload = {
+      image_b64: img ? img.split(',')[1] : null, // get the base64 part without the header
+      image_type: type,
+    }
+    try {
+      const response = await api.vessel_update(payload)
+      //console.log(response)
+      if (response) {
+        console.log('Image update success', response)
+        apiError.value = null
+        return true
+      } else {
+        throw { response }
+      }
+    } catch (err) {
+      console.error('Image update error:', err)
+      apiError.value = 'Failed to update image.'
+    } finally {
+      let notifyMsg = apiError.value ? `Error uploading image` : `Successfully uploaded image`
+      if (isDelete) {
+        apiError.value ? `Error deleting image` : `Successfully deleted image`
+      }
+      initToast({
+        message: notifyMsg,
+        position: 'top-right',
+        color: apiError.value ? 'warning' : 'success',
+      })
+      isBusy.value = false
+    }
+  }
+
+  const handleSubmit = async () => {
+    isBusy.value = true
+    apiError.value = null
+
+    const api = new PostgSail()
+    const payload = {
+      make_model: formData.value.make_model,
+    }
+    try {
+      const response = await api.vessel_update(payload)
+      //console.log(response)
+      if (response) {
+        console.log('make&model  success', response)
+        apiError.value = null
+        return true
+      } else {
+        throw { response }
+      }
+    } catch (err) {
+      console.log('make&model failed', err.message ?? err)
+      apiError.value = err
+    } finally {
+      initToast({
+        message: apiError.value ? `Error updating make&model` : `Successfully updated make&model`,
+        position: 'top-right',
+        color: apiError.value ? 'warning' : 'success',
+      })
+      isBusy.value = false
+      // After saving, exit edit mode
+      isEditing.value = false
+    }
+  }
+
+  function toggleEdit() {
+    isEditing.value = !isEditing.value
+  }
+
+  onBeforeUnmount(() => {
+    if (imgPreview.value) {
+      URL.revokeObjectURL(imgPreview.value)
+    }
+  })
 </script>
 
 <style lang="scss">
   @import 'flag-icons/css/flag-icons.css';
-  .dl-details {
-    > dt:nth-child(4n + 3) {
-      &,
-      & + dd {
-        background-color: var(--va-background-primary);
-      }
-    }
-  }
   #boat-map {
     width: 100%;
     height: 350px;
-  }
-  dl {
-    width: 100%;
-    overflow: hidden;
-    //background: #ff0;
-    padding: 0;
-    margin: 0;
-  }
-  dt {
-    float: left;
-    width: 50%;
-    /* adjust the width; make sure the total of both is 100% */
-    //background: #cc0;
-    padding: 0;
-    margin: 0;
-  }
-  dd {
-    float: left;
-    width: 50%;
-    /* adjust the width; make sure the total of both is 100% */
-    //background: #dd0;
-    padding: 0;
-    margin: 0;
-  }
-  /* Ensure empty fields don't collapse */
-  dd.empty-field {
-    min-height: 1.5em; /* Sets a minimum height */
-    //color: grey; /* Optional: set a placeholder color */
   }
 </style>
