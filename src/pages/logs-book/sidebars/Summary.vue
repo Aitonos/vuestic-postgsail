@@ -245,9 +245,14 @@
                 </div>
                 -->
     <div class="flex flex-row pa-2">
-      <va-button :disable="readOnly" color="danger" style="width: 100%" @click="$emit('delete', logbook as Trip)">{{
-        $t('logs.log.delete')
-      }}</va-button>
+      <va-button
+        :disable="readOnly"
+        icon="delete"
+        color="danger"
+        style="width: 100%"
+        @click="$emit('delete', logbook as Trip)"
+        >{{ $t('logs.log.delete') }}</va-button
+      >
     </div>
   </template>
 </template>

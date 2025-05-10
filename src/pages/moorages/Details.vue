@@ -156,7 +156,7 @@
                 </div>
                 -->
                 <div class="flex flex-row pa-2 p-2">
-                  <va-button color="danger" style="width: 100%" @click="handleDelete">{{
+                  <va-button icon="delete" color="danger" style="width: 100%" @click="handleDelete">{{
                     $t('moorages.moorage.delete')
                   }}</va-button>
                 </div>
