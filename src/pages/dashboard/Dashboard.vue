@@ -333,12 +333,17 @@
     const mylogs = await getAPI('logs')
     const mystays = await getAPI('stays')
     const mymoorages = await getAPI('moorages')
-    if (!(mylogs && mylogs[0] && mystays && mystays[0] && mymoorages && mymoorages[0])) {
+    const isEmpty = (arr) => !Array.isArray(arr) || arr.length === 0
+    if (isEmpty(mylogs) && isEmpty(mystays) && isEmpty(mymoorages)) {
       console.warn('Warning, no metrics, new vessel?')
     }
     // Do we have inconsistent data from cache?
-    if (Array.isArray(mylogs) && mylogs.length > 1 && Array.isArray(mymoorages) && mymoorages.length == 0) {
-      console.warn('Warning, invalid cache data, resetting cache.')
+    const sources = [mylogs, mystays, mymoorages]
+    // Count how many arrays are non-empty
+    const nonEmptyCount = sources.filter((arr) => Array.isArray(arr) && arr.length > 0).length
+    // If some have data and others don't, that's inconsistent
+    if (nonEmptyCount > 0 && nonEmptyCount < sources.length) {
+      console.warn('Warning, inconsistent cache data detected. Resetting cache.')
       await CacheStore.resetCache()
     }
     // Load Charts Dashboard
