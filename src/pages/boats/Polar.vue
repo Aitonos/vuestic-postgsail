@@ -17,7 +17,7 @@
               class="w-full font-mono text-sm"
               @input="updateChartFromCSV"
             ></va-textarea>
-            <p v-if="csvContent" class="text-sm text-gray-400 mt-1">Last updated: {{ lastUpdated }}</p>
+            <p class="text-sm text-gray-400 mt-1">Last updated: {{ lastUpdated }}</p>
             <va-alert color="warning" outline class="mb-4">{{ t('boats.boat.polar.message') }}</va-alert>
             <va-button color="primary" size="medium" class="my-button pa-2 p-2" @click="handleSubmit">
               {{ t('boats.boat.polar.submit') }}
@@ -30,7 +30,7 @@
       <va-card-content class="mb-4">
         <div class="p-4 space-y-4 rounded transition">
           <va-inner-loading :loading="isBusy">
-            <div ref="chartRef" class="w-full h-[500px] border rounded transition"></div>
+            <div ref="chartRef" class="w-full h-[500px] rounded transition"></div>
           </va-inner-loading>
         </div>
       </va-card-content>
@@ -68,7 +68,9 @@
     if (csv.indexOf(CSV_PREAMBLE) !== 0) {
       console.error('CSV should start with ' + CSV_PREAMBLE)
       apiError.value = 'Invalid CSV, CSV should start with ' + CSV_PREAMBLE
+      throw new Error('Invalid CSV')
     }
+    apiError.value = null
     const rows = csv
       .trim()
       .split('\n')
@@ -141,10 +143,10 @@
     const api = new PostgSail()
     try {
       const response = await api.vessel_get_polar()
-      console.log(response)
+      //console.log('polarCSV', response)
       // API return null when vessel is pending metadata
       if (response && Array.isArray(response)) {
-        if (response[0].polar) {
+        if (response.length > 0 && response[0].polar) {
           csvContent.value = response[0].polar
           lastUpdated.value = dateFormatUTC(response[0].polar_updated_at)
           updateChartFromCSV()
@@ -177,13 +179,13 @@
       const response = await api.vessel_update(payload)
       //console.log(response)
       if (response) {
-        console.log('make&model  success', response)
+        console.log('polarCSV success', response)
         return true
       } else {
         throw { response }
       }
     } catch (err) {
-      console.log('make&model failed', err.message ?? err)
+      console.log('polarCSV failed', err.message ?? err)
       apiError.value = err
     } finally {
       initToast({
