@@ -85,23 +85,26 @@ export const useCacheStore = defineAPIStore('cache', {
     },
     barChart(): Array<number> {
       this.stats.fill(0)
-      this.logs
-        ? this.logs.forEach(({ started }: { started: string }) => (this.stats[new Date(started).getMonth()] += 1))
-        : this.stats
+      if (Array.isArray(this.logs) && this.logs.length > 0) {
+        this.logs.forEach(({ started }: { started: string }) => (this.stats[new Date(started).getMonth()] += 1))
+      }
       return this.stats
     },
     lineChartbyYear(): JSONObject {
       const obj = {} as JSONObject
-      // Extract the year and create a 12 months array
-      this.logs.forEach(
-        ({ started }: { started: string }) => (obj[new Date(started).getFullYear()] = new Array(12).fill(0)),
-      )
-      // Extract the month and sum the months.
-      this.logs.forEach(
-        ({ started }: { started: string }) => (obj[new Date(started).getFullYear()][new Date(started).getMonth()] += 1),
-      )
-      console.log('CacheStore lineChartbyYear obj', obj)
-      this.lines = obj
+      if (Array.isArray(this.logs) && this.logs.length > 0) {
+        // Extract the year and create a 12 months array
+        this.logs.forEach(
+          ({ started }: { started: string }) => (obj[new Date(started).getFullYear()] = new Array(12).fill(0)),
+        )
+        // Extract the month and sum the months.
+        this.logs.forEach(
+          ({ started }: { started: string }) =>
+            (obj[new Date(started).getFullYear()][new Date(started).getMonth()] += 1),
+        )
+        console.log('CacheStore lineChartbyYear obj', obj)
+        this.lines = obj
+      }
       return obj
     },
     matrixChartbyMonthDay(): Array<string> {
@@ -219,6 +222,13 @@ export const useCacheStore = defineAPIStore('cache', {
     logs_by_year_by_month: (state: JSObj) => state.lines,
     logs_by_month_by_weekday: (state: JSObj) => state.matrix,
     GetLastLogId: (state: JSObj) => (state?.logs && state.logs.length > 1 ? state.logs[0].id : -1),
+    GetLogsDistance: (state: JSObj) => {
+      let sum = 0
+      state.logs.forEach(({ distance }: { distance: number }) => {
+        sum += distance
+      })
+      return sum
+    },
   },
 })
 export default useCacheStore
