@@ -108,23 +108,17 @@
     await getAPI('stays')
     await getAPI('moorages')
     // Check cache, do we have inconsistent data from cache.
-    if (
-      Array.isArray(CacheStore.logs) &&
-      CacheStore.logs.length > 1 &&
-      Array.isArray(CacheStore.moorages) &&
-      CacheStore.moorages.length == 0
-    ) {
-      console.warn('Warning, invalid cache data (moorages), resetting cache.')
-      await CacheStore.resetCache()
+    const isEmpty = (arr) => !Array.isArray(arr) || arr.length === 0
+    if (isEmpty(CacheStore.logs) && isEmpty(CacheStore.stays) && isEmpty(CacheStore.moorages)) {
+      console.warn('Warning, no metrics, new vessel?')
     }
-    // Check cache, do we have inconsistent data from cache.
-    if (
-      Array.isArray(CacheStore.logs) &&
-      CacheStore.logs.length == 0 &&
-      Array.isArray(CacheStore.moorages) &&
-      CacheStore.moorages.length > 1
-    ) {
-      console.warn('Warning, invalid cache data (logs), resetting cache.')
+    // Do we have inconsistent data from cache?
+    const sources = [CacheStore.logs, CacheStore.stays, CacheStore.moorages]
+    // Count how many arrays are non-empty
+    const nonEmptyCount = sources.filter((arr) => Array.isArray(arr) && arr.length > 0).length
+    // If some have data and others don't, that's inconsistent
+    if (nonEmptyCount > 0 && nonEmptyCount < sources.length) {
+      console.warn('Warning, inconsistent cache data detected. Resetting cache.')
       await CacheStore.resetCache()
     }
     // Load dynamic data for graph and dashboard
