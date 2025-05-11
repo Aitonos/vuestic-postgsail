@@ -112,6 +112,10 @@
                   >https://iot.openplotter.cloud/Elysian/timelapse?color=yellow&start_date=2021-05-01&end_date=2021-11-01&map_type=1&speed=90&delay=1&zoom=11
                   <va-icon name="fa-external-link" size="small"
                 /></a>
+                <br />
+                You can customize your
+                <router-link class="va-text-bold va-link link" :to="{ name: 'timelapse-form' }">Timelapse</router-link>
+                for replay, export, or sharing.
               </p>
             </div>
           </va-collapse>
@@ -158,7 +162,7 @@
                 <router-link class="va-text-bold va-link link" :to="{ name: 'explore' }">explore page</router-link> to
                 see your signalk path.<br />
                 You can setup the monitoring path you want to use for the energy widget in the
-                <router-link class="va-text-bold va-link link" :to="{ name: 'boat-profile' }"
+                <router-link class="va-text-bold va-link link" :to="{ name: 'boat-mapping' }"
                   >boat correlation page</router-link
                 >.
               </p>
@@ -196,7 +200,7 @@
                     size="small" /></a
                 ><br />
                 You can setup the monitoring path you want to see in the
-                <router-link class="va-text-bold va-link link" :to="{ name: 'boat-profile' }"
+                <router-link class="va-text-bold va-link link" :to="{ name: 'boat-mapping' }"
                   >boat correlation page</router-link
                 >.
               </p>
