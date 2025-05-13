@@ -35,7 +35,9 @@
 
         <p class="mb-4">
           By supporting PostgSail, you're not just backing a tool—you’re investing in the future of spatial intelligence
-          and open innovation.
+          and open innovation.<br />
+          PostgSail is free to use, but is not free to make or host. The stability and accuracy of PostgSail depends on
+          its volunteers and donations from its users. Please consider making an annual recurring gift to PostgSail.
         </p>
 
         <p class="mb-6">
