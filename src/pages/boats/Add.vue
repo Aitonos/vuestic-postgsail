@@ -17,6 +17,7 @@
           :error="!!emailErrors.length"
           :error-messages="emailErrors"
           :readonly="true"
+          :disabled="true"
         />
 
         <va-input
@@ -70,7 +71,7 @@
   const mmsiErrors = ref('')
   const nameErrors = ref('')
 
-  const formReady = computed(() => !emailErrors.value.length && !nameErrors.value.length)
+  const formReady = computed(() => !emailErrors.value.length && !mmsiErrors.value.length && !nameErrors.value.length)
 
   const canSubmit = computed(() => {
     /*
@@ -96,6 +97,12 @@
     nameErrors.value = vessel_name.value ? [] : [t('boats.errors.name')]
     if (vessel_name.value.length <= 3) {
       nameErrors.value = [t('boats.errors.length')]
+    }
+    if (vessel_mmsi.value.length > 0 && !/^\d+$/.test(vessel_mmsi.value)) {
+      mmsiErrors.value = [t('boats.errors.mmsi')]
+    }
+    if (!mmsiErrors.value.length && vessel_mmsi.value.length > 0 && vessel_mmsi.value.length != 9) {
+      mmsiErrors.value = [t('boats.errors.mmsi')]
     }
 
     if (!formReady.value) return
@@ -129,6 +136,7 @@
     } catch ({ response }) {
       // TODO error TS18046: 'response' is of type 'unknown'.
       //apiError.value = response.data.message
+      apiError.value = t('boats.errors.param')
       console.warn('Error, please check your parameters')
     } finally {
       isBusy.value = false
