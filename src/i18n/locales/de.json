@@ -27,6 +27,7 @@
     "errors": {
       "credentials": "Falsche Anmeldeinformationen",
       "email": "E-Mail ist erforderlich",
+      "email_valid": "Email should be valid",
       "password": "Passwort ist erforderlich",
       "mismatch_pass": "Passwort stimmt nicht überein",
       "short_pass": "Passwort ist zu kurz",
@@ -340,7 +341,8 @@
     "errors": {
       "name": "Name ist erforderlich",
       "param": "Bitte überprüfen Sie die Parameter",
-      "length": "Mindestens 4 Zeichen"
+      "length": "Mindestens 4 Zeichen",
+      "mmsi": "not a valid MMSI"
     },
     "messages": {
       "pending": "Your boat has sent data to PostgSail yet, things should be fine when she comes back online",

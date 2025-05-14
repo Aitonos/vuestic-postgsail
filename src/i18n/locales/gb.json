@@ -27,6 +27,7 @@
     "errors": {
       "credentials": "Your e-mail address and password didn't match. Please try again.",
       "email": "Email is required",
+      "email_valid": "Email should be valid",
       "password": "Password is required",
       "mismatch_pass": "Password Mismatch",
       "short_pass": "Password is too short",
@@ -343,8 +344,9 @@
     },
     "errors": {
       "name": "Name is required",
-      "param": "Please check parameters",
-      "length": "Minimum 4 characters"
+      "param": "Please check your parameters",
+      "length": "Minimum 4 characters",
+      "mmsi": "not a valid MMSI"
     },
     "messages": {
       "pending": "Your boat has not sent any data to PostgSail yet, things should be fine when she connects",

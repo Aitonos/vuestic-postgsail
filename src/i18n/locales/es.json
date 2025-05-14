@@ -25,6 +25,7 @@
     "errors": {
       "credentials": "Credenciales erróneos",
       "email": "Se requiere un correo electrónico",
+      "email_valid": "Email should be valid",
       "password": "Se requiere una contraseña",
       "mismatch_pass": "Las contraseñas no coinciden",
       "short_pass": "La contraseña es demasiado corta",
@@ -342,7 +343,8 @@
     "errors": {
       "name": "Se requiere nombre",
       "param": "Comprueba tus parámetros",
-      "length": "Mínimo 4 caracteres"
+      "length": "Mínimo 4 caracteres",
+      "mmsi": "Se requiere MMSI valido"
     },
     "messages": {
       "pending": "Su barco aún no ha enviado ningún dato a PostgSail, todo debería estar bien cuando se conecte",
