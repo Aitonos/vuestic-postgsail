@@ -15,7 +15,7 @@
         class="mb-4"
         type="email"
         :label="$t('auth.email')"
-        :rules="[(v) => !!v || t('auth.errors.email'), (v) => /.+@.+\..+/.test(v) || 'Email should be valid']"
+        :rules="[(v) => !!v || t('auth.errors.email'), (v) => /.+@.+\..+/.test(v) || t('auth.errors.email_valid')]"
         aria-label="Email"
       />
 

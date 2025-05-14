@@ -14,7 +14,7 @@
       type="email"
       :label="t('auth.email')"
       aria-label="Email"
-      :rules="[(v) => !!v || t('auth.errors.email'), (v) => /.+@.+\..+/.test(v) || 'Email should be valid']"
+      :rules="[(v) => !!v || t('auth.errors.email'), (v) => /.+@.+\..+/.test(v) || t('auth.errors.email_valid')]"
     />
 
     <va-input
