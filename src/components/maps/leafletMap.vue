@@ -50,6 +50,7 @@
   import { kelvinToHumanI18n } from '../../utils/temperatureFormatter.js'
   import { pascalToHectoPascal } from '../../utils/presureFormatter.js'
   import { floatToPercentage } from '../../utils/percentageFormatter.js'
+  import { decimalToDMS } from '../../utils/dms'
 
   import { useGlobalStore } from '../../stores/global-store'
   import { useVesselStore } from '../../stores/vessel-store'
@@ -57,7 +58,7 @@
 
   const GlobalStore = useGlobalStore()
   const { currentTheme } = storeToRefs(GlobalStore)
-  const { vesselName, vesselType } = useVesselStore()
+  const { vesselName, vesselType, vesselModel, vesselImage } = useVesselStore()
 
   const GeoJSONbasemapObj = ref({})
   const GeoJSONLayer = ref(null)
@@ -169,12 +170,13 @@
         let twd = angleFormat(feature.properties.truewinddirection)
         let aws = speedFormatKnots(feature.properties.windspeedapparent)
         let awa = awaFormat(feature.properties.truewinddirection, feature.properties.courseovergroundtrue)
-        let latitude = parseFloat(feature.geometry.coordinates[0]).toFixed(3)
-        let longitude = parseFloat(feature.geometry.coordinates[1]).toFixed(3)
+        let latitude = parseFloat(feature.geometry.coordinates[0].toFixed(3))
+        let longitude = parseFloat(feature.geometry.coordinates[1].toFixed(3))
+        let dmsCoords = decimalToDMS(latitude, longitude)
         let text = `<div class='mpopup'><h4>${vesselName}: ${status}</h4><br/>
                           <table class='data'><tbody>
                             <tr><th>Time</th><td>${time}</td></tr>
-                            <tr><th>Position</th><td>${latitude} ${longitude}</td></tr>`
+                            <tr><th>Position</th><td>${dmsCoords.toString()}</td></tr>`
         // If monitoring moorage point
         if (feature.properties.stay_code) {
           let stay_type = ''
