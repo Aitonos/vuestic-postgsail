@@ -56,6 +56,12 @@
   const defaultConfig = {
     tooltip: {
       position: 'top',
+      formatter: function (params) {
+        const monthName = months.value[params.data[0]]
+        const dayName = days.value[params.data[1]]
+        const value = params.data[2]
+        return `${dayName}, ${monthName}: ${value}`
+      },
     },
     grid: {
       //height: '80%',
