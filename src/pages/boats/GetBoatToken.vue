@@ -35,7 +35,7 @@
                 placeholder="Readonly Token"
                 :min-rows="3"
                 :max-rows="4"
-                readonly="true"
+                :readonly="true"
                 @focus="$event.target.select()"
               >
                 <template #appendInner>
