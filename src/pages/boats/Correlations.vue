@@ -484,7 +484,7 @@
     payload['additionalSections'] = additionalSections.value
     payload['additionalDataKeys'] = Object.values(additionalSections.value.map((section) => section.key))
     console.debug(JSON.stringify(payload))
-    const response = await api.update_vessel_monitoring({ patch: payload })
+    const response = await api.update_vessel_monitoring({ configuration: payload })
     let msg = `${response ? 'Successfully updated' : 'Error updating'} ${map} with ${value}`
     if (map == null && value == null) {
       // remove entry
