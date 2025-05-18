@@ -19,6 +19,8 @@ const defaultState = {
     height: 0,
     plugin_version: '',
     platform: '',
+    make_model: '',
+    image_url: null,
   },
 }
 
@@ -46,6 +48,8 @@ export const useVesselStore = defineStore('vessel', {
     vesselName: (state) => state.vessel?.name,
     vesselType: (state) => state.vessel?.ship_type,
     vesselId: (state) => state.vessel?.vessel_id,
+    vesselModel: (state) => state.vessel?.make_model,
+    vesselImage: (state) => state.vessel?.image_url,
   },
 })
 export default useVesselStore
