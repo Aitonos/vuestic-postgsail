@@ -31,10 +31,13 @@ class HttpClient {
     if (!res.ok) throw new Error(res.statusText)
     const contentType = res.headers.get('content-type')
     if (res.status == 200 && contentType && contentType.indexOf('text/xml') === 0) {
-      console.log(res.clone().text())
+      console.debug(res.clone().text())
       return res.clone().text()
     }
-
+    if ((res.status == 200 || res.status == 201) && res.headers.get('Content-Length') == 0) {
+      console.debug('Empty response')
+      return true
+    }
     if (options.parseResponse !== false && res.status !== 204) return res.json()
     return undefined
   }
