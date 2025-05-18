@@ -94,7 +94,7 @@ class ApiClient extends HttpClient {
     return this.get(`metadata?select=configuration`)
   }
   async update_vessel_monitoring(payload: JSObj) {
-    return this.post(`metadata?select=configuration`, payload)
+    return this.patch('metadata', payload)
   }
   /*
    * Vessels API endpoint
