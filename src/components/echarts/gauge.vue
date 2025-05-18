@@ -21,6 +21,10 @@
       type: String,
       default: '%',
     },
+    max: {
+      type: Number,
+      default: 100,
+    },
   })
 
   const defaultConfig = {
@@ -94,7 +98,7 @@
   const chartOptions = computed(() => {
     const localoptions = { ...defaultConfig }
     localoptions.series[0].data = [props.series[0]] || []
-    localoptions.series[0].detail.formatter = props.series[1] + 'V'
+    localoptions.series[0].detail.formatter = props.series[1] + props.unit
     localoptions.backgroundColor = props.theme === 'dark' ? '#1f262f' : ''
     return localoptions
   })
