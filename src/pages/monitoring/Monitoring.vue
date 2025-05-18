@@ -53,6 +53,7 @@
               <display-lcd id="water" :display="items.water"></display-lcd>
               <display-lcd id="pressure" :display="items.pressure"></display-lcd>
               <display-lcd id="battery" :display="items.battery"></display-lcd>
+              <display-lcd id="solar" :display="items.solar"></display-lcd>
             </div>
           </template>
         </l-map>
@@ -157,6 +158,15 @@
             lcdDecimals: 1,
             value: pascalToHectoPascal(apiData.row.insidepressure) || 0.0,
             altValue: pascalToHectoPascal(apiData.row.outsidepressure) || 0.0,
+          },
+          solar: {
+            headerString: t('monitoring.solar.headerString'),
+            unitString: t('monitoring.solar.unitString'),
+            detailString: t('monitoring.battery.detailString'),
+            detailUnitString: 'V',
+            lcdDecimals: 1,
+            value: apiData.row.solarpower || 0,
+            altValue: apiData.row.solarvoltage || 0,
           },
           vessel_name: apiData.row.name,
           geojson: apiData.row.geojson,
