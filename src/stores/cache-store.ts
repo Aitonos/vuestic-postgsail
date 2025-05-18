@@ -108,6 +108,7 @@ export const useCacheStore = defineAPIStore('cache', {
       return obj
     },
     matrixChartbyMonthDay(): Array<string> {
+      if (!Array.isArray(this.logs)) return []
       const obj: { [key: string]: any } = []
       // Create a 12 months array per 7 days array zero fill
       const months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
