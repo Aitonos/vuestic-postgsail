@@ -94,7 +94,7 @@ class ApiClient extends HttpClient {
     return this.get(`metadata?select=configuration`)
   }
   async update_vessel_monitoring(payload: JSObj) {
-    return this.post(`rpc/monitoring_upsert_fn`, payload)
+    return this.post(`metadata?select=configuration`, payload)
   }
   /*
    * Vessels API endpoint
@@ -115,6 +115,16 @@ class ApiClient extends HttpClient {
     return this.vessel_reg(data)
   }
 
+  async vessel_get_polar() {
+    return this.get('metadata_ext?select=polar,polar_updated_at')
+  }
+
+  async vessel_update(payload: JSObj) {
+    this.setHeader('Prefer', 'missing=default,return=headers-only,resolution=merge-duplicates')
+    const data = this.post('metadata_ext', payload)
+    this.delHeader('Prefer')
+    return data
+  }
   /*
    * Logs API endpoint
    */
