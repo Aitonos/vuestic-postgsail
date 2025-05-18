@@ -90,3 +90,7 @@ export const durationI18nDaysHours = (durationString) => {
   durationDH += hours.toFixed(1) + ' ' + t('units.time.hours')
   return durationDH
 }
+
+export const durationFromNow = (timeString) => {
+  return durationI18nDaysHours(moment.utc(timeString).diff(moment.utc()))
+}
