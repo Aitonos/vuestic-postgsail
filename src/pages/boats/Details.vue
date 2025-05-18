@@ -164,7 +164,7 @@
                         icon="delete"
                         color="secondary"
                         class="absolute top-2 right-2 text-red-500"
-                        @click="submitImage(null, null)"
+                        @click="handleDelete()"
                       />
                       <img :src="item.image_url" class="w-full max-h-48 object-contain border rounded" />
                       <p class="text-sm text-gray-400 mt-1">Last updated: {{ item.image_updated_at }}</p>
@@ -391,6 +391,49 @@
       isBusy.value = false
       // After saving, exit edit mode
       isEditing.value = false
+    }
+  }
+
+  async function handleDelete() {
+    console.debug('Removing image')
+    const isDelete = true
+    fileUpload.value = null
+    imgPreview.value = null
+    apiError.value = null
+    item.value.image_url = null
+
+    isBusy.value = true
+    apiError.value = null
+    const api = new PostgSail()
+    const payload = {
+      image_b64: null,
+      image_type: null,
+      image: null,
+    }
+    try {
+      const response = await api.vessel_update(payload)
+      //console.log(response)
+      if (response) {
+        console.log('Image update success', response)
+        apiError.value = null
+        return true
+      } else {
+        throw { response }
+      }
+    } catch (err) {
+      console.error('Image update error:', err)
+      apiError.value = 'Failed to update image.'
+    } finally {
+      let notifyMsg = apiError.value ? `Error uploading image` : `Successfully uploaded image`
+      if (isDelete) {
+        apiError.value ? `Error deleting image` : `Successfully deleted image`
+      }
+      initToast({
+        message: notifyMsg,
+        position: 'top-right',
+        color: apiError.value ? 'warning' : 'success',
+      })
+      isBusy.value = false
     }
   }
 
