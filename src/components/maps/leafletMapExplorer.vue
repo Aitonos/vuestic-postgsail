@@ -10,7 +10,13 @@
   import 'leaflet.fullscreen'
 
   import PostgSail from '../../services/api-client'
-  import { dateFormatUTC, durationFormatHours, fromNow, durationFromNow } from '../../utils/dateFormatter.js'
+  import {
+    dateFormatUTC,
+    durationFormatHours,
+    durationHours,
+    fromNow,
+    durationFromNow,
+  } from '../../utils/dateFormatter.js'
   import { distanceFormatMiles, distanceFormat, depthFormatI18n } from '../../utils/distanceFormatter.js'
   import { awaFormat, angleFormat } from '../../utils/angleFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
@@ -64,6 +70,17 @@
   const filter = reactive({
     dateRange: [0, 10],
     tags: [],
+  })
+  const stats = reactive({
+    logs: {
+      count: 0,
+      distance: 0,
+      duration: 0,
+    },
+    moorages: {
+      count: 0,
+      duration: 0,
+    },
   })
 
   onMounted(async () => {
@@ -210,6 +227,13 @@
       .sort((a, b) => b.geometry.coordinates[1] - a.geometry.coordinates[1]) // north to south
       .map((feature, index) => {
         feature.properties['moorageIndex'] = index // keep original index
+        if (feature.properties.default_stay_id == 3) {
+          feature.properties['iconUrl'] = '/mooring_icon.png'
+        } else if (feature.properties.default_stay_id == 4) {
+          feature.properties['iconUrl'] = '/dock_icon.png'
+        } else {
+          feature.properties['iconUrl'] = '/anchoricon.png'
+        }
         return feature
       })
   })
@@ -263,6 +287,11 @@
     // Reset visible lists
     logsList.value = []
     mooragesList.value = []
+    // Reset Stats
+    stats.logs.count = 0
+    stats.logs.duration = 0
+    stats.logs.distance = 0
+    stats.moorages.count = 0
 
     // Get selected date range
     const [startIdx, endIdx] = filter.dateRange
@@ -289,6 +318,9 @@
         const toId = logFeature.properties?._to_moorage_id
         if (fromId) referencedMoorageIds.add(fromId)
         if (toId) referencedMoorageIds.add(toId)
+        stats.logs.count++
+        stats.logs.duration += durationHours(logFeature.properties?.duration) || 0
+        stats.logs.distance += logFeature.properties?.distance || 0
       }
     }
     //console.debug('logsList', logsList.value.length)
@@ -309,11 +341,19 @@
         mooragesList.value.push(moorageFeature)
         if (mooragesLayers.value[i]) {
           map.value.addLayer(mooragesLayers.value[i])
+          stats.moorages.count++
+          stats.moorages.duration += moorageFeature.properties?.stays_sum_duration || 0
         }
       }
     })
+    // Stats summary
+    stats.logs.duration = parseFloat(stats.logs.duration).toFixed(1) + ' h'
+    stats.logs.distance = distanceFormatMiles(stats.logs.distance)
+    //console.debug('Stats', stats)
 
+    // Logs bounds
     const updatedBounds = L.latLngBounds([])
+
     // Loop through each layer and extend the bounds with its coordinates
     mooragesLayers.value.forEach((layer) => {
       if (map.value.hasLayer(layer)) {
@@ -925,6 +965,18 @@
                         </a>
                       </li>
                     </ol>
+                    <hr class="cool-hr" />
+                    <div v-if="logsList.length > 0" class="stats-list">
+                      <div class="stat-line">
+                        <strong>{{ $t('stats.count') }}:</strong> {{ stats.logs.count }}
+                      </div>
+                      <div class="stat-line">
+                        <strong>{{ $t('stats.sum_duration') }}:</strong> {{ stats.logs.duration }}
+                      </div>
+                      <div class="stat-line">
+                        <strong>{{ $t('stats.sum_distance') }}:</strong> {{ stats.logs.distance }}
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div id="moorages-list" class="sidepanel-tab-content" data-tab-content="tab-2">
@@ -937,6 +989,7 @@
                         :key="index"
                       >
                         {{ index + 1 }}.
+                        <img :src="moorage.properties.iconUrl" style="height: 24px; width: 24px" />
                         <a
                           class="va-link"
                           @mouseenter="onMoorageMouseEnter(moorage.properties.moorageIndex)"
@@ -1180,6 +1233,11 @@
     h4 {
       font-weight: bold;
     }
+  }
+  .line-item {
+    display: flex;
+    //align-items: center;
+    gap: 4px; /* Adds spacing between elements */
   }
   .line-item:hover {
     background-color: yellow;
