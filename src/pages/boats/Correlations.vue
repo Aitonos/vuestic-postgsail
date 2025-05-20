@@ -322,9 +322,19 @@
   const offline = ref(false)
   const monitoring_keys = ref({})
   const additionalSections = ref([])
+  const available_keys = ref({})
 
   const all_keys = computed(() => {
-    const f = Array.isArray(apiData.value) ? apiData.value.map((row) => row.key) : []
+    const f = Array.isArray(apiData.value)
+      ? apiData.value
+          .map((row) => {
+            if (typeof row?.key === 'string' && row.key.includes('.')) {
+              return row.key
+            }
+            return null
+          })
+          .filter(Boolean) // remove nulls
+      : []
     console.log(f)
     return f
   })
@@ -333,7 +343,8 @@
       ? apiData.value
           .map((row) => row.key)
           .filter((row) => {
-            return row.toLowerCase().includes('environment')
+            if (typeof row !== 'string') return false
+            return row.includes('.') && row.toLowerCase().includes('environment')
           })
       : []
     console.log(f)
@@ -380,7 +391,8 @@
       ? apiData.value
           .map((row) => row.key)
           .filter((row) => {
-            return row.toLowerCase().includes('humidity')
+            if (typeof row !== 'string') return false
+            return row.includes('.') && row.toLowerCase().includes('humidity')
           })
       : []
     console.log(f)
@@ -391,7 +403,8 @@
       ? apiData.value
           .map((row) => row.key)
           .filter((row) => {
-            return row.toLowerCase().includes('pressure')
+            if (typeof row !== 'string') return false
+            return row.includes('.') && row.toLowerCase().includes('pressure')
           })
       : []
     console.log(f)
@@ -402,7 +415,8 @@
       ? apiData.value
           .map((row) => row.key)
           .filter((row) => {
-            return row.toLowerCase().includes('wind')
+            if (typeof row !== 'string') return false
+            return row.includes('.') && row.toLowerCase().includes('wind')
           })
       : []
     console.log(f)
@@ -469,6 +483,7 @@
   const UpdatePref = async (key, value, map) => {
     console.log(key, value, map)
     if (!key || typeof value == 'undefined') return
+    if (!value.includes('.')) return
     if (key === 'monitoring' && typeof value === 'object') {
       console.debug(`Updating ${key}:`, JSON.stringify(value))
     }
@@ -510,10 +525,11 @@
       // Fetch current configuration
       const vessel_monitoring = await api.get_vessel_monitoring()
       if (Array.isArray(vessel_monitoring) && vessel_monitoring[0].configuration) {
-        console.log('Boat Configuration', vessel_monitoring[0].configuration)
-        monitoring_keys.value = vessel_monitoring[0].configuration
+        console.debug('Boat Configuration', vessel_monitoring[0])
+        monitoring_keys.value = vessel_monitoring[0].configuration || {}
+        available_keys.value = vessel_monitoring[0].available_keys || {}
         additionalSections.value = vessel_monitoring[0].configuration?.additionalSections || []
-        console.log('Boat Configuration', monitoring_keys.value)
+        console.debug('Boat Configuration', monitoring_keys.value)
       } else {
         console.warn('Boat Configuration', vessel_monitoring)
         //throw { response }
@@ -521,9 +537,9 @@
       // Fetch all keys all available keys
       const response = await api.explore()
       if (Array.isArray(response)) {
-        console.log('Boat Correlation', response)
+        //console.log('Boat Correlation', response)
         apiData.value = response
-        console.log('Boat Correlation', apiData.value)
+        //console.log('Boat Correlation', apiData.value)
         apiSuccess.value = true
         offline.value = false
       } else {
