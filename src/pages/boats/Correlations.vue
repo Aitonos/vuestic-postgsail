@@ -2,6 +2,20 @@
   <va-card>
     <va-card-title>Map SignalK path to PostgSail</va-card-title>
     <va-card-content>
+      <template v-if="apiError">
+        <va-alert color="danger" outline class="mb-4"> {{ $t('api.error') }}: {{ apiError }} </va-alert>
+      </template>
+      <!-- Monitoring Message -->
+      <template v-if="apiUpdate">
+        <va-alert
+          color="warning"
+          outline
+          class="mb-4 text-center text-gray-700 dark:text-gray-300 text-base font-medium"
+        >
+          {{ $t('boats.messages.monitoring') }}
+        </va-alert>
+      </template>
+
       <div class="monitoring-tab pt-2 layout">
         <div class="va-table-responsive">
           <h2 class="va-text-center"></h2>
@@ -318,6 +332,7 @@
   const isBusy = ref(false)
   const apiError = ref(null)
   const apiSuccess = ref(null)
+  const apiUpdate = ref(false)
   const apiData = reactive([])
   const offline = ref(false)
   const monitoring_keys = ref({})
@@ -516,6 +531,7 @@
     if (map != null && value != null) {
       monitoring_keys.value[map] = value
     }
+    apiUpdate.value = true
   }
 
   onMounted(async () => {
