@@ -351,7 +351,8 @@
       "pending": "Seu barco ainda não enviou nenhum dado para o PostgSail, tudo deve ficar bem quando ele se conectar",
       "offline": "Seu barco está off-line desde {0}, mas está configurado para PostgSail. Tudo deverá ficar bem quando ele voltar a ficar on-line",
       "online": "Seu barco está on-line, últimos dados recebidos {0}",
-      "plugin_version": "Você está executando uma versão mais antiga do plugin PostgSail. Atualize para a ultima versão"
+      "plugin_version": "Você está executando uma versão mais antiga do plugin PostgSail. Atualize para a ultima versão",
+      "monitoring": "Monitoring configuration changes will apply automatically on your boat however it may take several minutes. Please ensure your device is online."
     }
   },
   "profile": {
