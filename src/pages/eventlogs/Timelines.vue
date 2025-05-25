@@ -19,6 +19,12 @@
               </RouterLink>
               at {{ item.processed }}
             </template>
+            <template v-else-if="item.channel === 'autodiscovery'">
+              <RouterLink class="va-link link font-semibold" :to="{ name: 'boats' }">
+                {{ item.message }}
+              </RouterLink>
+              at {{ item.processed }}
+            </template>
             <template v-else-if="item.channel === 'grafana'">
               <a :href="grafana_url" target="_blank"
                 ><span class="va-link link font-semibold"> {{ item.message }} </span></a
@@ -89,6 +95,7 @@
       new_moorage: t('timeline.new_moorage'),
       maplapse_video: t('timeline.maplapse_video'),
       new_video: t('timeline.new_video'),
+      autodiscovery: t('timeline.autodiscovery'),
     }
   })
   const grafana_url = ref(import.meta.env.VITE_GRAFANA_URL)
@@ -101,7 +108,7 @@
           payload: row['payload'],
           channel: row['channel'],
           fromnow: row['processed'] ? fromNow(row['processed']) : 'Pending',
-          message: row['channel'] ? messages.value[row['channel']] : 'unknown',
+          message: row['channel'] && messages.value[row['channel']] ? messages.value[row['channel']] : 'unknown',
           replay: row['channel'] === 'maplapse_video' ? row['payload'].substring(row['payload'].indexOf('?')) : null,
         }))
       : []
