@@ -627,7 +627,8 @@
     "new_logbook": "New logbook",
     "new_moorage": "New moorage",
     "maplapse_video": "Replay video",
-    "new_video": "New video"
+    "new_video": "New video",
+    "autodiscovery": "Automatic SignalK path mapping"
   },
   "vuestic": {
     "search": "Search",

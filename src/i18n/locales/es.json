@@ -610,7 +610,8 @@
     "new_logbook": "Nuevo registro",
     "new_moorage": "Nuevo fondeo",
     "maplapse_video": "Reproducir vídeo",
-    "new_video": "Nuevo vídeo"
+    "new_video": "Nuevo vídeo",
+    "autodiscovery": "Automatic SignalK path mapping"
   },
   "vuestic": {
     "search": "Buscar",
