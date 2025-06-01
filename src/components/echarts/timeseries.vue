@@ -49,6 +49,7 @@
     },
     yAxis: {
       type: 'value',
+      scale: true,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: { show: false },
