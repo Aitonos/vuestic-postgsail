@@ -87,8 +87,9 @@
   import { kelvinToHuman } from '../../utils/temperatureFormatter.js'
   import { pascalToHectoPascal } from '../../utils/presureFormatter.js'
   import { floatToPercentage } from '../../utils/percentageFormatter.js'
-  import { fromNow, nowUTC } from '../../utils/dateFormatter.js'
+  import { fromNow, nowUTC, dateFormatUTC } from '../../utils/dateFormatter.js'
   import { default as utils } from '../../utils/utils.js'
+  import { decimalToDMS } from '../../utils/dms'
 
   import monitoringDatas from '../../data/monitoring.json'
   import useGlobalStore from '../../stores/global-store'
@@ -100,6 +101,7 @@
   const apiError = ref(null)
   const apiSuccess = ref(null)
   const apiData = reactive({ row: null })
+  const rowsData = ref([])
   const offline = ref(true)
 
   const items = computed(() => {
@@ -184,7 +186,7 @@
   })
 
   const mapGeoJsonFeatures = computed(() => {
-    if (apiData.row.status != 'moored') {
+    if (apiData.row.status != 'moored' && apiData.row.status != 'anchored') {
       return items.value.live.features
     }
     return apiData.row.live ? items.value.live : items.value.geojson
