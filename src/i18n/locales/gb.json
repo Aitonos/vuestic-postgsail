@@ -71,7 +71,16 @@
   "modals": {
     "close": "Close",
     "reset": "Reset",
-    "save": "Save"
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "noteEditor": {
+      "title": "Note Editor",
+      "placeholder": "Write your note here..."
+    },
+    "imageUpload": {
+      "title": "Photo Upload"
+    }
   },
   "404": {
     "title": "This page’s gone sailing.",

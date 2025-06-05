@@ -67,7 +67,18 @@
     "sent_message": "Sent message"
   },
   "modals": {
-    "close": "Fechar"
+    "close": "Fechar",
+    "reset": "Reset",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "noteEditor": {
+      "title": "Note Editor",
+      "placeholder": "Write your note here..."
+    },
+    "imageUpload": {
+      "title": "Photo Upload"
+    }
   },
   "404": {
     "title": "Esta página está a navegar.",

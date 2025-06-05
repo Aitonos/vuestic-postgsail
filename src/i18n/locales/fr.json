@@ -67,7 +67,18 @@
     "sent_message": "Envoyer un message"
   },
   "modals": {
-    "close": "Fermer"
+    "close": "Fermer",
+    "reset": "Reset",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "noteEditor": {
+      "title": "Note Editor",
+      "placeholder": "Write your note here..."
+    },
+    "imageUpload": {
+      "title": "Photo Upload"
+    }
   },
   "404": {
     "title": "Cette page est parti naviguer",

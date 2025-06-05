@@ -69,9 +69,18 @@
     "sent_message": "Gesendete Nachricht"
   },
   "modals": {
-    "close": "Schließen",
-    "reset": "Zurücksetzen",
-    "save": "Speichern"
+    "close": "Close",
+    "reset": "Reset",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "noteEditor": {
+      "title": "Note Editor",
+      "placeholder": "Write your note here..."
+    },
+    "imageUpload": {
+      "title": "Photo Upload"
+    }
   },
   "404": {
     "title": "Diese Seite ist segeln gegangen.",
