@@ -72,11 +72,12 @@
   const chartOptions = computed(() => {
     const localoptions = JSON.parse(JSON.stringify(defaultConfig))
     if (Array.isArray(props.series) && props.series.length > 0) {
-      console.log(props.series)
+      //console.log(props.series)
       localoptions.xAxis.data = props.series.map((p) => dateFormatUTC(p.time))
       localoptions.series[0].data = props.series.map((p) => pascalToHectoPascal(p.outsidePressure))
     }
-    console.log('chartOptions', localoptions)
+    localoptions.backgroundColor = props.theme === 'dark' ? '#191a1d' : ''
+    //console.log('chartOptions', localoptions)
     return localoptions
   })
   const themeOption = computed(() => {

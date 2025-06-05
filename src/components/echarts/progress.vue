@@ -118,7 +118,7 @@
     localoptions.series[1].markLine.data[0].xAxis = props.alarm
     localoptions.xAxis.max = props.max ? props.max : props.series[0] + 10
     localoptions.series[0].data = props.max ? [props.max] : [props.series[0] + 10]
-    localoptions.backgroundColor = props.theme === 'dark' ? '#1f262f' : ''
+    localoptions.backgroundColor = props.theme === 'dark' ? '#191a1d' : ''
     return localoptions
   })
   const themeOption = computed(() => {

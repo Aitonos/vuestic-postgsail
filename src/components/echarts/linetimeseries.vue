@@ -27,7 +27,7 @@
   },
   legend: {
     data: ['Boat Speed', 'Wind Speed'],
-    top: '10%'
+    //top: '10%'
   },
   xAxis: {
     type: 'category',

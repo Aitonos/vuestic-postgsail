@@ -19,6 +19,10 @@
     },
     unit: {
       type: String,
+      default: 'V',
+    },
+    unitLabel: {
+      type: String,
       default: '%',
     },
     max: {
@@ -33,7 +37,7 @@
         // Show tooltip for the Battery Level gauge
         if (params.seriesIndex === 0) {
           //return `Battery Level: ${params.value}%`
-          return `${params.value}${props.unit}`
+          return `${params.value}${props.unitLabel}`
         }
         return 'n/a'
       },
@@ -61,7 +65,7 @@
         axisLabel: {
           distance: -42, // Small distance now that it's outside arc
           fontSize: 14,
-          color: '#333',
+          //color: '#ccc',  // Light gray for dark mode
         },
         axisTick: {
           show: false,
@@ -77,13 +81,16 @@
           roundCap: true,
           show: true,
           width: 15,
+          itemStyle: {
+            color: '#5470c6', // Fill color
+          },
         },
         detail: {
           valueAnimation: true,
           formatter: '10V',
           fontSize: 26,
           fontWeight: 'bold',
-          color: '#000',
+          // color: '#fff' or '#000', // Optional text color depending on mode
           offsetCenter: [0, '10%'], // Move above the center of arc
         },
         data: [
@@ -97,9 +104,13 @@
 
   const chartOptions = computed(() => {
     const localoptions = { ...defaultConfig }
+    //console.log('chartOptions', props.series[0])
     localoptions.series[0].data = [props.series[0]] || []
     localoptions.series[0].detail.formatter = props.series[1] + props.unit
-    localoptions.backgroundColor = props.theme === 'dark' ? '#1f262f' : ''
+    localoptions.series[0].max = props.max || 100
+    localoptions.backgroundColor = props.theme === 'dark' ? '#191a1d' : ''
+    localoptions.series[0].axisLabel.color = props.theme === 'dark' ? '#fff' : '#000'
+    localoptions.series[0].detail.color = props.theme === 'dark' ? '#d4d4d4' : '#000'
     return localoptions
   })
   const themeOption = computed(() => {
