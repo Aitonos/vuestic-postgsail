@@ -423,6 +423,28 @@
           })
         }
       }
+
+      if (geojson && geojson.properties && geojson.properties?.anchor && geojson.properties?.anchor?.radius) {
+        const anchor = geojson.properties.anchor
+        // Add Anchor circle
+        L.circle([anchor.position.latitude, anchor.position.longitude], {
+          color: 'red', // Circle border color
+          weight: 2, // Border thickness
+          fill: false, // No fill
+          radius: anchor.radius,
+        }).addTo(this.map)
+        // Add Anchor marker
+        L.marker([anchor.position.latitude, anchor.position.longitude], {
+          icon: new L.Icon({
+            iconSize: [7 * 4, 7 * 4],
+            iconAnchor: [7 * 2, 7 * 2],
+            iconUrl: '/anchoricon.png',
+            popupAnchor: [0, 0],
+          }),
+        })
+          .bindPopup('Anchor Position')
+          .addTo(this.map)
+      }
     },
     onBeforeUnmount() {
       if (this.map) {
