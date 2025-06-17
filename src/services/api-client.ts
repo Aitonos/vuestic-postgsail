@@ -225,6 +225,16 @@ class ApiClient extends HttpClient {
     return this.post(`rpc/merge_logbook_fn`, payload)
   }
 
+  async logs_map(payload: JSObj, page = 1) {
+    const limit = 100
+    const offset = (page - 1) * limit
+
+    this.setHeader('Prefer', 'count=exact')
+    return this.get(
+      `logs_geojson_view?select=geojson&geojson=not.is.null&order=starttimestamp.desc&limit=${limit}&offset=${offset}`,
+    )
+  }
+
   async logs_mapgl(payload: JSObj) {
     return this.post(`rpc/mapgl_fn`, payload)
   }
@@ -274,6 +284,20 @@ class ApiClient extends HttpClient {
   async moorages_arrivals_departures(id: string) {
     return this.get(`logs_view?or=(_from_moorage_id.eq.${id},_to_moorage_id.eq.${id})`)
   }
+
+  async notes_history() {
+    return this.get('noteshistory_view')
+  }
+  async moorages_map(payload: JSObj, page = 1) {
+    const limit = 100
+    const offset = (page - 1) * limit
+
+    this.setHeader('Prefer', 'count=exact')
+    //this.setHeader('Range-Unit', 'items')
+    //this.setHeader('Range', `${offset}-${offset + limit - 1}`)
+
+    return this.get(`moorages_geojson_view?select=geojson&geojson=not.is.null&limit=${limit}&offset=${offset}`)
+  }
   /*
    * Stays API endpoint
    */
@@ -293,6 +317,26 @@ class ApiClient extends HttpClient {
     return this.delete(`stays?id=eq.${id}`)
   }
 
+  async stay_ext_update(payload: JSObj) {
+    this.setHeader('Prefer', 'missing=default,return=headers-only,resolution=merge-duplicates')
+    const data = this.post('stays_ext?on_conflict=stay_id', payload)
+    this.delHeader('Prefer')
+    return data
+  }
+
+  async getPresignedUploadUrl(payload: JSObj) {
+    return this.post('rpc/getpresigneduploadurl_fn', payload)
+  }
+
+  async stays_map(payload: JSObj, page = 1) {
+    const limit = 100
+    const offset = (page - 1) * limit
+
+    this.setHeader('Prefer', 'count=exact')
+    //this.setHeader('Range-Unit', 'items')
+    //this.setHeader('Range', `${offset}-${offset + limit - 1}`)
+    return this.get(`stays_geojson_view?select=geojson&geojson=not.is.null&limit=${limit}&offset=${offset}`)
+  }
   /*
    * Monitoring API endpoint
    */
