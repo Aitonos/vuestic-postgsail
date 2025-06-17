@@ -320,8 +320,8 @@
   const LogsImage = computed(() => {
     //console.log(GetLastLogId.value)
     //console.log(vesselId.value)
-    if (GetLastLogId.value > 1 && vesselId.value) {
-      return `https://gis.openplotter.cloud/logs_${vesselId.value}_${GetLastLogId.value}.png`
+    if (GetLastLogId.value > 1 && vesselId.value && import.meta.env.VITE_QGIS_URL) {
+      return import.meta.env.VITE_QGIS_URL + `/logs_${vesselId.value}_${GetLastLogId.value}.png`
     }
     return null
   })
