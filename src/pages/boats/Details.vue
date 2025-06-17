@@ -233,7 +233,12 @@
           platform: apiData.row.platform,
           offline: apiData.row.offline,
           configuration: apiData.row.configuration,
-          image_url: apiData.row.has_image ? apiData.row.image_url : null,
+          image_url:
+            !apiData.row.has_image || !apiData.row.image_url
+              ? null
+              : apiData.row.image_url.startsWith('http')
+              ? apiData.row.image_url
+              : import.meta.env.VITE_PGSAIL_URL + apiData.row.image_url,
           image_updated_at: apiData.row.image_updated_at ? dateFormatUTC(apiData.row.image_updated_at) : null,
           make_model: apiData.row.make_model,
           has_polar: apiData.row.has_polar,
@@ -409,6 +414,7 @@
       image_b64: null,
       image_type: null,
       image: null,
+      image_url: null,
     }
     try {
       const response = await api.vessel_update(payload)
@@ -426,7 +432,7 @@
     } finally {
       let notifyMsg = apiError.value ? `Error uploading image` : `Successfully uploaded image`
       if (isDelete) {
-        apiError.value ? `Error deleting image` : `Successfully deleted image`
+        notifyMsg = apiError.value ? `Error deleting image` : `Successfully deleted image`
       }
       initToast({
         message: notifyMsg,
