@@ -1,6 +1,10 @@
+import { ref } from 'vue'
+import { Response } from './../data/types'
 import type { JSObj, Callback_1Param, JSONObject } from '../data/types'
 import defineAPIStore from './defineAPIStore'
 import moment from 'moment'
+import PostgSail from '../services/api-client'
+import type * as GeoJSON from 'geojson'
 
 const assertions: JSObj = {
   notArray: [
@@ -12,6 +16,10 @@ const assertions: JSObj = {
     (res: any) => Array.isArray(res) && res[0],
     (res: any) => 'Wrong API response. Expected populated array, got ' + typeof res,
   ],
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 export const useCacheStore = defineAPIStore('cache', {
@@ -29,6 +37,9 @@ export const useCacheStore = defineAPIStore('cache', {
     matrix: [],
     log_tags: [],
     refresh: 'false',
+    logs_map: [],
+    moorages_map: [],
+    stays_map: [],
   }),
 
   actions: {
@@ -142,6 +153,70 @@ export const useCacheStore = defineAPIStore('cache', {
       console.log('CacheStore matrixChartbyMonthDay obj', obj)
       this.matrix = z
       return z
+    },
+    async fetchAllInBackground(type: 'logs' | 'moorages' | 'stays', startPage = 2, delayMs = 5000) {
+      const api = new PostgSail()
+      let page = startPage
+      let done = false
+      const allItems = [...this[`${type}_map`]] // start with the first batch already loaded
+
+      while (!done) {
+        const response = await api[`${type}_map`]({}, page)
+        if (response && Array.isArray(response) && response.length > 0) {
+          allItems.push(...response)
+          this[`${type}_map`] = [...allItems] // update reactively
+          console.debug(`Fetched ${type} page ${page}: ${response.length} entries`)
+          if (response.length < 100) {
+            done = true
+          } else {
+            page++
+            await delay(delayMs)
+          }
+        } else {
+          done = true
+        }
+      }
+
+      console.log(`Finished loading all ${type}`)
+    },
+
+    async loadInitialPages() {
+      const api = new PostgSail()
+
+      // Load first 100 logs
+      const logs = await api.logs_map({}, 1)
+      this.logs_map = logs || []
+      if (logs && logs.length == 100) {
+        this.fetchAllInBackground('logs') // continue in background
+      }
+      // Load first 100 moorages
+      const moorages = await api.moorages_map({}, 1)
+      this.moorages_map = moorages || []
+      if (moorages && moorages.length == 100) {
+        this.fetchAllInBackground('moorages')
+      }
+
+      // Load first 100 stays
+      const stays = await api.stays_map({}, 1)
+      this.stays_map = stays || []
+      if (stays && stays.length == 100) {
+        this.fetchAllInBackground('stays')
+      }
+    },
+
+    async getMap() {
+      console.log(
+        'logs_map',
+        this.logs_map.length,
+        'moorages_map',
+        this.moorages_map.length,
+        'stays_map',
+        this.stays_map.length,
+      )
+      if (this.logs_map.length != 0 && this.logs_map.length === this.logs.length) return /// Data in cache
+      if (this.moorages_map.length != 0 && this.moorages_map.length === this.moorages.length) return /// Data in cache
+      if (this.stays_map.length != 0 && this.stays_map.length === this.stays.length) return /// Data in cache
+      await this.loadInitialPages() // UI can render after this, rest loads in background
     } /*
     pieChartLogs(): JSONObject {
       const obj = {
@@ -216,7 +291,6 @@ export const useCacheStore = defineAPIStore('cache', {
       return obj
     },*/,
   } as JSObj,
-
   getters: {
     getInfoTiles: (state: JSObj) => state.tiles,
     logs_by_month: (state: JSObj) => state.stats,
@@ -229,6 +303,50 @@ export const useCacheStore = defineAPIStore('cache', {
         sum += distance
       })
       return sum
+    },
+    mapGeoJSON: (state: JSObj) => {
+      return {
+        logs_map: state.logs_map
+          .map((row: { geojson: any }) => row.geojson) // unwrap first
+          .filter((feature: any) => feature.geometry.type === 'LineString')
+          .map((feature: any, index: number) => {
+            // Clone or shallow copy if needed
+            const midPoint = Math.round(feature.geometry.coordinates.length / 2)
+            const centerLat = parseFloat(feature.geometry.coordinates[midPoint][1])
+            const centerLng = parseFloat(feature.geometry.coordinates[midPoint][0])
+            return {
+              ...feature,
+              properties: {
+                ...feature.properties,
+                logIndex: index,
+                centercoords: [centerLat, centerLng],
+              },
+            }
+          }),
+        moorages_map: state.moorages_map
+          .map((row: { geojson: any }) => row.geojson) // unwrap geojson
+          .filter((feature: any) => feature.geometry.type === 'Point')
+          .sort((a: any, b: any) => b.geometry.coordinates[1] - a.geometry.coordinates[1]) // north to south
+          .map((feature: any, index: number) => {
+            const defaultStayId = feature.properties.default_stay_id
+            let iconUrl = '/anchoricon.png'
+            if (defaultStayId === 3) {
+              iconUrl = '/mooring_icon.png'
+            } else if (defaultStayId === 4) {
+              iconUrl = '/dock_icon.png'
+            }
+
+            return {
+              ...feature,
+              properties: {
+                ...feature.properties,
+                moorageIndex: index,
+                iconUrl,
+              },
+            }
+          }),
+        stays_map: state.stays_map,
+      }
     },
   },
 })
