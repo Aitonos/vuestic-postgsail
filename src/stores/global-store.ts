@@ -22,11 +22,6 @@ const defaultState = {
   //validEmail: false,
   count: 0,
   unsplash: null,
-  postgsail: {
-    logs: [],
-    stays: [],
-    moorages: [],
-  },
   openweather: null,
   currentweather: {},
   monitoring2: [],
@@ -62,20 +57,6 @@ const defaultState = {
         low_indoor_temperature_threshold: 7.0,
         low_outdoor_temperature_threshold: 3.0,
       },
-      monitoring: {
-        depthKey: 'environment.depth.belowTransducer',
-        waterTemperatureKey: 'environment.water.temperature',
-        windSpeedKey: 'environment.wind.speedTrue',
-        windDirectionKey: 'environment.wind.directionTrue',
-        insidePressureKey: 'environment.inside.pressure',
-        outsidePressureKey: 'environment.outside.pressure',
-        insideTemperatureKey: 'environment.inside.temperature',
-        outsideTemperatureKey: 'environment.outside.temperature',
-        insideHumidityKey: 'environment.inside.humidity',
-        outsideHumidityKey: 'environment.outside.humidity',
-        stateOfChargeKey: 'electrical.batteries.House.capacity.stateOfCharge',
-        voltageKey: 'electrical.batteries.House.voltage',
-      },
       badges: {},
       telegram: {},
       email_valid: false,
@@ -102,7 +83,6 @@ const defaultState = {
     has_vessel: false,
     public_vessel: '',
   },
-  vessel: {},
   badges: {},
   ispublic: false,
 }
@@ -131,6 +111,8 @@ export const useGlobalStore = defineStore('global', {
       //deepMerge(this.settings, defaultState.settings)
       localStorage.removeItem('global')
       localStorage.removeItem('cache')
+      localStorage.removeItem('map')
+      localStorage.removeItem('vessel')
     },
     toggleSidebar() {
       this.isSidebarMinimized = !this.isSidebarMinimized
