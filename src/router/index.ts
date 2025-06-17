@@ -149,7 +149,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'boat-mapping',
         path: 'boat/mapping',
         component: () => import('../pages/boats/Correlations.vue'),
-        meta: { titleKey: 'boats.details.title' },
+        meta: { titleKey: 'boats.details.title', isPublic: false },
       },
       {
         name: 'boat-polar',
@@ -285,6 +285,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'explore',
         component: () => import('../components/maps/leafletMapExplorer.vue'),
       },
+      {
+        name: 'map-explorer2',
+        path: 'explorer',
+        component: () => import('../pages/explore/Map.vue'),
+      },
       /*
       {
         name: 'map-timedimension',
@@ -310,6 +315,12 @@ const routes: Array<RouteRecordRaw> = [
         path: 'maplapse/:id(\\d+)?',
         component: () => import('../pages/timelapse/Timelapse3.vue'),
         meta: { titleKey: 'timelapse.title', isPublic: true, type: 'public_timelapse' },
+      },
+      {
+        name: 'logless-replay',
+        path: 'loglapse/:id(\\d+)?',
+        component: () => import('../pages/stays/Logbook.vue'),
+        meta: { titleKey: 'timelapse.title', isPublic: false },
       },
     ],
   },
@@ -347,11 +358,10 @@ router.beforeEach(async (to, from, next) => {
   )
   const GlobalStore = useGlobalStore()
   const { is_public } = GlobalStore
-
   if (!isLoggedIn && to.path === '/login' && to.query.next) {
     if (
-      /\w+\/(logs|timelapse|stats|monitoring|map|logmap)/.test(to.query.next as string) ||
-      /\w+\/(log|map|logmap|timelapse\/\d+)/.test(to.query.next as string)
+      /\w+\/(logs|timelapse|stats|monitoring|maplapse|logmap)/.test(to.query.next as string) ||
+      /\w+\/(log|maplapse|logmap|timelapse\/\d+)/.test(to.query.next as string)
     ) {
       console.log(`req is in anonymous format and from login, set path to ${to.query.next}`)
       const new_path = to.query.next
