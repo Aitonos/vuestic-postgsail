@@ -285,11 +285,13 @@ const routes: Array<RouteRecordRaw> = [
         path: 'explore',
         component: () => import('../components/maps/leafletMapExplorer.vue'),
       },
+      /*
       {
         name: 'map-explorer2',
         path: 'explorer',
         component: () => import('../pages/explore/Map.vue'),
       },
+*/
       /*
       {
         name: 'map-timedimension',

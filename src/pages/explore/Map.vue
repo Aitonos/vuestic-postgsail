@@ -40,7 +40,6 @@
   import { useI18n } from 'vue-i18n'
   import { setAppTitle } from '../../utils/app.js'
   import PostgSail from '../../services/api-client'
-  import { useCacheStore } from '../../stores/cache-store'
   import { dateFormatUTC, durationFormatHours, durationI18nHours, dateFormatTime } from '../../utils/dateFormatter.js'
   import { distanceFormatMiles } from '../../utils/distanceFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
@@ -48,7 +47,9 @@
   const { confirm } = useModal()
   const { init: initToast } = useToast()
   import logBook from '../../data/logbook.json'
+  import { storeToRefs } from 'pinia'
   import { useGlobalStore } from '../../stores/global-store'
+  import { useCacheStore } from '../../stores/cache-store'
   import { useVesselStore } from '../../stores/vessel-store'
   import L from 'leaflet'
 
@@ -62,9 +63,12 @@
   import sidebarMonitoring from './sidebars/Monitoring.vue'
   //  import sidebarHistory from './sidebars/History.vue'
 
-  const CacheStore = useCacheStore()
   const router = useRouter()
   const route = useRoute()
+  const CacheStore = useCacheStore()
+  const { mapGeoJSON } = storeToRefs(CacheStore)
+  const { getMap } = CacheStore
+
   const isBusy = ref(false)
   const apiError = ref(null)
   const apiSuccess = ref(null)
