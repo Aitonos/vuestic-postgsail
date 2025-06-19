@@ -69,6 +69,10 @@ export const useCacheStore = defineAPIStore('cache', {
       this.getAPI('stays')
       this.getAPI('moorages')
       this.refresh = 'false'
+      this.logs_map = []
+      this.moorages_map = []
+      this.stays_map = []
+      console.log('CacheStore resetCache')
     },
 
     getTags(): Array<string> {

@@ -20,7 +20,8 @@ const defaultState = {
     plugin_version: '',
     platform: '',
     make_model: '',
-    image_url: null,
+    has_image: false,
+    image_url: '',
   },
 }
 
