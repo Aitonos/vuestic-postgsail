@@ -49,7 +49,12 @@ export const useVesselStore = defineStore('vessel', {
     vesselType: (state) => state.vessel?.ship_type,
     vesselId: (state) => state.vessel?.vessel_id,
     vesselModel: (state) => state.vessel?.make_model,
-    vesselImage: (state) => state.vessel?.image_url,
+    vesselImage: (state) =>
+      !state.vessel?.has_image || !state.vessel?.image_url
+        ? null
+        : state.vessel?.image_url.startsWith('http')
+        ? state.vessel?.image_url
+        : import.meta.env.VITE_PGSAIL_URL + state.vessel?.image_url,
   },
 })
 export default useVesselStore
