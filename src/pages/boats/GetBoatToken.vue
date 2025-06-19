@@ -26,7 +26,7 @@
               <va-alert color="danger" outline class="mb-4">{{ t('api.error') }}: {{ apiError }}</va-alert>
             </template>
             <!-- TODO use better CSS -->
-            <div style="mb-4">
+            <div class="mb-4">
               <vaTextarea
                 ref="clone"
                 v-model="boatToken"
@@ -39,10 +39,13 @@
                 @focus="$event.target.select()"
               >
                 <template #appendInner>
-                  <va-icon name="content_copy" @click="$vaToast.init({ message: copyToClipboard, color: 'primary' })" />
+                  <va-icon name="content_copy" @click="copyToClipboard" />
                 </template>
               </vaTextarea>
-              <va-alert color="warning" outline class="mb-4">{{ t('boats.boat.token_modal.message') }}</va-alert>
+              <va-alert color="warning" outline class="mb-4">
+                {{ t('boats.boat.token_modal.message') }}
+                <va-icon name="content_copy" atl="Title" @click="copyToClipboard" />
+              </va-alert>
             </div>
           </va-inner-loading>
         </va-card-content>
@@ -59,9 +62,11 @@
   import PostgSail from '../../services/api-client'
   import { useI18n } from 'vue-i18n'
   import { useGlobalStore } from '../../stores/global-store'
+  import { VaIcon, useToast } from 'vuestic-ui'
 
   const GlobalStore = useGlobalStore()
   const { t } = useI18n()
+  const { init: initToast } = useToast()
 
   const props = defineProps({
     item: {
@@ -110,9 +115,9 @@
   }
 
   const copyToClipboard = () => {
-    console.log(`handleGetToken ${boatToken.value}`)
+    console.log(`copyToClipboard ${boatToken.value}`)
     navigator.clipboard.writeText(boatToken.value)
-    return 'Token copy to clipboard'
+    initToast({ message: 'Token copied to clipboard', position: 'top-right', color: 'primary' })
   }
 </script>
 
