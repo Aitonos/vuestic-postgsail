@@ -1,6 +1,6 @@
 <template>
   <va-inner-loading :loading="isBusy">
-    <VaForm ref="form" @submit.prevent="onsubmit">
+    <VaForm id="login-form" ref="form" name="login" @submit.prevent="onsubmit">
       <template v-if="loginError">
         <va-alert color="danger" outline class="mb-4">
           {{ $t('auth.errors.credentials') }} ({{ loginError }})
@@ -9,9 +9,11 @@
       <template v-if="tokenExpired">
         <va-alert color="warning" outline class="mb-4"> {{ $t('auth.errors.expired_session') }}</va-alert>
       </template>
-      <va-input
-        id="Email"
+      <VaInput
+        id="email-input"
         v-model="email"
+        name="email-input"
+        autocomplete="username"
         class="mb-4"
         type="email"
         :label="$t('auth.email')"
@@ -19,9 +21,11 @@
         aria-label="Email"
       />
 
-      <va-input
-        id="Password"
+      <VaInput
+        id="password-input"
         v-model="password"
+        name="password-input"
+        autocomplete="current-password"
         class="mb-4"
         type="password"
         :label="$t('auth.password')"
@@ -38,7 +42,9 @@
       </div>
 
       <div class="flex justify-center mt-4">
-        <va-button class="my-0 flexStatic" style="width: 100%" @click="onsubmit">{{ $t('auth.login') }}</va-button>
+        <va-button type="submit" class="my-0 flexStatic" style="width: 100%" @click="onsubmit">{{
+          $t('auth.login')
+        }}</va-button>
       </div>
     </VaForm>
   </va-inner-loading>
