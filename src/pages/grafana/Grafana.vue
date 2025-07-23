@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="!gotVessel">
+    <template v-if="!gotVessel && gotLogs > 0">
       <nodatayet />
     </template>
     <template v-else>
@@ -17,15 +17,18 @@
   import nodatayet from '../../components/noDataScreen.vue'
 
   import useGlobalStore from '../../stores/global-store'
+  import useCacheStore from '../../stores/cache-store'
 
   const GlobalStore = useGlobalStore()
+  const CacheStorage = useCacheStore()
   const { t } = useI18n()
   const gotVessel = ref(GlobalStore.hasVessel || false)
+  const gotLogs = ref(CacheStorage.logs.length || 0)
 
   onMounted(() => {
-    console.log('Grafana onMounted')
-    /* redirect to grafana if we have a vessel */
-    if (GlobalStore.hasVessel) {
+    console.log('Grafana onMounted', CacheStorage.logs.length)
+    /* redirect to grafana if we have a vessel and logs */
+    if (GlobalStore.hasVessel && CacheStorage.logs.length > 0 && import.meta.env.VITE_GRAFANA_URL) {
       window.open(import.meta.env.VITE_GRAFANA_URL, '_blank')
     }
   })
