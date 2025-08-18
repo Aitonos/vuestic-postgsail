@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="!gotVessel && gotLogs > 0">
+    <template v-if="!gotVessel || gotLogs == 0">
       <nodatayet />
     </template>
     <template v-else>
@@ -26,7 +26,7 @@
   const gotLogs = ref(CacheStorage.logs.length || 0)
 
   onMounted(() => {
-    console.log('Grafana onMounted', CacheStorage.logs.length)
+    console.log('Grafana onMounted', CacheStorage.logs.length, gotLogs.value)
     /* redirect to grafana if we have a vessel and logs */
     if (GlobalStore.hasVessel && CacheStorage.logs.length > 0 && import.meta.env.VITE_GRAFANA_URL) {
       window.open(import.meta.env.VITE_GRAFANA_URL, '_blank')
