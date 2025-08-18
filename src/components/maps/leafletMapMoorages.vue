@@ -153,6 +153,16 @@
           map.value = L.map(mapContainer.value).setView([0, 0], 1)
           const bMaps = baseMaps()
           bMaps[props.mapType].addTo(map.value)
+          L.control
+            .sidepanel('sidepanel', {
+              panelPosition: 'left',
+              hasTabs: true,
+              tabsPosition: 'top',
+              pushControls: true,
+              darkMode: currentTheme.value === 'dark',
+              startTab: 'tab-moorages1',
+            })
+            .addTo(map.value)
           return
         }
       }
