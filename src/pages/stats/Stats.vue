@@ -495,14 +495,13 @@
         vessel_stats.value = response.stats
         stats_logs.value = response.stats.stats_logs
         stats_moorages.value = response.stats.stats_moorages
-        dateRange.value = { start: stats_logs.value.first_date, end: stats_logs.value.last_date }
+        dateRange.value = { start: stats_logs.value?.first_date || null, end: stats_logs.value?.last_date || null }
       } else {
         throw { response }
       }
     } catch (err) {
       // If exit as we need coordinates
       console.log('stats failed', err)
-      return
       //updateError.value = response.message
     } finally {
       //isBusy.value = false
