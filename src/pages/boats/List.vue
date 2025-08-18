@@ -13,7 +13,9 @@
             </router-link>
           </template>
           <template v-else>
-            {{ value }}
+            <div class="font-bold">
+              {{ value }}
+            </div>
           </template>
         </template>
         <template #cell(status)="{ value, rowData }">
@@ -32,10 +34,16 @@
           <div class="flex items-center space-x-2">
             <GetBoatToken :item="rowData" />
             <router-link :to="{ name: 'boat-mapping' }">
-              <va-button icon="schema" color="primary" size="medium" title="Mapping paths" />
+              <va-button icon="schema" color="primary" size="medium" title="Mapping paths" :disabled="!vesselSuccess" />
             </router-link>
             <router-link :to="{ name: 'boat-polar' }">
-              <va-button icon="sports_score" color="primary" size="medium" title="Set a Polar CSV of your boat" />
+              <va-button
+                icon="sports_score"
+                color="primary"
+                size="medium"
+                title="Set a Polar CSV of your boat"
+                :disabled="!vesselSuccess"
+              />
             </router-link>
           </div>
         </template>
