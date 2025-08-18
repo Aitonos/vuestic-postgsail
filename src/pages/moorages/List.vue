@@ -1,119 +1,111 @@
 <template>
-  <template v-if="!rowsData.length > 0">
-    <nodatayet />
-  </template>
-  <template v-else>
-    <div>
-      <va-card class="mb-3">
-        <va-card-title>{{ title }}</va-card-title>
-        <va-card-content>
-          <template v-if="apiError">
-            <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
-          </template>
-          <div class="layout flex flex-col lg:flex-row gap-4 justify-between">
-            <va-input v-model="filter.name" :clearable="true" :placeholder="$t('moorages.list.filter.name')" />
-            <va-select
-              v-model="filter.default_stay"
-              :placeholder="$t('moorages.list.filter.stay_type')"
-              :options="options"
-              multiple
-              text-by="text"
-            >
-              <template #content="{ value }">
-                <va-chip
-                  v-for="chip in value"
-                  :key="chip.text"
-                  size="small"
-                  class="mr-2"
-                  outline
-                  closeable
-                  @update:modelValue="deleteChip(chip)"
-                >
-                  {{ chip }}
-                </va-chip>
-              </template>
-            </va-select>
-          </div>
-          <va-data-table
-            v-model:sort-by="sorting.sortBy"
-            v-model:sorting-order="sorting.sortingOrder"
-            :columns="columns"
-            :items="items"
-            :loading="isBusy"
-            :per-page="perPage"
-            :current-page="currentPage"
-            striped
-            hoverable
+  <div>
+    <va-card class="mb-3">
+      <va-card-title>{{ title }}</va-card-title>
+      <va-card-content>
+        <template v-if="apiError">
+          <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
+        </template>
+        <div class="layout flex flex-col lg:flex-row gap-4 justify-between">
+          <va-input v-model="filter.name" :clearable="true" :placeholder="$t('moorages.list.filter.name')" />
+          <va-select
+            v-model="filter.default_stay"
+            :placeholder="$t('moorages.list.filter.stay_type')"
+            :options="options"
+            multiple
+            text-by="text"
           >
-            <template #cell(moorage)="{ value, rowData }">
-              <div class="whitespace-normal break-words">
-                <router-link class="va-link link" :to="{ name: 'moorage-details', params: { id: rowData.id } }">
-                  {{ value }}
-                </router-link>
-              </div>
-            </template>
-            <template #cell(default_stay)="{ rowData }">
-              <div v-if="rowData.default_stay_id" style="max-width: 150px">
-                <stay-at
-                  :id="parseInt(rowData.id)"
-                  :key="rowData.id"
-                  :data="parseInt(rowData.default_stay_id)"
-                  @clickFromChildComponent="updateDefaultStay"
-                />
-              </div>
-            </template>
-            <template #cell(total_stay)="{ value, rowData }">
-              <router-link class="va-link link" :to="{ name: 'moorage-stays', params: { id: rowData.id } }">
-                {{ value }}
-              </router-link>
-            </template>
-            <template #cell(arrivals_departures)="{ value, rowData }">
-              <router-link
-                class="va-link link"
-                :to="{ name: 'moorage-arrivals-departures', params: { id: rowData.id } }"
+            <template #content="{ value }">
+              <va-chip
+                v-for="chip in value"
+                :key="chip.text"
+                size="small"
+                class="mr-2"
+                outline
+                closeable
+                @update:modelValue="deleteChip(chip)"
               >
+                {{ chip }}
+              </va-chip>
+            </template>
+          </va-select>
+        </div>
+        <va-data-table
+          v-model:sort-by="sorting.sortBy"
+          v-model:sorting-order="sorting.sortingOrder"
+          :columns="columns"
+          :items="items"
+          :loading="isBusy"
+          :per-page="perPage"
+          :current-page="currentPage"
+          striped
+          hoverable
+        >
+          <template #cell(moorage)="{ value, rowData }">
+            <div class="whitespace-normal break-words">
+              <router-link class="va-link link" :to="{ name: 'moorage-details', params: { id: rowData.id } }">
                 {{ value }}
               </router-link>
-            </template>
-          </va-data-table>
-          <template v-if="items.length > perPage">
-            <div class="mt-3 row justify-center">
-              <va-pagination v-model="currentPage" input :pages="pages" />
             </div>
           </template>
-          <div class="flex mt-4">
-            <va-icon
-              v-if="items.length > 0"
-              name="csv"
-              outline
-              :size="34"
-              style="grid-column-end: 11"
-              class="themed"
-              @click="handleCSV(items)"
-            ></va-icon>
-            <va-icon
-              v-if="items.length > 0"
-              name="gpx"
-              outline
-              :size="34"
-              style="grid-column-end: 12"
-              class="themed"
-              @click="handleGPX()"
-            ></va-icon>
-            <va-icon
-              v-if="items.length > 0"
-              name="geojson"
-              outline
-              :size="34"
-              style="grid-column-end: 13"
-              class="themed"
-              @click="handleGeoJSON()"
-            ></va-icon>
+          <template #cell(default_stay)="{ rowData }">
+            <div v-if="rowData.default_stay_id" style="max-width: 150px">
+              <stay-at
+                :id="parseInt(rowData.id)"
+                :key="rowData.id"
+                :data="parseInt(rowData.default_stay_id)"
+                @clickFromChildComponent="updateDefaultStay"
+              />
+            </div>
+          </template>
+          <template #cell(total_stay)="{ value, rowData }">
+            <router-link class="va-link link" :to="{ name: 'moorage-stays', params: { id: rowData.id } }">
+              {{ value }}
+            </router-link>
+          </template>
+          <template #cell(arrivals_departures)="{ value, rowData }">
+            <router-link class="va-link link" :to="{ name: 'moorage-arrivals-departures', params: { id: rowData.id } }">
+              {{ value }}
+            </router-link>
+          </template>
+        </va-data-table>
+        <template v-if="items.length > perPage">
+          <div class="mt-3 row justify-center">
+            <va-pagination v-model="currentPage" input :pages="pages" />
           </div>
-        </va-card-content>
-      </va-card>
-    </div>
-  </template>
+        </template>
+        <div class="flex mt-4">
+          <va-icon
+            v-if="items.length > 0"
+            name="csv"
+            outline
+            :size="34"
+            style="grid-column-end: 11"
+            class="themed"
+            @click="handleCSV(items)"
+          ></va-icon>
+          <va-icon
+            v-if="items.length > 0"
+            name="gpx"
+            outline
+            :size="34"
+            style="grid-column-end: 12"
+            class="themed"
+            @click="handleGPX()"
+          ></va-icon>
+          <va-icon
+            v-if="items.length > 0"
+            name="geojson"
+            outline
+            :size="34"
+            style="grid-column-end: 13"
+            class="themed"
+            @click="handleGeoJSON()"
+          ></va-icon>
+        </div>
+      </va-card-content>
+    </va-card>
+  </div>
 </template>
 
 <script setup>
