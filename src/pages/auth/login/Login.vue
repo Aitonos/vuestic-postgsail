@@ -1,6 +1,6 @@
 <template>
   <va-inner-loading :loading="isBusy">
-    <VaForm id="login-form" ref="form" name="login" @submit.prevent="onsubmit">
+    <VaForm id="login-form" ref="form" name="login" autocomplete="on" @submit.prevent="onsubmit">
       <template v-if="loginError">
         <va-alert color="danger" outline class="mb-4">
           {{ $t('auth.errors.credentials') }} ({{ loginError }})
@@ -12,27 +12,36 @@
       <VaInput
         id="email-input"
         v-model="email"
-        name="email-input"
-        autocomplete="username"
+        name="email"
+        autocomplete="email"
         class="mb-4"
         type="email"
         :label="$t('auth.email')"
         :rules="[(v) => !!v || t('auth.errors.email'), (v) => /.+@.+\..+/.test(v) || t('auth.errors.email_valid')]"
         aria-label="Email"
-      />
+        placeholder="john@example.com"
+      >
+        <template #appendInner>
+          <VaIcon name="mail_outline" color="secondary" />
+        </template>
+      </VaInput>
 
       <VaInput
         id="password-input"
         v-model="password"
-        name="password-input"
-        autocomplete="current-password"
+        name="password"
+        autocomplete="password"
         class="mb-4"
         type="password"
         :label="$t('auth.password')"
         :rules="[(value) => (value && value.length >= 4) || t('auth.errors.password')]"
         aria-label="Password"
-        @keyup.enter="onsubmit"
-      />
+        placeholder="******"
+      >
+        <template #appendInner>
+          <VaIcon name="lock_outline" color="secondary" />
+        </template>
+      </VaInput>
 
       <div class="auth-layout__options flex items-center justify-between">
         <va-checkbox v-model="keepLoggedIn" class="mb-0" :label="$t('auth.keep_logged_in')" />
@@ -42,9 +51,7 @@
       </div>
 
       <div class="flex justify-center mt-4">
-        <va-button type="submit" class="my-0 flexStatic" style="width: 100%" @click="onsubmit">{{
-          $t('auth.login')
-        }}</va-button>
+        <va-button type="submit" class="my-0 flexStatic" style="width: 100%">{{ $t('auth.login') }}</va-button>
       </div>
     </VaForm>
   </va-inner-loading>

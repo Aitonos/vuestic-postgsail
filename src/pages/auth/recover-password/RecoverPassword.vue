@@ -6,6 +6,8 @@
     <va-input
       id="Email"
       v-model="formData.email"
+      name="email"
+      autocomplete="email"
       class="mb-4"
       type="email"
       :label="t('auth.email')"
@@ -14,7 +16,7 @@
     />
 
     <div class="flex justify-center mt-4">
-      <va-button class="my-0" style="width: 100%" @click="onsubmit">{{ t('auth.reset_password') }}</va-button>
+      <va-button class="my-0" style="width: 100%">{{ t('auth.reset_password') }}</va-button>
     </div>
   </VaForm>
 </template>
