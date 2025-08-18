@@ -177,7 +177,7 @@
                 - 'environment.water.temperature' AS waterTemperature<br />
                 - 'environment.inside.temperature' AS insideTemperature<br />
                 - 'environment.outside.temperature' AS outsideTemperature<br />
-                - 'environment.wind.speedOverGround' AS windSpeedOverGround<br />
+                - 'environment.wind.speedTrue' AS windSpeedTrue<br />
                 - 'environment.wind.directionTrue' AS windDirectionTrue<br />
                 - 'environment.inside.relativeHumidity' AS insideHumidity<br />
                 - 'environment.outside.relativeHumidity' AS outsideHumidity<br />
@@ -216,7 +216,7 @@
                 <br />
                 You must have the following SignalK path:<br />
                 - 'environment.outside.temperature'<br />
-                - 'environment.wind.speedOverGround'<br />
+                - 'environment.wind.speedTrue'<br />
                 - 'environment.wind.directionTrue'<br />
                 - 'environment.outside.relativeHumidity'<br />
                 - 'environment.outside.pressure'<br />
