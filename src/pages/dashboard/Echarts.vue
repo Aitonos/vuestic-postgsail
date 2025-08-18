@@ -15,17 +15,27 @@
       </va-card>
     </div>
     <!-- From stats -->
-    <div class="dashboard flex flex-auto col-span-12 p-2 gap-4">
+    <div class="dashboard flex flex-auto col-span-12 mt-4 gap-4">
       <va-card class="flex-auto card-width">
         <va-card-title>{{ t('stats.logs') }}</va-card-title>
         <va-card-content style="width: 100%">
-          <EchartsDonught v-if="pieChartUnderway" :series="pieChartUnderway" :theme="currentTheme" />
+          <template v-if="gotLogs != 0">
+            <EchartsDonught v-if="pieChartUnderway" :series="pieChartUnderway" :theme="currentTheme" />
+          </template>
+          <template v-else>
+            <va-card-content>{{ t('nodata.nodata') }}</va-card-content>
+          </template>
         </va-card-content>
       </va-card>
       <va-card class="flex-auto card-width">
         <va-card-title>{{ t('stats.moorages') }}</va-card-title>
         <va-card-content style="width: 100%">
-          <EchartsDonught v-if="pieChartStayType" :series="pieChartStayType" :theme="currentTheme" />
+          <template v-if="gotLogs != 0">
+            <EchartsDonught v-if="pieChartStayType" :series="pieChartStayType" :theme="currentTheme" />
+          </template>
+          <template v-else>
+            <va-card-content>{{ t('nodata.nodata') }}</va-card-content>
+          </template>
         </va-card-content>
       </va-card>
     </div>
@@ -49,8 +59,10 @@
 
   const CacheStore = useCacheStore()
   const { logs_by_month, logs_by_year_by_month, logs_by_month_by_weekday } = storeToRefs(CacheStore)
-  const { logs, stays, moorages } = storeToRefs(CacheStore)
-  console.log('echarts logs_by_month', logs_by_year_by_month.value)
+  const gotLogs = ref(CacheStore.logs.length || 0)
+  console.log('echarts logs_by_year_by_month', logs_by_year_by_month.value)
+  console.log('echarts logs_by_month_by_weekday', logs_by_month_by_weekday.value)
+  console.log('echarts gotLogs', gotLogs.value)
 
   const series = [
     {
@@ -116,7 +128,12 @@
       !Array.isArray(stats_moorages.value.time_spent_away_arr) ||
       stats_moorages.value.time_spent_away_arr.length === 0
     ) {
-      return {}
+      return {
+        1: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+        2: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+        3: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+        4: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+      }
     }
 
     let totalDurationMs = 0
@@ -141,7 +158,7 @@
       const durationObj = moment.duration(durationMs)
       stayMap[stayCode].duration = durationObj.toISOString()
     })
-
+    //console.debug('timeSpentAwayByType', stayMap)
     return stayMap
   })
 
@@ -157,6 +174,7 @@
         })
       }
     })
+    //console.debug('pieChartStayType', data)
     return data
   })
 </script>
