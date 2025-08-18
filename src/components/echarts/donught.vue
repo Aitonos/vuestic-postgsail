@@ -5,6 +5,7 @@
   import { PieChart } from 'echarts/charts'
   import { TooltipComponent, LegendComponent } from 'echarts/components'
   import { CanvasRenderer } from 'echarts/renderers'
+  import moment from 'moment'
 
   use([TooltipComponent, LegendComponent, PieChart, CanvasRenderer])
 
@@ -25,6 +26,22 @@
     },
     tooltip: {
       trigger: 'item',
+      formatter: function (params) {
+        // params.value is the numeric value you set in data
+        const days = Number(params.value)
+        const duration = moment.duration(days, 'days')
+
+        let formatted = ''
+        if (duration.asDays() >= 1) {
+          formatted = `${Math.floor(duration.asDays())}d ${duration.hours()}h ${duration.minutes()}m`
+        } else if (duration.asHours() >= 1) {
+          formatted = `${duration.hours()}h ${duration.minutes()}m`
+        } else {
+          formatted = `${duration.minutes()}m`
+        }
+
+        return `${params.marker}${params.name}: ${formatted}`
+      },
     },
     legend: {
       top: '5%',
