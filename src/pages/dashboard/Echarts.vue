@@ -58,11 +58,11 @@
   const { t } = useI18n()
 
   const CacheStore = useCacheStore()
-  const { logs_by_month, logs_by_year_by_month, logs_by_month_by_weekday } = storeToRefs(CacheStore)
-  const gotLogs = ref(CacheStore.logs.length || 0)
+  const { getLogs, logs_by_month, logs_by_year_by_month, logs_by_month_by_weekday } = storeToRefs(CacheStore)
+  const gotLogs = ref(getLogs.value.length || 0)
   console.log('echarts logs_by_year_by_month', logs_by_year_by_month.value)
   console.log('echarts logs_by_month_by_weekday', logs_by_month_by_weekday.value)
-  console.log('echarts gotLogs', gotLogs.value)
+  console.log('echarts gotLogs', getLogs.value.length)
 
   const series = [
     {
