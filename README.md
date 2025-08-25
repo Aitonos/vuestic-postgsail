@@ -4,7 +4,7 @@
 
 Based on [vuestic-admin](https://vuestic.dev)
 
-[![release](https://img.shields.io/github/release/xbgmsharp/vuestic-postgsail.svg)](https://github.com/xbgmsharp/vuestic-postgsail/releases/latest)
+[![release](https://img.shields.io/github/release/xbgmsharp/vuestic-postgsail.svg?color=blue)](https://github.com/xbgmsharp/vuestic-postgsail/releases/latest)
 
 ## Getting Started
 
@@ -148,7 +148,7 @@ A full-featured development environment ready to test and code.
 #### Pages:
 
 - [ ] /, Home, Dashboard
-  - [ ] Widget - Current Boats position map
+  - [x] Widget - Current Boats position map
   - [x] Widget Total of Logs, Stays, Moorage,
   - [x] Widget Weather Forecast
   - [x] Widget Energy
@@ -200,15 +200,15 @@ A full-featured development environment ready to test and code.
   - [x] Table & Form layout from api
 - [x] /badges, User badges
   - [x] Table from api
-- [ ] /faq, FAQ
+- [x] /faq, FAQ
   - [ ] Add translation
-- [ ] /privacy, Privacy
+- [x] /privacy, Privacy
   - [ ] Add translation
 - [x] /grafana, external link, open a new window/tab
 - [x] windy,external link, open a new window/tab
 - [x] /eventlogs, Event Logs
-  - [ ] Table from api
-  - [ ] Display as a timeline?
+  - [x] Table from api
+  - [x] Display as a timeline?
 - [ ] /alarmlogs, Alarm Logs
   - [ ] Table from api
   - [ ] Display as a timeline?
@@ -223,7 +223,7 @@ A full-featured development environment ready to test and code.
 - [x] Remove medium-editor dependency
 - [x] Remove amcharts dependency
 - [ ] Update date formatting as moment is deprecated, use date-fns?
-- [ ] Update graph using echarts.
+- [x] Update graph using echarts.
 
 ## Icons/SVG
 
