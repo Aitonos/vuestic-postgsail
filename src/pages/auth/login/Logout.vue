@@ -1,5 +1,5 @@
 <template>
-  <va-inner-loading loading>
+  <va-inner-loading>
     <p>{{ $t('auth.logout') }}</p>
   </va-inner-loading>
 </template>
