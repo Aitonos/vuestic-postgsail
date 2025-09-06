@@ -94,3 +94,43 @@ export const durationI18nDaysHours = (durationString) => {
 export const durationFromNow = (timeString) => {
   return durationI18nDaysHours(moment.utc(timeString).diff(moment.utc()))
 }
+
+/**
+ * Convert number of hours into human readable format
+ * Example: 27.5 -> "1 day, 3.5 hours"
+ */
+export const hoursToHuman = (hours) => {
+  const days = Math.floor(hours / 24)
+  const remHours = hours - days * 24
+  let res = ''
+  if (days > 0) res += `${days} day(s)`
+  if (remHours > 0) res += (res ? ', ' : '') + `${remHours.toFixed(1)} hour(s)`
+  if (!res) res = '0 hours'
+  return res
+}
+
+/**
+ * Convert a number of hours into a human readable format
+ * Examples:
+ *   27.5 -> "1 day, 3 hours"
+ *   2 -> "2 hours"
+ *   0.5 -> "30 minutes"
+ */
+export const hoursToHumanMoment = (hours) => {
+  const dur = moment.duration(hours, 'hours')
+
+  const days = Math.floor(dur.asDays())
+  const hrs = dur.hours()
+  const mins = dur.minutes()
+
+  const parts = []
+  if (days > 0) parts.push(moment.duration(days, 'days').locale(moment_locale()).humanize())
+  if (hrs > 0) parts.push(moment.duration(hrs, 'hours').locale(moment_locale()).humanize())
+  if (mins > 0 && days === 0) parts.push(moment.duration(mins, 'minutes').locale(moment_locale()).humanize())
+
+  return parts.length > 0 ? parts.join(' ') : moment.duration(0, 'hours').locale(moment_locale()).humanize()
+}
+
+export const durationFromTS = (start, end) => {
+  return hoursToHumanMoment(moment.duration(moment.utc(start).diff(moment.utc(end))))
+}
