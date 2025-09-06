@@ -26,8 +26,37 @@ const defaultState = {
   currentweather: {},
   monitoring2: [],
   stats: {
-    stats_logs: [],
-    stats_moorages: [],
+    stats_logs: {
+      name: null,
+      count: 0,
+      last_date: null,
+      max_speed: null,
+      first_date: null,
+      max_distance: null,
+      max_duration: null,
+      max_speed_id: null,
+      sum_distance: null,
+      sum_duration: null,
+      max_wind_speed: null,
+      max_distance_id: null,
+      max_duration_id: null,
+      max_wind_speed_id: null,
+    },
+    logs_top_speed: null,
+    stats_moorages: {
+      home_ports: 0,
+      time_spent_away: null,
+      unique_moorages: 0,
+      time_at_home_ports: null,
+      time_spent_away_arr: null,
+    },
+    logs_top_distance: null,
+    logs_top_duration: null,
+    logs_top_avg_speed: null,
+    logs_top_wind_speed: null,
+    moorages_top_arrivals: null,
+    moorages_top_duration: null,
+    moorages_top_countries: null,
   },
   status: 'pending',
   versions: {
@@ -133,7 +162,7 @@ export const useGlobalStore = defineStore('global', {
       }
     },
     async fetchSettings(_refresh = false): Promise<Record<string, any>> {
-      console.log('fetchSettings', _refresh, this.userName, this.settings)
+      console.log('GlobalStore fetchSettings', _refresh, this.userName, this.settings)
       //if (this.ispublic) return this.settings /* Ignore on anonymous access */
       if (!_refresh && this.userName) return this.settings /* Force refresh */
       const api = new PostgSail()
@@ -159,7 +188,7 @@ export const useGlobalStore = defineStore('global', {
         const response = await api.update_user_preferences({ key: `{${key}}`, value: value })
         //const preferences: Record<string, any> = this.settings.preferences
         //preferences[key] = value
-        console.log('updatePref response', response)
+        console.log('GlobalStore updatePref response', response)
         return response
       } catch (error) {
         console.log(error)
@@ -184,9 +213,9 @@ export const useGlobalStore = defineStore('global', {
       try {
         await weather.updateForecast(coordinates as [number, number])
         this.openweather = weather.data
-        console.log('fetchWeatherForecast', weather.data)
+        console.log('GlobalStore fetchWeatherForecast', weather.data)
         this.set_currentWeather()
-        console.log('fetchWeatherForecast', this.currentweather)
+        console.log('GlobalStore fetchWeatherForecast', this.currentweather)
         return this.openweather
       } catch (error) {
         console.log(error)
@@ -197,7 +226,7 @@ export const useGlobalStore = defineStore('global', {
       try {
         const response = await api.monitoring2()
         this.monitoring2 = response
-        console.log('fetchMonitoring response', response)
+        console.log('GlobalStore fetchMonitoring2 response', response)
         return this.monitoring2
       } catch (error) {
         console.log(error)
@@ -212,7 +241,7 @@ export const useGlobalStore = defineStore('global', {
       try {
         const response = await api.stats(payload)
         this.stats = response.stats || {}
-        console.log('fetchStats response', response)
+        console.log('GlobalStore fetchStats response', response)
         return this.stats
       } catch (error) {
         console.log(error)
@@ -220,7 +249,7 @@ export const useGlobalStore = defineStore('global', {
     },
     async set_userBadges() {
       const user_badges = this.settings?.preferences?.badges || {}
-      console.log('set_userBadges', user_badges)
+      console.log('GlobalStore set_userBadges', user_badges)
       this.badges = await userBadges(user_badges)
       //return this.badges
     },
@@ -229,7 +258,7 @@ export const useGlobalStore = defineStore('global', {
       try {
         const response = await api.is_public({ boat: boat, _type: type, _id: id })
         this.ispublic = response
-        console.log('is_public response', response)
+        console.log('GlobalStore is_public response', response)
         if (this.ispublic == true) {
           api.setHeader('x-is-public', btoa(`${boat},${type},${id}`))
           this.settings.public_vessel = boat
@@ -244,6 +273,7 @@ export const useGlobalStore = defineStore('global', {
     userName: (state) => state.settings?.username,
     validEmail: (state) => state.settings?.preferences?.email_valid,
     hasVessel: (state) => state.settings?.has_vessel,
+    hasLogs: (state) => state.stats?.stats_logs?.count || 0,
     preferredHomepage: (state) =>
       ['dashboard', 'logs', 'monitoring', 'stats', 'map-explorer'][
         state.settings?.preferences?.preferred_homepage || 0
@@ -251,8 +281,8 @@ export const useGlobalStore = defineStore('global', {
     imperialUnits: (state) => state.settings?.preferences?.use_imperial_units || false,
     doubleCount: (state) => state.count * 2,
     Monitoring2: (state) => state.monitoring2,
-    stats_logs: (state) => state.stats?.stats_logs || [],
-    stats_moorages: (state) => state.stats?.stats_moorages || [],
+    stats_logs: (state) => state.stats?.stats_logs || {},
+    stats_moorages: (state) => state.stats?.stats_moorages || {},
     openWeather: (state) => state.openweather,
     currentWeather: (state) => state.currentweather,
     Badges: (state) => state.settings?.preferences?.badges || {},
