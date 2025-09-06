@@ -1,5 +1,5 @@
 <template>
-  <VaForm ref="form" class="login" @submit.prevent="onsubmit">
+  <VaForm id="recover-form" ref="form" class="login" @submit.prevent="onsubmit">
     <template v-if="resetSuccess">
       <va-alert color="success" outline class="mb-4"> {{ t('auth.reset') }} </va-alert>
     </template>
@@ -16,7 +16,7 @@
     />
 
     <div class="flex justify-center mt-4">
-      <va-button class="my-0" style="width: 100%">{{ t('auth.reset_password') }}</va-button>
+      <va-button type="submit" class="my-0" style="width: 100%">{{ t('auth.reset_password') }}</va-button>
     </div>
   </VaForm>
 </template>

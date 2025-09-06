@@ -1,5 +1,5 @@
 <template>
-  <VaForm ref="form" @submit.prevent="onsubmit()">
+  <VaForm id="signup-form" ref="form" name="signup" autocomplete="on" @submit.prevent="onsubmit()">
     <template v-if="apiError">
       <va-alert color="danger" outline class="mb-4"> {{ $t('api.error') }}: {{ apiError }} </va-alert>
     </template>
@@ -72,7 +72,7 @@
     </div>
 
     <div class="flex justify-center mt-4">
-      <va-button class="my-0 flexStatic" style="width: 100%">{{ t('auth.sign_up') }}</va-button>
+      <va-button type="submit" class="my-0 flexStatic" style="width: 100%">{{ t('auth.sign_up') }}</va-button>
     </div>
   </VaForm>
 </template>

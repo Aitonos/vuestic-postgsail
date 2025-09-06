@@ -1,5 +1,5 @@
 <template>
-  <VaForm ref="form" class="login" @submit.prevent="onsubmit">
+  <VaForm id="reset-form" ref="form" class="login" @submit.prevent="onsubmit">
     <template v-if="resetError">
       <va-alert color="warning" outline class="mb-4"> {{ t('auth.errors.reset') }}</va-alert>
     </template>
@@ -30,7 +30,7 @@
         aria-label="password_repeat"
       />
       <div class="flex justify-center mt-4">
-        <va-button class="my-0" style="width: 100%">{{ t('auth.reset_password') }}</va-button>
+        <va-button type="submit" class="my-0" style="width: 100%">{{ t('auth.reset_password') }}</va-button>
       </div>
     </va-inner-loading>
   </VaForm>

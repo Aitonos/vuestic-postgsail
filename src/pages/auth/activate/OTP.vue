@@ -20,7 +20,7 @@
       />
 
       <div class="d-flex justify-center mt-3">
-        <va-button class="my-0" style="width: 100%">{{ t('auth.otp_validate') }}</va-button>
+        <va-button type="submit" class="my-0" style="width: 100%">{{ t('auth.otp_validate') }}</va-button>
       </div>
     </VaForm>
   </div>

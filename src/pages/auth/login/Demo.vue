@@ -37,7 +37,7 @@
       </div>
 
       <div class="flex justify-center mt-4">
-        <va-button class="my-0 flexStatic" @click="onsubmit">{{ $t('auth.login') }}</va-button>
+        <va-button type="submit" class="my-0 flexStatic">{{ $t('auth.login') }}</va-button>
       </div>
     </VaForm>
   </va-inner-loading>
