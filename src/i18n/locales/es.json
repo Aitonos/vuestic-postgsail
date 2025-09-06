@@ -295,6 +295,7 @@
     "max_wind_speed": "Velocidad máxima del viento",
     "sum_distance": "Distancia total",
     "sum_duration": "Tiempo total en navegación",
+    "total_duration": "Duración total del viaje",
     "home_ports": "Puertos base",
     "unique_moorages": "Número de fondeaderos",
     "time_spent_at_home_port(s)": "Tiempo en puerto base",

@@ -292,6 +292,7 @@
     "max_wind_speed": "Max Wind Speed",
     "sum_distance": "Total Distance",
     "sum_duration": "Time Underway",
+    "total_duration": "Total Voyage Duration",
     "home_ports": "Home Ports",
     "unique_moorages": "Unique Moorages",
     "sum_stay_duration": "Time Away",
