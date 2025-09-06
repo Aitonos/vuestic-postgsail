@@ -19,7 +19,7 @@
       <va-card class="flex-auto card-width">
         <va-card-title>{{ t('stats.logs') }}</va-card-title>
         <va-card-content style="width: 100%">
-          <template v-if="gotLogs != 0">
+          <template v-if="hasLogs != 0">
             <EchartsDonught v-if="pieChartUnderway" :series="pieChartUnderway" :theme="currentTheme" />
           </template>
           <template v-else>
@@ -30,7 +30,7 @@
       <va-card class="flex-auto card-width">
         <va-card-title>{{ t('stats.moorages') }}</va-card-title>
         <va-card-content style="width: 100%">
-          <template v-if="gotLogs != 0">
+          <template v-if="hasLogs != 0">
             <EchartsDonught v-if="pieChartStayType" :series="pieChartStayType" :theme="currentTheme" />
           </template>
           <template v-else>
@@ -54,15 +54,13 @@
   import { useGlobalStore } from '../../stores/global-store'
 
   const GlobalStore = useGlobalStore()
-  const { stats_logs, stats_moorages, currentTheme } = storeToRefs(GlobalStore)
+  const { hasLogs, stats_logs, stats_moorages, currentTheme } = storeToRefs(GlobalStore)
   const { t } = useI18n()
 
   const CacheStore = useCacheStore()
-  const { getLogs, logs_by_month, logs_by_year_by_month, logs_by_month_by_weekday } = storeToRefs(CacheStore)
-  const gotLogs = ref(getLogs.value.length || 0)
+  const { logs_by_month, logs_by_year_by_month, logs_by_month_by_weekday } = storeToRefs(CacheStore)
   console.log('echarts logs_by_year_by_month', logs_by_year_by_month.value)
   console.log('echarts logs_by_month_by_weekday', logs_by_month_by_weekday.value)
-  console.log('echarts gotLogs', getLogs.value.length)
 
   const series = [
     {
@@ -103,7 +101,9 @@
     return matrix_data
   })
   const pieChartUnderway = computed(() => {
-    if (!stats_logs.value || !stats_moorages.value) {
+    //console.log('stats_logs', stats_logs.value)
+    //console.log('stats_moorages', stats_moorages.value)
+    if (!stats_logs.value || !stats_moorages.value || !stats_logs.value.count) {
       return []
     }
     return [
@@ -129,10 +129,12 @@
       stats_moorages.value.time_spent_away_arr.length === 0
     ) {
       return {
+        /*
         1: { durationMs: 25, percentage: 25, duration: 'PT25S' },
         2: { durationMs: 25, percentage: 25, duration: 'PT25S' },
         3: { durationMs: 25, percentage: 25, duration: 'PT25S' },
         4: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+        */
       }
     }
 

@@ -174,7 +174,7 @@
   const { t } = useI18n()
 
   const GlobalStore = useGlobalStore()
-  const { userName, versions, currentWeather, Monitoring2, stats_logs, stats_moorages } = storeToRefs(GlobalStore)
+  const { userName, versions, currentWeather, Monitoring2, hasLogs } = storeToRefs(GlobalStore)
   const { fetchVersions, fetchWeatherForecast, fetchMonitoring2, fetchStats } = GlobalStore
 
   const CacheStore = useCacheStore()
@@ -229,7 +229,11 @@
     console.log('fromNow', monitoring.value)
     obj.local_time = localTime()
     obj.last_updated = monitoring.value.time ? fromNow(monitoring.value.time) : 'Pending'
-    obj.monitoring = monitoring.value.time && !monitoring.value.offline ? 'Online' : 'Offline'
+    obj.monitoring = !monitoring.value.time
+      ? 'Pending'
+      : monitoring.value.time && !monitoring.value.offline
+      ? 'Online'
+      : 'Offline'
     obj.health = monitoring.value.time && !monitoring.value.offline ? 0 : 1
     return obj
   })
@@ -346,6 +350,16 @@
       console.warn('Warning, inconsistent cache data detected. Resetting cache.')
       await CacheStore.resetCache()
     }
+    // Check if the CacheStore cache is consistent with the actual data
+    if (
+      CacheStore.logs.length != mylogs.length ||
+      CacheStore.stays.length != mystays.length ||
+      CacheStore.moorages.length != mymoorages.length
+    ) {
+      console.warn('Warning, inconsistent cache data detected. Resetting cache.')
+      await CacheStore.resetCache()
+    }
+
     // Load Charts Dashboard
     getTags()
     InfoTiles()
@@ -357,7 +371,7 @@
       //infoTiles.value[tile as unknown as number].value = CacheStore.tiles[tile as unknown as number]
       infoTiles.value[tile].value = CacheStore.tiles[tile]
     }
-    console.debug('Dashboard onMounted CacheStore', CacheStore)
+    console.debug('Dashboard onMounted CacheStore, found logs', CacheStore.logs.length, mylogs.length)
 
     const api = new PostgSail()
     try {
@@ -411,6 +425,13 @@
       //updateError.value = response.message
     } finally {
       //isBusy.value = false
+    }
+    console.debug('Dashboard onMounted CacheStore logs', CacheStore.logs.length, mylogs.length, hasLogs.value)
+
+    // Check for cache consistency against stats
+    if (hasLogs.value != mylogs.length || hasLogs.value != CacheStore.logs.length) {
+      console.warn('Warning, inconsistent cache data detected. Resetting cache.')
+      await CacheStore.resetCache()
     }
   })
 
