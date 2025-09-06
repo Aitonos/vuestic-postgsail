@@ -210,6 +210,7 @@ export const useCacheStore = defineAPIStore('cache', {
 
     async getMap() {
       console.log(
+        'CacheStore getMap',
         'logs_map',
         this.logs_map.length,
         'moorages_map',
