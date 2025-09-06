@@ -13,22 +13,18 @@
 </template>
 <script setup>
   import { ref, onMounted } from 'vue'
-  import { useI18n } from 'vue-i18n'
   import nodatayet from '../../components/noDataScreen.vue'
 
   import useGlobalStore from '../../stores/global-store'
-  import useCacheStore from '../../stores/cache-store'
 
   const GlobalStore = useGlobalStore()
-  const CacheStorage = useCacheStore()
-  const { t } = useI18n()
   const gotVessel = ref(GlobalStore.hasVessel || false)
-  const gotLogs = ref(CacheStorage.logs.length || 0)
+  const gotLogs = ref(GlobalStore.hasLogs || 0)
 
   onMounted(() => {
-    console.log('Grafana onMounted', CacheStorage.logs.length, gotLogs.value)
+    console.log('Grafana onMounted', GlobalStore.hasLogs, gotLogs.value)
     /* redirect to grafana if we have a vessel and logs */
-    if (GlobalStore.hasVessel && CacheStorage.logs.length > 0 && import.meta.env.VITE_GRAFANA_URL) {
+    if (GlobalStore.hasVessel && GlobalStore.hasLogs > 0 && import.meta.env.VITE_GRAFANA_URL) {
       window.open(import.meta.env.VITE_GRAFANA_URL, '_blank')
     }
   })

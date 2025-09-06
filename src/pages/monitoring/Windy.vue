@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="!gotVessel">
+    <template v-if="!gotVessel || gotLogs == 0">
       <nodatayet />
     </template>
     <template v-if="!windy_enable">
@@ -28,13 +28,14 @@
   const GlobalStore = useGlobalStore()
   const { t } = useI18n()
   const gotVessel = ref(GlobalStore.hasVessel || false)
+  const gotLogs = ref(GlobalStore.hasLogs || 0)
   const windy_enable = ref(Boolean(GlobalStore.windy) || false)
   const windy_pws_url = ref(`https://www.windy.com/station/pws-${GlobalStore.windy}`)
 
   onMounted(() => {
     console.log('Windy onMounted')
     /* redirect to Windy if we have a vessel and windy is enable */
-    if (gotVessel.value && windy_enable.value) {
+    if (GlobalStore.hasVessel && GlobalStore.hasLogs > 0 && windy_enable.value) {
       window.open(`https://www.windy.com/station/pws-${GlobalStore.windy}`, '_blank')
     }
   })
