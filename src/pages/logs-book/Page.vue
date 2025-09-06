@@ -83,6 +83,16 @@
       <LogbookMapGl v-if="doShowAsCards === 4" :loading="isBusy" />
       <LogbookMapLibreGl v-if="doShowAsCards === 5" :loading="isBusy" />
       -->
+      <template v-if="items.length > 0">
+        <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
+          <div>
+            <strong>{{ $t('stats.count') }}:</strong> {{ stats.totalTrips }}
+            <strong>{{ $t('stats.sum_duration') }}:</strong> {{ stats.sumDuration }}
+            <strong>{{ $t('stats.total_duration') }}:</strong> {{ stats.totalDuration }}
+            <strong>{{ $t('stats.sum_distance') }}:</strong> {{ stats.totalDistance }}
+          </div>
+        </div>
+      </template>
       <div v-if="doShowAsCards < 3" class="flex mt-4">
         <va-icon
           v-if="items.length > 0"
@@ -145,8 +155,14 @@
   import { useI18n } from 'vue-i18n'
   import { useCacheStore } from '../../stores/cache-store'
   import { setAppTitle } from '../../utils/app.js'
-  import { distanceFormat } from '../../utils/distanceFormatter.js'
-  import { durationFormatHours, dateFormatUTC } from '../../utils/dateFormatter.js'
+  import { distanceFormat, distanceFormatMiles } from '../../utils/distanceFormatter.js'
+  import {
+    durationFormatHours,
+    dateFormatUTC,
+    durationHours,
+    hoursToHumanMoment,
+    durationFromTS,
+  } from '../../utils/dateFormatter.js'
   import { asBusy, handleExport } from '../../utils/handleExports'
   import { useRoute } from 'vue-router'
   import logsData from '../../data/logs.json'
@@ -176,6 +192,23 @@
   const showModal = ref(false)
   const start_trip = ref(null)
   const end_trip = ref(null)
+  const perPage = ref(20)
+  const currentPage = ref(1)
+  const totalPages = computed(() => {
+    return Math.ceil(items.value.length / perPage.value)
+  })
+
+  const stats = computed(() => {
+    // Stats summary
+    const distance = items.value.reduce((acc, trip) => acc + trip.distance, 0)
+    const duration = items.value.reduce((acc, trip) => acc + durationHours(trip.duration), 0)
+    return {
+      totalTrips: items.value.length,
+      totalDistance: distanceFormatMiles(distance),
+      sumDuration: hoursToHumanMoment(duration),
+      totalDuration: durationFromTS(items.value[0].fromTime, items.value[items.value.length - 1].toTime),
+    }
+  })
 
   // If mobile display as card by default.
   if (isMobile.value) {
