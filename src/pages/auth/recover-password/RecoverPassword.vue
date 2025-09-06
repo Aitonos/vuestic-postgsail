@@ -69,8 +69,8 @@
           console.warn('recover', response)
           throw { response }
         }
-      } catch ({ response }) {
-        console.warn(response)
+      } catch (response) {
+        console.warn('recover', response)
       } finally {
         isBusy.value = false
       }
