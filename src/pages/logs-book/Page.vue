@@ -31,6 +31,7 @@
             v-model="filter.tags"
             :placeholder="$t('logs.list.filter.tags')"
             :options="tagsOptions"
+            style="height: 100%"
             multiple
             text-by="text"
           >
