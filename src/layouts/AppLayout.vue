@@ -46,8 +46,8 @@
   //import LoadingScreen from '../components/loadingScreen.vue'
 
   const GlobalStore = useGlobalStore()
-  const { userName, versions, currentWeather, Monitoring2 } = storeToRefs(GlobalStore)
-  const { fetchVersions, fetchWeatherForecast, fetchMonitoring2 } = GlobalStore
+  const { hasLogs } = storeToRefs(GlobalStore)
+  const { fetchStats } = GlobalStore
 
   const CacheStore = useCacheStore()
   const { getInfoTiles } = storeToRefs(CacheStore)
@@ -104,7 +104,7 @@
     adjustPadding()
 
     // Load cache
-    await getAPI('logs')
+    const mylogs = await getAPI('logs')
     await getAPI('stays')
     await getAPI('moorages')
     // Check cache, do we have inconsistent data from cache.
@@ -127,6 +127,24 @@
     barChart()
     lineChartbyYear()
     matrixChartbyMonthDay()
+    // Fetch Stats
+    try {
+      await fetchStats()
+      //console.log('AppLayout onMounted stats', stats_logs.value)
+      //console.log('AppLayout onMounted stats', stats_moorages.value)
+    } catch (err) {
+      console.log('AppLayout stats failed', err)
+      //updateError.value = response.message
+    } finally {
+      //isBusy.value = false
+    }
+    console.debug('AppLayout onMounted CacheStore logs', CacheStore.logs.length, mylogs.length, hasLogs.value)
+
+    // Check for cache consistency against stats
+    if (hasLogs.value != mylogs.length || hasLogs.value != CacheStore.logs.length) {
+      console.warn('Warning, inconsistent cache data detected. Resetting cache.')
+      await CacheStore.resetCache()
+    }
   })
 
   onBeforeMount(async () => {
