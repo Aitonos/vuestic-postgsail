@@ -1,6 +1,6 @@
 {
   "name": "PostgSail Vuestic Frontend",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
 
   // Use this environment variable if you need to bind mount your local source code into a new container.
   "remoteEnv": {
