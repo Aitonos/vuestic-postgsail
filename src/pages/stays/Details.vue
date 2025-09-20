@@ -132,7 +132,7 @@
                     </router-link>
                   </dd>
                 </div>
-
+                <!-- Note -->
                 <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
                   <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('stays.stay.note') }}</dt>
                   <dd class="text-gray-800 dark:text-white">
@@ -143,6 +143,13 @@
                       type="textarea"
                       @change="handleSubmit"
                     />
+                  </dd>
+                </div>
+                <!-- Photo -->
+                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('boats.boat.photo') }}</dt>
+                  <dd class="text-gray-800 dark:text-white">
+                    <PhotoUploader :item="item" type="stay" @updated="handlePhotoUpdated" />
                   </dd>
                 </div>
               </dl>
@@ -175,6 +182,7 @@
   import Map from '../../components/maps/leafletMapMoorages.vue'
   import { asBusy } from '../../utils/handleExports'
   import StayAt from '../../components/SelectStayAt.vue'
+  import PhotoUploader from '../../components/PhotoUploader.vue'
   import { useToast } from 'vuestic-ui'
   const { init: initToast } = useToast()
   const { t } = useI18n()
@@ -212,6 +220,14 @@
           arrived_from_moorage_name: apiData.row.arrived_from_moorage_name,
           notes: apiData.row.notes,
           stayed_at_id: apiData.row.stayed_at_id,
+          image_url:
+            !apiData.row.has_image || !apiData.row.image_url
+              ? null
+              : apiData.row.image_url.startsWith('http')
+              ? apiData.row.image_url
+              : import.meta.env.VITE_PGSAIL_URL + apiData.row.image_url,
+          image_updated_at: apiData.row.image_updated_at ? dateFormatUTC(apiData.row.image_updated_at) : null,
+          polar: apiData.row.polar,
         }
       : {}
   })
@@ -315,6 +331,13 @@
           isBusy.value = false
         })
     }
+  }
+  const handlePhotoUpdated = async (updatedPhoto) => {
+    console.log('handlePhotoUpdated', updatedPhoto)
+    apiData.row = { ...apiData.row, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url }
+    // Clean CacheStore and force refresh
+    await CacheStore.resetCache()
+    await CacheStore.getAPI('stay_get', apiData.row.id)
   }
 </script>
 
