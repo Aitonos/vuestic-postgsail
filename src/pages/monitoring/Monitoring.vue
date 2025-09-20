@@ -3,7 +3,10 @@
     <template v-if="apiError">
       <va-alert color="danger" outline class="mb-4"> {{ $t('api.error') }}: {{ apiError }} </va-alert>
     </template>
-    <template v-if="!offline && apiSuccess">
+    <template v-if="offline && apiSuccess && nodatayet">
+      <noDataYet />
+    </template>
+    <template v-if="!offline && apiSuccess && !nodatayet">
       <template v-if="mapGeoJsonFeatures">
         <l-map
           id="monitoring-map"
@@ -94,6 +97,8 @@
   import monitoringDatas from '../../data/monitoring.json'
   import useGlobalStore from '../../stores/global-store'
 
+  import noDataYet from '../../components/noDataScreen.vue'
+
   const GlobalStore = useGlobalStore()
   const { t } = useI18n()
 
@@ -101,8 +106,8 @@
   const apiError = ref(null)
   const apiSuccess = ref(null)
   const apiData = reactive({ row: null })
-  const rowsData = ref([])
   const offline = ref(true)
+  const nodatayet = ref(false)
 
   const items = computed(() => {
     return apiData.row
@@ -215,11 +220,12 @@
     apiError.value = null
     const api = new PostgSail()
     try {
-      const response = await api.monitoring()
+      const response = await api.monitoring_live()
       if (Array.isArray(response) && response[0]) {
         //console.log(response[0])
         apiSuccess.value = true
         offline.value = false
+        nodatayet.value = false
         //offline.value = response[0].offline
         apiData.row = response[0]
         //console.log(apiData)
@@ -231,6 +237,12 @@
         }
       } else {
         console.warn('monitoring', response)
+        if ((Array.isArray(response) && response.length === 0) || !response[0]) {
+          apiSuccess.value = true
+          offline.value = true
+          nodatayet.value = true
+          apiData.row = []
+        }
         //throw { response }
       }
     } catch ({ response }) {
