@@ -151,38 +151,9 @@
                   {{ $t('boats.boat.photo') }}
                 </dt>
                 <dd class="mt-2">
-                  <PhotoUploader :item="item" type="vessel" @updated="(e) => console.log('PhotoUploader updated', e)" />
+                  <PhotoUploader :item="item" type="vessel" @updated="handlePhotoUpdated" />
                 </dd>
               </div>
-
-              <!-- Photo Upload/Preview
-              <div class="col-span-full mt-6 p-3 rounded transition hover:bg-gray-100 dark:hover:bg-gray-800">
-                <dt class="font-semibold text-gray-800 dark:text-white">
-                  {{ $t('boats.boat.photo') }}
-                </dt>
-                <dd class="mt-2">
-                  <template v-if="!item.image_url">
-                    <input type="file" accept="image/*" @change="onFileChange" />
-                    <div v-if="imgPreview" class="mt-4">
-                      <p class="text-sm text-gray-500 mb-2">Preview:</p>
-                      <img :src="imgPreview" class="w-full max-h-48 object-contain border rounded" />
-                    </div>
-                  </template>
-                  <template v-else>
-                    <div v-if="item.image_url" class="relative">
-                      <VaButton
-                        icon="delete"
-                        color="secondary"
-                        class="absolute top-2 right-2 text-red-500"
-                        @click="handleDelete()"
-                      />
-                      <img :src="item.image_url" class="w-full max-h-48 object-contain border rounded" />
-                      <p class="text-sm text-gray-400 mt-1">Last updated: {{ item.image_updated_at }}</p>
-                    </div>
-                  </template>
-                </dd>
-              </div>
-              -->
             </dl>
           </template>
         </va-inner-loading>
@@ -209,8 +180,6 @@
   const apiError = ref(null)
   const apiData = reactive({ row: null })
   const formData = ref({ make_model: '' })
-  const fileUpload = ref(null)
-  const imgPreview = ref(null)
   const isEditing = ref(false)
   const { init: initToast } = useToast()
   const boatFields = {
@@ -305,77 +274,8 @@
     return `flag-icon-${code} ${size}`
   }
 
-  function onFileChange(event) {
-    const selected = event.target.files[0]
-    if (!selected) {
-      fileUpload.value = null
-      imgPreview.value = null
-      apiError.value = null
-      return
-    }
-
-    if (!selected.type.startsWith('image/')) {
-      apiError.value = 'Please select a valid image file.'
-      fileUpload.value = null
-      return
-    }
-
-    fileUpload.value = selected
-    apiError.value = null
-
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      imgPreview.value = e.target.result
-      //console.debug(selected)
-      submitImage(e.target.result, selected.type)
-    }
-    reader.readAsDataURL(selected)
-  }
-
-  async function submitImage(img, type) {
-    //if (!fileUpload.value) return
-    let isDelete = false
-    if (item.value.image_url && !img && !type) {
-      console.debug('Removing image')
-      isDelete = true
-      fileUpload.value = null
-      imgPreview.value = null
-      apiError.value = null
-      item.value.image_url = null
-    }
-
-    isBusy.value = true
-    apiError.value = null
-    const api = new PostgSail()
-    const payload = {
-      image_b64: img ? img.split(',')[1] : null, // get the base64 part without the header
-      image_type: type,
-    }
-    try {
-      const response = await api.vessel_update(payload)
-      //console.log(response)
-      if (response) {
-        console.log('Image update success', response)
-        apiError.value = null
-        return true
-      } else {
-        throw { response }
-      }
-    } catch (err) {
-      console.error('Image update error:', err)
-      apiError.value = 'Failed to update image.'
-    } finally {
-      let notifyMsg = apiError.value ? `Error uploading image` : `Successfully uploaded image`
-      if (isDelete) {
-        apiError.value ? `Error deleting image` : `Successfully deleted image`
-      }
-      initToast({
-        message: notifyMsg,
-        position: 'top-right',
-        color: apiError.value ? 'warning' : 'success',
-      })
-      isBusy.value = false
-    }
+  function toggleEdit() {
+    isEditing.value = !isEditing.value
   }
 
   const handleSubmit = async () => {
@@ -411,59 +311,10 @@
     }
   }
 
-  async function handleDelete() {
-    console.debug('Removing image')
-    const isDelete = true
-    fileUpload.value = null
-    imgPreview.value = null
-    apiError.value = null
-    item.value.image_url = null
-
-    isBusy.value = true
-    apiError.value = null
-    const api = new PostgSail()
-    const payload = {
-      image_b64: null,
-      image_type: null,
-      image: null,
-      image_url: null,
-    }
-    try {
-      const response = await api.vessel_update(payload)
-      //console.log(response)
-      if (response) {
-        console.log('Image update success', response)
-        apiError.value = null
-        return true
-      } else {
-        throw { response }
-      }
-    } catch (err) {
-      console.error('Image update error:', err)
-      apiError.value = 'Failed to update image.'
-    } finally {
-      let notifyMsg = apiError.value ? `Error uploading image` : `Successfully uploaded image`
-      if (isDelete) {
-        notifyMsg = apiError.value ? `Error deleting image` : `Successfully deleted image`
-      }
-      initToast({
-        message: notifyMsg,
-        position: 'top-right',
-        color: apiError.value ? 'warning' : 'success',
-      })
-      isBusy.value = false
-    }
+  const handlePhotoUpdated = async (updatedPhoto) => {
+    console.log('handlePhotoUpdated', updatedPhoto)
+    apiData.row = { ...apiData.row, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url }
   }
-
-  function toggleEdit() {
-    isEditing.value = !isEditing.value
-  }
-
-  onBeforeUnmount(() => {
-    if (imgPreview.value) {
-      URL.revokeObjectURL(imgPreview.value)
-    }
-  })
 </script>
 
 <style lang="scss">
