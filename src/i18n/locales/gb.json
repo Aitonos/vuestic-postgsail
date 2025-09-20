@@ -382,9 +382,17 @@
         "title": "Correlations"
       }
     },
+    "token_modal": {
+      "button": "AI agents MCP token",
+      "title": "MCP token",
+      "token": "Token",
+      "details": "This MCP token provides AI agents with read-only access to your PostgSail marine data systems.",
+      "message": "Copy paste this token into PostgSail MCP server."
+    },
     "name": "Name",
     "website": "Website",
     "windy_station": "Windy Station",
+    "mcp_integration": "AI agents MCP Integration",
     "public_profile": "Public Profile",
     "public_name": "Name",
     "public_logs": "Log Details",
@@ -430,7 +438,8 @@
       "public_timelapse": "When enabled, your timelapse will be publicly accessible at https://iot.openplotter.cloud/{0}/timelapse",
       "public_monitoring": "When enabled, your monitoring will be publicly accessible at https://iot.openplotter.cloud/{0}/monitoring",
       "public_name": "When you enable your public profile, you will have the option to choose your boat name",
-      "public_windy": "When you enable your public profile, you will have the option to transform your boat in a weather station integrate in Windy."
+      "public_windy": "When you enable your public profile, you will have the option to transform your boat in a weather station integrate in Windy.",
+      "mcp_integration": "Model Context Protocol (MCP) is an open protocol that allows AI agents in a secure (read-only) and standardized way. When using PostgSail MCP server, you can enable advanced functionalities that enhance the capabilities of your marine data systems, making it easier to manage and optimize your boating experience."
     },
     "url": {
       "public_logs": "https://iot.openplotter.cloud/{0}/log/{1}",
