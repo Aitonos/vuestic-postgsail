@@ -145,7 +145,17 @@
                 </dd>
               </div>
 
-              <!-- Photo Upload/Preview -->
+              <!-- Photo -->
+              <div class="col-span-full mt-6 p-3 rounded transition hover:bg-gray-100 dark:hover:bg-gray-800">
+                <dt class="font-semibold text-gray-800 dark:text-white">
+                  {{ $t('boats.boat.photo') }}
+                </dt>
+                <dd class="mt-2">
+                  <PhotoUploader :item="item" type="vessel" @updated="(e) => console.log('PhotoUploader updated', e)" />
+                </dd>
+              </div>
+
+              <!-- Photo Upload/Preview
               <div class="col-span-full mt-6 p-3 rounded transition hover:bg-gray-100 dark:hover:bg-gray-800">
                 <dt class="font-semibold text-gray-800 dark:text-white">
                   {{ $t('boats.boat.photo') }}
@@ -172,6 +182,7 @@
                   </template>
                 </dd>
               </div>
+              -->
             </dl>
           </template>
         </va-inner-loading>
@@ -187,6 +198,7 @@
   import PostgSail from '../../services/api-client'
   import { dateFormatUTC } from '../../utils/dateFormatter.js'
   import lMap from '../../components/maps/leafletMap.vue'
+  import PhotoUploader from '../../components/PhotoUploader.vue'
   import { useToast } from 'vuestic-ui'
 
   import vesselData from '../../data/boat.json'
