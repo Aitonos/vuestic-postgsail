@@ -711,5 +711,20 @@
       "dark": "Dark",
       "light": "Light"
     }
+  },
+  "photoUploader": {
+    "title": "Photo Uploader",
+    "preview": "Preview Photo",
+    "delete": "Delete Photo",
+    "set_as_avatar": "Set as Avatar",
+    "select_photo": "Select a photo to upload",
+    "max_size": "Maximum file size: 5MB",
+    "formats": "Accepted formats: JPG, PNG",
+    "uploading": "Uploading...",
+    "deleting": "Deleting...",
+    "error": "Error uploading photo. Please try again.",
+    "no_photos": "No photos uploaded yet.",
+    "photo_deleted": "Photo deleted successfully.",
+    "lastUpdated": "Last updated"
   }
 }
