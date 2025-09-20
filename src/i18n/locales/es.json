@@ -718,6 +718,7 @@
     "error": "Error uploading photo. Please try again.",
     "no_photos": "No photos uploaded yet.",
     "photo_deleted": "Photo deleted successfully.",
-    "lastUpdated": "Last updated"
+    "lastUpdated": "Last updated",
+    "edit_note": "Edit Note"
   }
 }
