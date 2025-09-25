@@ -4,6 +4,24 @@
       <table class="va-table va-table--striped va-table--hoverable">
         <tbody>
           <tr>
+            <td>
+              <va-popover class="mr-2 mb-2" icon="info" :message="$t('profile.msg.mcp_integration')">
+                {{ t('profile.mcp_integration') }}
+              </va-popover>
+            </td>
+            <td class="centerContainer">
+              <GetMCPToken />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <a
+                href="https://github.com/xbgmsharp/postgsail-mcp-server"
+                target="_blank"
+                class="va-link link"
+                style="padding-left: 2em"
+                >PostgSail Model Context Protocol (MCP) Server</a
+              >
+            </td>
+          </tr>
+          <tr>
             <td>{{ t('profile.name') }}</td>
             <td style="font-weight: 600">{{ fullName }}</td>
           </tr>
@@ -287,6 +305,7 @@
   import { useGlobalStore } from '../../stores/global-store'
   import { useToast } from 'vuestic-ui'
   import settingsData from '../../data/settings.json'
+  import GetMCPToken from './GetMCPToken.vue'
 
   const { t } = useI18n()
   const { init: initToast } = useToast()
