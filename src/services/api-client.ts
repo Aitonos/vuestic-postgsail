@@ -96,6 +96,9 @@ class ApiClient extends HttpClient {
   async update_vessel_monitoring(payload: JSObj) {
     return this.patch('metadata', payload)
   }
+  async mcp() {
+    return this.post(`rpc/register_mcp`)
+  }
   /*
    * Vessels API endpoint
    */
@@ -119,12 +122,6 @@ class ApiClient extends HttpClient {
     return this.get('metadata_ext?select=polar,polar_updated_at')
   }
 
-  async vessel_update(payload: JSObj) {
-    this.setHeader('Prefer', 'missing=default,return=headers-only,resolution=merge-duplicates')
-    const data = this.post('metadata_ext', payload)
-    this.delHeader('Prefer')
-    return data
-  }
   /*
    * Logs API endpoint
    */
@@ -238,6 +235,7 @@ class ApiClient extends HttpClient {
   async logs_mapgl(payload: JSObj) {
     return this.post(`rpc/mapgl_fn`, payload)
   }
+
   /*
    * Moorages API endpoint
    */
@@ -286,8 +284,9 @@ class ApiClient extends HttpClient {
   }
 
   async notes_history() {
-    return this.get('noteshistory_view')
+    return this.get('stay_explore_view')
   }
+
   async moorages_map(payload: JSObj, page = 1) {
     const limit = 100
     const offset = (page - 1) * limit
@@ -298,6 +297,7 @@ class ApiClient extends HttpClient {
 
     return this.get(`moorages_geojson_view?select=geojson&geojson=not.is.null&limit=${limit}&offset=${offset}`)
   }
+
   /*
    * Stays API endpoint
    */
@@ -317,17 +317,6 @@ class ApiClient extends HttpClient {
     return this.delete(`stays?id=eq.${id}`)
   }
 
-  async stay_ext_update(payload: JSObj) {
-    this.setHeader('Prefer', 'missing=default,return=headers-only,resolution=merge-duplicates')
-    const data = this.post('stays_ext?on_conflict=stay_id', payload)
-    this.delHeader('Prefer')
-    return data
-  }
-
-  async getPresignedUploadUrl(payload: JSObj) {
-    return this.post('rpc/getpresigneduploadurl_fn', payload)
-  }
-
   async stays_map(payload: JSObj, page = 1) {
     const limit = 100
     const offset = (page - 1) * limit
@@ -337,6 +326,7 @@ class ApiClient extends HttpClient {
     //this.setHeader('Range', `${offset}-${offset + limit - 1}`)
     return this.get(`stays_geojson_view?select=geojson&geojson=not.is.null&limit=${limit}&offset=${offset}`)
   }
+
   /*
    * Monitoring API endpoint
    */
@@ -415,6 +405,46 @@ class ApiClient extends HttpClient {
    */
   async eventlogs() {
     return this.get(`eventlogs_view`)
+  }
+
+  /*
+   * image update for vessel, stay, moorage, logbook
+   */
+  async image_update(payload: JSObj, type: string) {
+    this.setHeader('Prefer', 'missing=default,return=headers-only,resolution=merge-duplicates')
+    let data = null
+    if (type === 'vessel') data = this.post('metadata_ext?on_conflict=vessel_id', payload)
+    else if (type === 'stay') data = this.post('stays_ext?on_conflict=ref_id', payload)
+    else if (type === 'moorage') data = this.post('moorages_ext?on_conflict=ref_id', payload)
+    else if (type === 'logbook') data = this.post('logbook_ext?on_conflict=ref_id', payload)
+    else {
+      console.error('Unknown type for image upload:', type)
+      throw new Error('Unknown type for image upload: ' + type)
+    }
+    this.delHeader('Prefer')
+    return data
+  }
+
+  async getPresignedUploadUrl(payload: JSObj) {
+    return this.post('rpc/getpresigneduploadurl_fn', payload)
+  }
+
+  async getPresignedDeleteUrl(payload: JSObj) {
+    return this.post('rpc/getpresigneddeleteurl_fn', payload)
+  }
+  /*
+   * note update for stay, moorage, logbook
+   */
+  async note_update(id: string, payload: JSObj, type: string) {
+    let data = null
+    if (type === 'stay') data = this.patch(`stays?id=eq.${id}`, payload)
+    else if (type === 'moorage') data = this.patch(`moorages?id=eq.${id}`, payload)
+    else if (type === 'logbook') data = this.patch(`logbook?id=eq.${id}`, payload)
+    else {
+      console.error('Unknown type for note upload:', type)
+      throw new Error('Unknown type for note upload: ' + type)
+    }
+    return data
   }
 
   /*
