@@ -1,6 +1,283 @@
+<template>
+  <template v-if="apiError">
+    <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
+  </template>
+  <va-inner-loading :loading="isBusy">
+    <div class="explore-maps leaflet-map__full">
+      <!-- Main content -->
+      <div id="sidepanel" class="sidepanel" aria-label="side panel" aria-hidden="false">
+        <div class="sidepanel-inner-wrapper">
+          <nav class="sidepanel-tabs-wrapper" aria-label="sidepanel tab navigation">
+            <ul class="sidepanel-tabs">
+              <li class="sidepanel-tab">
+                <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-1" @click="onLogsTabClick">
+                  <va-icon name="timeline" />
+                </a>
+              </li>
+              <li class="sidepanel-tab">
+                <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-2" @click="onMooragesTabClick">
+                  <va-icon name="anchor" />
+                </a>
+              </li>
+              <li class="sidepanel-tab">
+                <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-3" @click="onStaysTabClick">
+                  <va-icon name="menu_book" />
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <div class="sidepanel-content-wrapper">
+            <div class="sidepanel-content">
+              <div id="logs-list" class="sidepanel-tab-content" data-tab-content="tab-1">
+                <div v-if="logsList.length > 0">
+                  <ol>
+                    <li v-for="(log, index) in logsList" :key="index" class="mb-4 p-2 border-b">
+                      <!-- Top row: Title + Stats -->
+                      <div class="font-medium">
+                        {{ index + 1 }}.
+                        <a
+                          class="va-link"
+                          @mouseenter="onLogMouseEnter(log.properties.logIndex)"
+                          @click="onLogClickNavigate(log.properties.centercoords, log.properties.logIndex)"
+                        >
+                          {{ log.properties.name }} • {{ durationFormatHours(log.properties.duration) }} h •
+                          {{ distanceFormatMiles(log.properties.distance) }}
+                        </a>
+                      </div>
+
+                      <!-- Bottom row: Image + Icons + Notes -->
+                      <div class="mt-2 text-xs text-gray-600 flex flex-col gap-2">
+                        <!-- Image or placeholder icon -->
+                        <div class="relative">
+                          <template v-if="!log.properties.image_url">
+                            <va-icon
+                              name="photo_camera"
+                              class="cursor-pointer text-gray-400"
+                              :title="t('photoUploader.select_photo')"
+                              @click="openPhotoModal(log.properties, 'logbook')"
+                            />
+                          </template>
+
+                          <template v-else>
+                            <VaButton
+                              icon="delete"
+                              color="secondary"
+                              class="absolute top-2 right-2 text-red-500"
+                              size="small"
+                              :title="t('photoUploader.delete')"
+                              @click="handleDelete(log.properties, 'logbook')"
+                            />
+                            <img
+                              :src="log.properties.image_url"
+                              class="w-full max-h-48 object-contain border rounded-lg"
+                            />
+                          </template>
+                        </div>
+
+                        <!-- Icons + Notes -->
+                        <div class="flex items-start gap-2">
+                          <va-icon
+                            name="edit_note"
+                            class="cursor-pointer"
+                            :title="t('photoUploader.edit_note')"
+                            @click="openEditModal(log.properties, 'logbook')"
+                          />
+                          <span class="leading-snug">{{ log.properties.notes }}</span>
+                        </div>
+                      </div>
+                    </li>
+                  </ol>
+                  <hr class="cool-hr" />
+                  <div v-if="logsList.length > 0" class="stats-list">
+                    <div class="stat-line">
+                      <strong>{{ $t('stats.count') }}:</strong> {{ stats.logs.count }}
+                    </div>
+                    <div class="stat-line">
+                      <strong>{{ $t('stats.sum_duration') }}:</strong> {{ stats.logs.duration }}
+                    </div>
+                    <div class="stat-line">
+                      <strong>{{ $t('stats.sum_distance') }}:</strong> {{ stats.logs.distance }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="moorages-list" class="sidepanel-tab-content" data-tab-content="tab-2">
+                <div v-if="mooragesList.length > 0">
+                  <ol>
+                    <li v-for="(moorage, index) in mooragesList" :key="index" class="line-item">
+                      {{ index + 1 }}.
+                      <img :src="moorage.properties.iconUrl" style="height: 24px; width: 24px" />
+                      <a
+                        class="va-link"
+                        @mouseenter="onMoorageMouseEnter(moorage.properties.moorageIndex)"
+                        @mouseleave="stopBouncingMarker(moorage.properties.moorageIndex)"
+                        @click="onMoorageClickNavigate(moorage.geometry.coordinates, moorage.properties.moorageIndex)"
+                        >{{ moorage.properties.name }}</a
+                      >
+                      <br />
+                      <span class="text-xs text-gray-500">
+                        <template v-if="!moorage.properties.image_url">
+                          <va-icon
+                            name="photo_camera"
+                            :title="t('photoUploader.select_photo')"
+                            @click="openPhotoModal(moorage.properties, 'moorage')"
+                          />
+                        </template>
+                        <template v-else>
+                          <div v-if="moorage.properties.image_url" class="relative">
+                            <VaButton
+                              icon="delete"
+                              color="secondary"
+                              class="absolute top-2 right-2 text-red-500"
+                              size="small"
+                              :title="t('photoUploader.delete')"
+                              @click="handleDelete(moorage.properties, 'moorage')"
+                            />
+                            <img
+                              :src="moorage.properties.image_url"
+                              class="w-full max-h-48 object-contain border rounded"
+                            />
+                          </div>
+                        </template>
+                        <va-icon
+                          name="edit_note"
+                          :title="t('photoUploader.edit_note')"
+                          @click="openEditModal(moorage.properties, 'moorage')"
+                        />
+                        {{ moorage.properties.notes }}
+                      </span>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+              <div id="stays-list" class="sidepanel-tab-content" data-tab-content="tab-3">
+                <div>
+                  <div v-if="noteshistory.length > 0">
+                    <ol>
+                      <li v-for="(note, index) in noteshistory" :key="index" class="line-item">
+                        <img :src="note.iconUrl" style="height: 24px; width: 24px" />
+                        <div>
+                          <a
+                            class="va-link"
+                            @mouseenter="onMoorageMouseEnter(note.moorage_id)"
+                            @mouseleave="stopBouncingMarker(note.moorage_id)"
+                            @click="navigateMoorage(note.coordinates, note.moorage_id)"
+                          >
+                            {{ note.stay_name }} ({{ note.arrived }})
+                          </a>
+                          <br />
+                          <span>{{ note.dms }}</span>
+                          <span class="text-xs text-gray-500">
+                            <template v-if="!note.image_url">
+                              <va-icon
+                                name="photo_camera"
+                                :title="t('photoUploader.select_photo')"
+                                @click="openPhotoModal(note, 'stay')"
+                              />
+                            </template>
+                            <template v-else>
+                              <div v-if="note.image_url" class="relative">
+                                <VaButton
+                                  icon="delete"
+                                  color="secondary"
+                                  class="absolute top-2 right-2 text-red-500"
+                                  size="small"
+                                  :title="t('photoUploader.delete')"
+                                  @click="handleDelete(note, 'stay')"
+                                />
+                                <img :src="note.image_url" class="w-full max-h-48 object-contain border rounded" />
+                              </div>
+                            </template>
+                            <va-icon
+                              name="edit_note"
+                              :title="t('photoUploader.edit_note')"
+                              @click="openEditModal(note, 'stay')"
+                            />
+                            {{ note.stay_notes }}
+                          </span>
+                        </div>
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidepanel-toggle-container">
+          <button class="sidepanel-toggle-button" type="button" aria-label="toggle side panel"></button>
+        </div>
+      </div>
+    </div>
+    <div id="explore-map" class="leaflet-map"></div>
+    <template v-if="logsSlider.length > 1">
+      <div class="map-controls">
+        <div class="date-slider">
+          <va-slider
+            v-model="filter.dateRange"
+            :range="true"
+            :min="0"
+            :max="logsSlider.length - 1"
+            :step="1"
+            show-markers
+            :tooltip="true"
+            :tooltip-label="tooltipLabel"
+          />
+          {{ formattedDateRange }}
+        </div>
+
+        <div class="tag-selector py-2">
+          <va-select
+            v-model="filter.tags"
+            :placeholder="$t('logs.list.filter.tags')"
+            :options="logsTags"
+            multiple
+            text-by="text"
+            style="width: 90%"
+          >
+            <template #content="{ value }">
+              <va-chip
+                v-for="chip in value"
+                :key="chip.text"
+                size="small"
+                class="xs-chip mr-2"
+                outline
+                closeable
+                @update:modelValue="deleteChip(chip)"
+              >
+                {{ chip }}
+              </va-chip>
+            </template>
+          </va-select>
+        </div>
+      </div>
+    </template>
+  </va-inner-loading>
+
+  <!-- Edit Note Modal -->
+  <EditNoteModal
+    v-if="showEditModal"
+    v-model="showEditModal"
+    :item="selectedData"
+    :type="typeData"
+    @close="showEditModal = false"
+    @updated="handleNoteUpdated"
+  />
+
+  <!-- Photo Upload Modal -->
+  <PhotoUploaderModal
+    v-if="showPhotoModal"
+    v-model="showPhotoModal"
+    :item="selectedData"
+    :type="typeData"
+    @updated="handlePhotoUpdated"
+  />
+</template>
+
 <script setup>
   /* eslint-disable */
-  import { onMounted, ref, computed, watch, reactive, onBeforeUnmount, nextTick } from 'vue'
+  import { watchEffect, onMounted, ref, computed, watch, reactive, onBeforeUnmount, nextTick } from 'vue'
   import 'leaflet/dist/leaflet.css'
   import 'leaflet.sidepanel/dist/leaflet.sidepanel.css'
   import L from 'leaflet'
@@ -27,11 +304,15 @@
   import { default as utils } from '../../utils/utils.js'
   import { decimalToDMS } from '../../utils/dms'
   import { baseMaps, overlayMaps, boatMarkerTypes } from './leafletHelpers.js'
+  import { useRouter } from 'vue-router'
 
   import echartsProgress from '../../components/echarts/progress.vue'
   import echartsGauge from '../../components/echarts/gauge.vue'
   //import echartsPressure from '../../components/echarts/gaugePressure.vue'
   import echartsPressure from '../../components/echarts/timeseries.vue'
+
+  import PhotoUploaderModal from '../PhotoUploaderModal.vue'
+  import EditNoteModal from '../EditNoteModal.vue'
 
   import { storeToRefs } from 'pinia'
   import { useGlobalStore } from '../../stores/global-store'
@@ -39,11 +320,17 @@
   import { useVesselStore } from '../../stores/vessel-store'
 
   const GlobalStore = useGlobalStore()
-  const CacheStore = useCacheStore()
   const { isSidebarMinimized, currentTheme } = storeToRefs(GlobalStore)
-  const { vesselName, vesselType, vesselModel, vesselImage } = useVesselStore()
+  const { vesselName, vesselType, vesselModel, vesselImage, vesselId } = useVesselStore()
+
+  const CacheStore = useCacheStore()
+  const { mapGeoJSON } = storeToRefs(CacheStore)
+  const { getMap } = CacheStore
+
+  const router = useRouter()
 
   import { useI18n } from 'vue-i18n'
+
   const { t } = useI18n()
 
   // Adds bouncing plugin code to the global L variable
@@ -57,7 +344,7 @@
 
   const isBusy = ref(false)
   const apiError = ref(null)
-  const api_geojson = ref({})
+  const apiSuccess = ref(null)
   const map = ref(null)
   const currentZoom = ref(7)
   const mooragesLayers = ref([])
@@ -66,9 +353,8 @@
   const mooragesList = ref([])
   const logsList = ref([])
   const mapBounds = ref(null)
-  const api_monitoring = ref({})
   const filter = reactive({
-    dateRange: [0, 10],
+    dateRange: [0, -1],
     tags: [],
   })
   const stats = reactive({
@@ -82,34 +368,53 @@
       duration: 0,
     },
   })
+  const rowsData = ref([])
 
   onMounted(async () => {
     isBusy.value = true
     apiError.value = null
-    try {
-      const api = new PostgSail()
-      const response = await api.logs_mapgl()
-      if (response.geojson) {
-        api_geojson.value = response.geojson
-        console.debug('Explore map geojson', api_geojson.value)
-      } else {
-        throw { response }
-      }
-    } catch (e) {
-      if (!import.meta.env.PROD) {
-        console.warn('Fallback using sample data from local json...', e)
-        api_geojson.value = {}
-        apiError.value = 'Error'
-        isBusy.value = false
-        return
-      }
-    } finally {
-      isBusy.value = false
-    }
 
+    // Load cached map data if available
+    await getMap()
+    //console.debug('Explore map geojson', mapGeoJSON.value.logs_map, mapGeoJSON.value.moorages_map, mapGeoJSON.value.stays_map)
+    const cached = localStorage.removeItem('map')
+
+    isBusy.value = false
+    isSidebarMinimized.value = true
+    //console.log('Explore map geojson', api_geojson.value)
     // Extract the first coordinates as a center
-    const coords = api_geojson.value.features[0].geometry.coordinates[0]
-    map.value = L.map(document.getElementById('explore-map'), {
+    //const coords = api_geojson.value.features[0].geometry.coordinates[0]
+    // Initialize map
+    const mapContainer = document.getElementById('explore-map')
+    if (!mapContainer) {
+      console.error('Map container not found.')
+      return
+    }
+    // No data to display
+    if (
+      (logsListFull.value && logsListFull.value.length === 0) ||
+      (mooragesListFull.value && mooragesListFull.value.length === 0)
+    ) {
+      console.warn('No data available. empty map')
+      isBusy.value = false
+      isSidebarMinimized.value = false
+      map.value = L.map(mapContainer).setView([0, 0], 1)
+      const bMaps = baseMaps()
+      bMaps['OpenStreetMap'].addTo(map.value)
+      L.control
+        .sidepanel('sidepanel', {
+          panelPosition: 'left',
+          hasTabs: true,
+          tabsPosition: 'top',
+          pushControls: true,
+          darkMode: currentTheme.value === 'dark',
+          startTab: 'tab-1',
+        })
+        .addTo(map.value)
+      return
+    }
+    // Normal process
+    map.value = L.map(mapContainer, {
       //center: [coords[1], coords[0]],
       zoom: currentZoom.value,
       zoomControl: false,
@@ -136,22 +441,16 @@
         content: '<i class="va-icon material-icons">fullscreen</i>', // change the content of the button, can be HTML, default null
       })
       .addTo(map.value)
-
-    // Backup full list of moorages and logs
-    mooragesList.value = mooragesListFull.value
-    logsList.value = logsListFull.value
-
     // Add moorage layers (each Point as a separate layer)
-    mooragesLayers.value = mooragesList.value.map((feature) => {
+    mooragesLayers.value = mooragesListFull.value.map((feature) => {
       //console.debug(feature)
       return L.geoJSON(feature, {
         pointToLayer: markerIcon,
         onEachFeature: onEachMoorageFeaturePopup,
       })
     })
-
     // Add log layers (each LineString as a separate layer)
-    logsLayers.value = logsList.value.map((feature) => {
+    logsLayers.value = logsListFull.value.map((feature) => {
       //console.debug(feature)
       return L.geoJSON(feature, {
         style: function (feature) {
@@ -175,6 +474,7 @@
     map.value.whenReady(function () {
       addResetViewControl()
       addResetFilterControl()
+      addLogControl()
       const sidepanel = document.getElementById('sidepanel')
 
       // Watch class changes
@@ -198,77 +498,75 @@
       // Open sidepanel initially
       const toggleButton = document.querySelector('.sidepanel-toggle-button')
       if (toggleButton) toggleButton.click()
-      // trigger map resize
-      map.value.invalidateSize()
     })
 
-    observer.observe(document.getElementById('explore-map'))
+    //observer.observe(document.getElementById('explore-map'))
 
     // Add initial logs and moorages layer
     updateMap()
-
-    // Minimize sidebar
-    isSidebarMinimized.value = true
   }) // end onMounted
 
-  const observer = new ResizeObserver(() => {
-    if (map.value) {
-      nextTick(() => {
-        map.value.invalidateSize()
-      })
-    }
-  })
-
-  // Extract all geometry Point from geojson to get a list of moorage geojson feature for map
-  const mooragesListFull = computed(() => {
-    if (!api_geojson.value?.features) return []
-    return api_geojson.value.features
-      .filter((feature) => feature.geometry.type === 'Point')
-      .sort((a, b) => b.geometry.coordinates[1] - a.geometry.coordinates[1]) // north to south
-      .map((feature, index) => {
-        feature.properties['moorageIndex'] = index // keep original index
-        if (feature.properties.default_stay_id == 3) {
-          feature.properties['iconUrl'] = '/mooring_icon.png'
-        } else if (feature.properties.default_stay_id == 4) {
-          feature.properties['iconUrl'] = '/dock_icon.png'
-        } else {
-          feature.properties['iconUrl'] = '/anchoricon.png'
-        }
-        return feature
-      })
-  })
-
-  // Extract all geometry LineString from geojson to get a list of log geojson feature for map
   const logsListFull = computed(() => {
-    if (!api_geojson.value?.features) return []
-    return api_geojson.value.features
-      .filter((feature) => feature.geometry.type === 'LineString')
-      .map((feature, index) => {
-        feature.properties['logIndex'] = index // keep original index
-        const midPoint = Math.round(feature.geometry.coordinates.length / 2)
-        const centerLat = parseFloat(feature.geometry.coordinates[midPoint][1])
-        const centerLng = parseFloat(feature.geometry.coordinates[midPoint][0])
-        feature['properties']['centercoords'] = [centerLat, centerLng]
-        return feature
-      })
+    //console.log('logsListFull computed called', CacheStore.mapGeoJSON.logs_map)
+    return CacheStore.mapGeoJSON.logs_map || []
   })
+  const mooragesListFull = computed(() => {
+    return CacheStore.mapGeoJSON.moorages_map || []
+  })
+  const api_stays_map = computed(() => {
+    return CacheStore.mapGeoJSON.stays_map || []
+  })
+  /*
+    // Extract all geometry Point from geojson to get a list of moorage geojson feature for map
+    const mooragesListFull = computed(() => {
+      if (!api_moorages_map.value) return []
+      return api_moorages_map.value
+        .filter((feature) => feature.geojson.geometry.type === 'Point')
+        .sort((a, b) => b.geojson.geometry.coordinates[1] - a.geojson.geometry.coordinates[1]) // north to south
+        .map((feature, index) => {
+          feature.geojson.properties['moorageIndex'] = index // keep original index
+          if (feature.geojson.properties.default_stay_id == 3) {
+            feature.geojson.properties['iconUrl'] = '/mooring_icon.png'
+          } else if (feature.geojson.properties.default_stay_id == 4) {
+            feature.geojson.properties['iconUrl'] = '/dock_icon.png'
+          } else {
+            feature.geojson.properties['iconUrl'] = '/anchoricon.png'
+          }
+          return feature.geojson
+        })
+    })
 
+    // Extract all geometry LineString from geojson to get a list of log geojson feature for map
+    const logsListFull = computed(() => {
+      if (!api_logs_map.value) return []
+      return api_logs_map.value
+        .filter((feature) => feature.geojson.geometry.type === 'LineString')
+        .map((feature, index) => {
+          feature.geojson.properties['logIndex'] = index // keep original index
+          const midPoint = Math.round(feature.geojson.geometry.coordinates.length / 2)
+          const centerLat = parseFloat(feature.geojson.geometry.coordinates[midPoint][1])
+          const centerLng = parseFloat(feature.geojson.geometry.coordinates[midPoint][0])
+          feature.geojson['properties']['centercoords'] = [centerLat, centerLng]
+          return feature.geojson
+        })
+    })
+  */
   // Extract all geometry LineString from geojson to get a list of log date for slider
   const logsSlider = computed(() => {
-    if (!api_geojson.value?.features) return []
-    return api_geojson.value.features
+    if (!logsListFull.value) return []
+    return logsListFull.value
       .filter((feature) => feature.geometry.type === 'LineString')
       .map((feature) => feature.properties.starttimestamp)
   })
 
   // Extract all geometry LineString from geojson to get a list of tags for filter
   const logsTags = computed(() => {
-    if (!api_geojson.value?.features) return []
+    if (!logsListFull.value) return []
     const tagSet = new Set()
-    api_geojson.value.features
+    logsListFull.value
       .filter((feature) => feature.geometry?.type === 'LineString')
       .forEach((feature) => {
-        const tags = feature?.properties?.extra?.tags
+        const tags = feature.properties?.extra?.tags
         if (Array.isArray(tags)) {
           tags.forEach((tag) => tagSet.add(tag))
         }
@@ -293,15 +591,24 @@
     stats.logs.distance = 0
     stats.moorages.count = 0
 
+    console.debug('filter.tags, filter.dateRange', filter.tags, filter.dateRange)
+    console.debug('logsListFull', logsListFull.value)
+    console.debug('mooragesListFull', mooragesListFull.value)
+
     // Get selected date range
     const [startIdx, endIdx] = filter.dateRange
+    console.debug('start', startIdx, 'end', endIdx)
+    if (endIdx === -1) {
+      // If endIdx is -1, set it to the last index of logsListFull ts sShow all logs
+      filter.dateRange = [0, logsListFull.value.length - 1]
+      return
+    }
     const logStart = new Date(logsListFull.value[startIdx].properties.starttimestamp)
     const logEnd = new Date(logsListFull.value[endIdx].properties.endtimestamp)
+    console.debug('start', logsListFull.value[startIdx].properties.starttimestamp)
+    console.debug('end', logsListFull.value[endIdx].properties.endtimestamp)
     // Track moorage IDs referenced by logs
     const referencedMoorageIds = new Set()
-
-    console.debug('filter.tags, filter.dateRange', filter.tags, filter.dateRange)
-    //console.debug('logsListFull', logsListFull.value)
 
     // Add logs in range and tags
     for (let i = startIdx; i <= endIdx; i++) {
@@ -314,8 +621,8 @@
         map.value.addLayer(logsLayers.value[i])
         logsList.value.push(logFeature)
         // Track referenced moorage IDs
-        const fromId = logFeature.properties?._from_moorage_id
-        const toId = logFeature.properties?._to_moorage_id
+        const fromId = logFeature.properties?._from_moorage_id || null
+        const toId = logFeature.properties?._to_moorage_id || null
         if (fromId) referencedMoorageIds.add(fromId)
         if (toId) referencedMoorageIds.add(toId)
         stats.logs.count++
@@ -323,7 +630,7 @@
         stats.logs.distance += logFeature.properties?.distance || 0
       }
     }
-    //console.debug('logsList', logsList.value.length)
+    console.debug('logsList', logsList.value.length)
     if (logsList.value.length === 0) {
       // If no logs are found, show a message or handle it accordingly
       console.warn('No logs found for the selected date range and tags. resetting...')
@@ -331,21 +638,40 @@
       filter.dateRange = [0, logsListFull.value.length - 1] // Reset range to the new limits
     }
 
-    // Add moorages in range
+    // Add moorages in range of the log. Bug the first moorage is never included if it is before the first log
     mooragesListFull.value.forEach((moorageFeature, i) => {
       const moorageId = moorageFeature.properties.id
       const moorageStart = new Date(moorageFeature.properties.stay_first_seen)
       const moorageEnd = new Date(moorageFeature.properties.stay_last_seen)
-
-      if (moorageStart <= logEnd && moorageEnd >= logStart && referencedMoorageIds.has(moorageId)) {
-        mooragesList.value.push(moorageFeature)
+      // be aware of logs order, desc vs asc
+      // Check if moorage is within the log date range and referenced by logs
+      if (
+        (moorageStart >= logEnd && moorageEnd <= logStart && referencedMoorageIds.has(moorageId)) ||
+        moorageFeature.properties.stay_first_seen === null ||
+        moorageFeature.properties.stay_last_seen === null
+      ) {
         if (mooragesLayers.value[i]) {
+          mooragesList.value.push(moorageFeature)
           map.value.addLayer(mooragesLayers.value[i])
           stats.moorages.count++
           stats.moorages.duration += moorageFeature.properties?.stays_sum_duration || 0
         }
+      } else {
+        console.debug(
+          moorageFeature.properties,
+          'moorageStart',
+          moorageStart,
+          'moorageEnd',
+          moorageEnd,
+          'logStart',
+          logStart,
+          'logEnd',
+          logEnd,
+          referencedMoorageIds.has(moorageId),
+        )
       }
     })
+    console.debug('mooragesList', mooragesList.value.length)
     // Stats summary
     stats.logs.duration = parseFloat(stats.logs.duration).toFixed(1) + ' h'
     stats.logs.distance = distanceFormatMiles(stats.logs.distance)
@@ -421,6 +747,30 @@
     resetFilter.addTo(map.value)
   }
 
+  const addLogControl = () => {
+    if (!map.value) return
+
+    const logControl = L.control({ position: 'topright' })
+
+    logControl.onAdd = function (mapInstance) {
+      const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control')
+      const link = L.DomUtil.create('a', '', div)
+      link.innerHTML = '<i class="va-icon material-icons">menu_book</i>'
+      link.href = '#'
+      div.title = 'logbook printable'
+
+      L.DomEvent.on(div, 'click', function (e) {
+        L.DomEvent.stopPropagation(e)
+        L.DomEvent.preventDefault(e)
+        router.push('/loglapse')
+      })
+
+      return div
+    }
+
+    logControl.addTo(map.value)
+  }
+
   const onEachLogFeaturePopup = (feature, layer) => {
     //console.debug(feature)
     // is logbook
@@ -436,19 +786,19 @@
     let max_tws = speedFormatKnots(feature.properties.max_tws)
     let notes = feature.properties?.notes || ''
     let text = `<div class='mpopup'>
-                          <h4><a href="/log/${feature.properties.id}">${feature.properties.name}</a></h4><br/>
-                          <table class='data'><tbody>
-                          <tr><th>Start Time</th><td>${starttime}</td></tr>
-                          <tr><th>End Time</th><td>${endtime}</td></tr>
-                          <tr><th>Distance</th><td>${distance}</td></tr>
-                          <tr><th>Duration</th><td>${duration} hours</td></tr>
-                          <tr><th>Speed</th><td>avg ${avg_speed} / max ${max_speed}</td></tr>
-                          <tr><th>Wind</th><td>avg ${avg_tws} / max ${max_tws}</td></tr>
-                          <tr><th>Depth</th><td>avg ${avg_depth} / max ${max_depth}</td></tr>
-                          <tr><th>Notes</th><td>${notes}</td></tr>
-                          </tbody></table></br>
-                          <a href="/timelapse/${feature.properties.id}">Replay</a>
-                        </div>`
+                            <h4><a href="/log/${feature.properties.id}">${feature.properties.name}</a></h4><br/>
+                            <table class='data'><tbody>
+                            <tr><th>Start Time</th><td>${starttime}</td></tr>
+                            <tr><th>End Time</th><td>${endtime}</td></tr>
+                            <tr><th>Distance</th><td>${distance}</td></tr>
+                            <tr><th>Duration</th><td>${duration} hours</td></tr>
+                            <tr><th>Speed</th><td>avg ${avg_speed} / max ${max_speed}</td></tr>
+                            <tr><th>Wind</th><td>avg ${avg_tws} / max ${max_tws}</td></tr>
+                            <tr><th>Depth</th><td>avg ${avg_depth} / max ${max_depth}</td></tr>
+                            <tr><th>Notes</th><td>${notes}</td></tr>
+                            </tbody></table></br>
+                            <a href="/timelapse/${feature.properties.id}">Replay</a>
+                          </div>`
     //layer.bindPopup(text)
     layer.bindPopup(text, {
       autoPan: true,
@@ -486,18 +836,18 @@
     })
     //layer.bindTooltip(popupContent)
     /*
-    layer.on('mouseover', function () {
-      layer.bounce({ duration: 500, height: 80 })
-      layer.openPopup()
-    })
-    layer.on('mouseout', function () {
-      layer.stopBouncing()
-      layer.closePopup()
-    })
-    */
+      layer.on('mouseover', function () {
+        layer.bounce({ duration: 500, height: 80 })
+        layer.openPopup()
+      })
+      layer.on('mouseout', function () {
+        layer.stopBouncing()
+        layer.closePopup()
+      })
+      */
   }
 
-  const markerIcon = function (feature, latlng) {
+  const markerIcon = function (feature, latlng, options = {}) {
     let multiplier = Math.max(map.value.getZoom(), 1)
     multiplier = Math.min(map.value.getZoom(), 9)
     //console.debug('multiplier', multiplier)
@@ -547,6 +897,57 @@
   watch(logsSlider, (newValue) => {
     filter.dateRange = [0, newValue.length - 1] // Reset range to the new limits
   })
+
+  watch(
+    logsListFull,
+    (newList) => {
+      if (!map.value) return // Ensure map is initialized
+      if (!logsLayers.value) return // Ensure logsLayers is initialized
+      if (!newList || newList.length === 0) {
+        console.warn('No logs available to display.')
+        return
+      }
+      if (newList.length === logsLayers.value.length) return
+      logsList.value = newList
+      // Remove all existing logs layers from the map
+      logsLayers.value.forEach((layer) => map.value.removeLayer(layer))
+
+      logsLayers.value = newList.map((feature) => {
+        return L.geoJSON(feature, {
+          style: () => ({
+            color: random_rgb_dark(),
+            weight: 3,
+          }),
+          onEachFeature: onEachLogFeaturePopup,
+        })
+      })
+    },
+    { immediate: true, deep: true },
+  )
+
+  watch(
+    mooragesListFull,
+    (newList) => {
+      if (!map.value) return // Ensure map is initialized
+      if (!mooragesLayers.value) return // Ensure mooragesLayers is initialized
+      if (!newList || newList.length === 0) {
+        console.warn('No moorages available to display.')
+        return
+      }
+      if (newList.length === mooragesLayers.value.length) return
+      mooragesList.value = newList
+      // Remove all existing moorages layers from the map
+      mooragesLayers.value.forEach((layer) => map.value.removeLayer(layer))
+
+      mooragesLayers.value = newList.map((feature) => {
+        return L.geoJSON(feature, {
+          pointToLayer: markerIcon,
+          onEachFeature: onEachMoorageFeaturePopup,
+        })
+      })
+    },
+    { immediate: true, deep: true },
+  )
 
   // Compute the formatted date range to display the selected dates
   const formattedDateRange = computed(() => {
@@ -701,98 +1102,34 @@
     // Show all Moorages
     //filter.dateRange = [0, logsListFull.value.length - 1]
   }
-  const onMonitoringTabClick = async (event) => {
+  const onStaysTabClick = async (event) => {
     event.preventDefault() // if you're preventing default anchor behavior
-    console.debug('Monitoring tab clicked')
-    await fetchMonitoring()
+    console.debug('Stays tab clicked')
+    await fetchStays()
   }
-  const fetchMonitoring = async () => {
-    // fetch the monitoring tab content
-    console.debug('Monitoring tab content updated')
+  const fetchStays = async () => {
+    // fetch the Stays tab content
+    console.debug('Stays tab content updated')
     isBusy.value = true
     apiError.value = null
     const api = new PostgSail()
     try {
-      const response = await api.monitoring_live()
-      if (Array.isArray(response) && response[0]) {
-        console.debug(response[0])
-        api_monitoring.value = response[0]
+      const response = await api.notes_history()
+      if (Array.isArray(response)) {
+        rowsData.value.splice(0, rowsData.value.length || [])
+        rowsData.value.push(...response)
+        console.log('History list', rowsData.value)
+        apiSuccess.value = true
       } else {
-        console.warn('monitoring', response)
+        console.warn('History', response)
         //throw { response }
       }
     } catch ({ response }) {
-      console.debug(response)
-      apiError.value = t('monitoring.error')
-      if (!import.meta.env.PROD) {
-        console.warn('Fallback using sample data from local json...', apiError.value)
-        // TODO
-      }
+      console.error(response)
     } finally {
       isBusy.value = false
     }
   }
-
-  const items = computed(() => {
-    console.debug('items api_monitoring', api_monitoring.value)
-    return api_monitoring.value
-      ? {
-          time: dateFormatUTC(api_monitoring.value.time),
-          updated: fromNow(api_monitoring.value.time),
-          wind: {
-            speed: isNaN(api_monitoring.value.windspeedoverground)
-              ? null
-              : utils.metersToKnots(api_monitoring.value.windspeedoverground),
-            direction: utils.radiantToDegrees(api_monitoring.value.winddirectiontrue) || null,
-          },
-          temperature: {
-            inside: kelvinToHuman(api_monitoring.value.insidetemperature) || null,
-            outside: kelvinToHuman(api_monitoring.value.outsidetemperature) || null,
-          },
-          water: {
-            depth: depthFormatI18n(api_monitoring.value.depth) || null,
-            temperature: kelvinToHuman(api_monitoring.value.watertemperature) || null,
-          },
-          battery: {
-            charge: floatToPercentage(api_monitoring.value.batterycharge) || null,
-            voltage: parseFloat(api_monitoring.value.batteryvoltage).toFixed(1) || null,
-          },
-          humidity: {
-            inside: floatToPercentage(api_monitoring.value.insidehumidity) || null,
-            outside: floatToPercentage(api_monitoring.value.outsidehumidity) || null,
-          },
-          pressure: {
-            inside: pascalToHectoPascal(api_monitoring.value.insidepressure) || null,
-            outside: pascalToHectoPascal(api_monitoring.value.outsidepressure) || null,
-          },
-          solar: {
-            voltage: parseFloat(api_monitoring.value.solarvoltage).toFixed(1) || null,
-            power: isNaN(api_monitoring.value.solarpower) ? null : parseInt(api_monitoring.value.solarpower), // 0 is treat as false
-          },
-          tank: {
-            level: floatToPercentage(api_monitoring.value.tanklevel) || null,
-          },
-          outsidepressurehistory: api_monitoring.value.outsidepressurehistory || null,
-          vessel_name: api_monitoring.value.name,
-          status: api_monitoring.value.status,
-          geojson: api_monitoring.value.geojson,
-          live: api_monitoring.value.live,
-          alarm: GlobalStore.settings.preferences.alerting,
-          offline: api_monitoring.value.offline,
-        }
-      : {}
-  })
-
-  const getSpeedColor = (speed) => {
-    if (speed <= 10) return '#91cc75'
-    if (speed <= 20) return '#fac858'
-    return '#ee6666'
-  }
-  const circumference = 2 * Math.PI * 45 // r = 38 now
-  const dashArray = computed(() => {
-    if (!items.value?.wind?.speed) return `0, ${circumference}`
-    return `${(items.value.wind.speed / 30) * circumference}, ${circumference}`
-  })
 
   // Watch for changes in dateArray and update selectedRange accordingly
   watch(filter, (newValue) => {
@@ -800,386 +1137,321 @@
     updateMap()
   })
 
-  const displayMonitoring = () => {
-    if (!items.value.live || (!items.value.live.geometry && !items.value.live.features)) {
-      console.debug('Live items not ready yet')
-      return
-    }
-
-    // Remove all existing layers from map
-    logsLayers.value.forEach((layer) => map.value.removeLayer(layer))
-    mooragesLayers.value.forEach((layer) => map.value.removeLayer(layer))
-
-    const boatTypes = boatMarkerTypes()
-    const boatIcon = vesselType === 'Sailing' ? boatTypes['Sailboat'] : boatTypes['Powerboat']
-    // Add boat layer
-    const boat = L.geoJSON(items.value.live, {
-      pointToLayer: boatIcon,
-      onEachFeature: onBoatFeaturePopup,
-    })
-    map.value.addLayer(boat)
-    if (boat.getBounds().isValid()) {
-      map.value.fitBounds(boat.getBounds(), { animate: true, duration: 0.5, padding: [30, 30], maxZoom: 17 })
-    }
-
-    console.debug('displayMonitoring done')
-  }
-
-  watch(
-    () => items.value.live,
-    (newVal) => {
-      if (newVal) {
-        console.debug('items.value.live', newVal)
-        displayMonitoring()
-      }
-    },
-  )
-  const onBoatFeaturePopup = function (feature, layer) {
-    //console.debug('onBoatFeaturePopup', feature)
-    var popupContent = '<p>I started out as a GeoJSON ' + feature.geometry.type + ", but now I'm a Leaflet vector!</p>"
-    if (feature.properties.stay_code) {
-      // moorage point live stay
-      let latitude = parseFloat(feature.geometry.coordinates[0].toFixed(3))
-      let longitude = parseFloat(feature.geometry.coordinates[1].toFixed(3))
-      let dmsCoords = decimalToDMS(latitude, longitude)
-      let text = `<div class='mpopup'><br/><h4>${vesselName}</h4><br/>
-                          <table class='data'><tbody>`
-      if (vesselImage) {
-        text += `<img src="${vesselImage}" alt="${vesselName}" class="vessel-image" />`
-      }
-      text += `<tr><th>Time</th><td>${dateFormatUTC(feature.properties.time)}</td></tr>
-                            <tr><th>Position</th><td>${dmsCoords.toString()}</td></tr>`
-      let stay_type = 'At Unknown in '
-      if (feature.properties.stay_code == 2) {
-        stay_type = 'At anchor in '
-      }
-      if (feature.properties.stay_code == 3) {
-        stay_type = 'At mooring buoy in '
-      }
-      if (feature.properties.stay_code == 4) {
-        stay_type = 'At dock in '
-      }
-      text += `<tr><th>Updated</th><td>${fromNow(feature.properties.time)}`
-      text += `<tr><th>Status</th><td>${stay_type} ${feature.properties.name}`
-      text += `<tr><th>Arrived at</th><td>${dateFormatUTC(feature.properties.arrived)}`
-      text += `<tr><th>Arrived</th><td>${fromNow(feature.properties.arrived)}`
-      if (vesselModel) {
-        text += `<tr><th>Make & Model</th><td>${vesselModel}`
-      }
-      text += '</tbody></table></br></div>'
-      popupContent = text
-    } else if (feature.properties.status) {
-      // moorage point + current linestring live trip
-      let starttime = dateFormatUTC(feature.properties.time)
-      let duration = durationFromNow(feature.properties.time)
-      let distance = distanceFormatMiles(feature.properties.distance) || ''
-      let sog = speedFormatKnots(feature.properties.speedoverground)
-      let cog = angleFormat(feature.properties.courseovergroundtrue)
-      let twd = angleFormat(feature.properties.truewinddirection)
-      let aws = speedFormatKnots(feature.properties.windspeedapparent)
-      let awa = awaFormat(feature.properties.truewinddirection, feature.properties.courseovergroundtrue)
-      let latitude = parseFloat(feature.geometry.coordinates[0].toFixed(3))
-      let longitude = parseFloat(feature.geometry.coordinates[1].toFixed(3))
-      let dmsCoords = decimalToDMS(latitude, longitude)
-      popupContent = `<div class='mpopup'><h4>${vesselName}</h4><br/>`
-      if (vesselImage) {
-        popupContent += `<img src="${vesselImage}" alt="${vesselName}" class="vessel-image" />`
-      }
-      popupContent += `<table class='data'><tbody>
-                        <tr><th>Start Time</th><td>${starttime}</td></tr>
-                        <tr><th>Updated</th><td>${fromNow(feature.properties.time)}</td></tr>
-                        <tr><th>Distance</th><td>${distance}</td></tr>
-                        <tr><th>Duration</th><td>${duration}</td></tr>
-                        <tr><th>Speed</th><td>${cog} / ${sog}</td></tr>
-                        <tr><th>Wind</th><td>${aws} / ${twd}</td></tr>
-                        <tr><th>AWA</th><td>${awa}</td></tr>
-                        <tr><th>Position</th><td>${dmsCoords}</td></tr>`
-      if (vesselModel) {
-        popupContent += `<tr><th>Make & Model</th><td>${vesselModel}`
-      }
-      popupContent += `</tbody></table></br>
-                    </div>`
-    }
-    layer.bindPopup(popupContent, {
-      autoPan: true,
-      autoPanPadding: L.point(30, 30),
-    })
-  }
-
-  const statusColor = computed(() => {
-    return items.value.offline ? 'orange' : 'green'
-  })
-
+  // Tags chips
   function deleteChip(chip) {
     filter.tags = filter.tags.filter((v) => v !== chip)
   }
 
+  const noteshistory = computed(() => {
+    return Array.isArray(rowsData.value)
+      ? rowsData.value.map((row) => ({
+          stay_id: row.stay_id,
+          moorage_id: row.moorage_id,
+          stay_name: row.stay_name || 'Active stay',
+          moorage_name: row.moorage_name || 'Active moorage',
+          arrived: dateFormatUTC(row.arrived),
+          stay_code: row.stay_code,
+          dms: decimalToDMS(row.latitude, row.longitude),
+          coordinates: [row.longitude, row.latitude],
+          stay_notes: row.stay_notes,
+          moorage_notes: row.moorage_notes,
+          image_url:
+            !row.has_image || !row.image_url
+              ? null
+              : row.image_url.startsWith('http')
+              ? row.image_url
+              : import.meta.env.VITE_PGSAIL_URL + row.image_url,
+          iconUrl:
+            row.stay_code === 3 ? '/mooring_icon.png' : row.stay_code === 4 ? '/dock_icon.png' : '/anchoricon.png',
+        }))
+      : []
+  })
+
+  const handleNoteUpdated = async (updatedNote) => {
+    showEditModal.value = false
+    console.log('handleNoteUpdated', typeData.value, updatedNote)
+    if (typeData.value === 'logbook') {
+      console.debug('updating logbook note', logsList.value)
+      logsList.value = logsList.value.map((row) =>
+        row.properties.id === updatedNote.id
+          ? { properties: { ...row.properties, name: updatedNote.name, notes: updatedNote.notes } }
+          : row,
+      )
+      CacheStore.logs_map = CacheStore.logs_map.map((row) =>
+        row.geojson?.properties?.id === updatedNote.id
+          ? {
+              ...row,
+              geojson: {
+                ...row.geojson,
+                properties: {
+                  ...row.geojson.properties,
+                  name: updatedNote.name,
+                  notes: updatedNote.notes,
+                },
+              },
+            }
+          : row,
+      )
+    }
+    if (typeData.value === 'moorage') {
+      console.debug('updating moorage note', mooragesList.value)
+      mooragesList.value = mooragesList.value.map((row) =>
+        row.properties.id === updatedNote.id
+          ? { properties: { ...row.properties, name: updatedNote.name, notes: updatedNote.notes } }
+          : row,
+      )
+      CacheStore.moorages_map = CacheStore.moorages_map.map((row) =>
+        row.geojson?.properties?.id === updatedNote.id
+          ? {
+              ...row,
+              geojson: {
+                ...row.geojson,
+                properties: {
+                  ...row.geojson.properties,
+                  name: updatedNote.name,
+                  notes: updatedNote.notes,
+                },
+              },
+            }
+          : row,
+      )
+    }
+    if (typeData.value === 'stay') {
+      rowsData.value = rowsData.value.map((row) =>
+        row.stay_id === updatedNote.stay_id
+          ? { ...row, stay_notes: updatedNote.stay_notes, stay_name: updatedNote.name }
+          : row,
+      )
+    }
+    // Clean CacheStore and force refresh
+    //await CacheStore.resetCache()
+    //await getMap()
+  }
+  const handlePhotoUpdated = async (updatedPhoto) => {
+    showPhotoModal.value = false
+    console.log('handlePhotoUpdated', typeData.value, updatedPhoto)
+    if (typeData.value === 'logbook') {
+      //console.debug('updating log photo', logsList.value)
+      logsList.value = logsList.value.map((row) =>
+        row.properties.id === updatedPhoto.id
+          ? { properties: { ...row.properties, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url } }
+          : row,
+      )
+      CacheStore.logs_map = CacheStore.logs_map.map((row) =>
+        row.geojson?.properties?.id === updatedPhoto.id
+          ? {
+              ...row,
+              geojson: {
+                ...row.geojson,
+                properties: {
+                  ...row.geojson.properties,
+                  has_image: updatedPhoto.has_image,
+                  image_url: updatedPhoto.image_url,
+                },
+              },
+            }
+          : row,
+      )
+    }
+    if (typeData.value === 'moorage') {
+      //console.debug('updating moorage photo', mooragesList.value)
+      mooragesList.value = mooragesList.value.map((row) =>
+        row.properties.id === updatedPhoto.id
+          ? { properties: { ...row.properties, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url } }
+          : row,
+      )
+      CacheStore.moorages_map = CacheStore.moorages_map.map((row) =>
+        row.geojson?.properties?.id === updatedPhoto.id
+          ? {
+              ...row,
+              geojson: {
+                ...row.geojson,
+                properties: {
+                  ...row.geojson.properties,
+                  has_image: updatedPhoto.has_image,
+                  image_url: updatedPhoto.image_url,
+                },
+              },
+            }
+          : row,
+      )
+    }
+    if (typeData.value === 'stay') {
+      rowsData.value = rowsData.value.map((row) =>
+        row.stay_id === updatedPhoto.stay_id
+          ? { ...row, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url }
+          : row,
+      )
+      // TODO: update CacheStore stays_list
+    }
+    // Clean CacheStore and force refresh
+    //await CacheStore.resetCache()
+    //await getMap()
+  }
+  const navigateMoorage = (coordinates) => {
+    function openPopupClick() {
+      //markersMap.value[index].openPopup()
+      //openPopupMarker(coordinates)
+      //map.value.off('moveend', openPopupClick)
+    }
+    console.log(`navigate to Moorage: ${coordinates}`)
+    map.value.flyTo([...coordinates].reverse(), 15, {
+      animate: true,
+      duration: 0.5,
+      easeLinearity: 0.5,
+    })
+    map.value.on('moveend', openPopupClick)
+  }
+  const selectedData = ref(null)
+  const typeData = ref(null)
+  const showEditModal = ref(false)
+  const showPhotoModal = ref(false)
+
+  function openEditModal(item, type) {
+    selectedData.value = item
+    typeData.value = type
+    showEditModal.value = true
+  }
+
+  function openPhotoModal(item, type) {
+    selectedData.value = item
+    typeData.value = type
+    showPhotoModal.value = true
+  }
+  async function handleDelete(item, type) {
+    console.debug('Removing image', item, type)
+    const isDelete = true
+    apiError.value = null
+
+    isBusy.value = true
+    apiError.value = null
+    const api = new PostgSail()
+    const payload = {
+      image_b64: null,
+      image_type: null,
+      image: null,
+      ref_id: item.id || item.stay_id || null,
+      image_url: null,
+    }
+    try {
+      const response = await api.image_update(payload, type)
+      //console.log(response)
+      if (response) {
+        console.log('Image update success', response)
+        apiError.value = null
+        if (type === 'logbook') {
+          //console.debug('removing log photo', logsList.value)
+          logsList.value = logsList.value.map((row) =>
+            row.properties.id === item.id
+              ? {
+                  properties: {
+                    ...row.properties,
+                    has_image: null,
+                    image_url: null,
+                  },
+                }
+              : row,
+          )
+          // Cleanup localstorage cache
+          //console.debug('Before CacheStore.logs_map', CacheStore.logs_map)
+          CacheStore.logs_map = CacheStore.logs_map.map((row) =>
+            row.geojson?.properties?.id === item.id
+              ? {
+                  ...row,
+                  geojson: {
+                    ...row.geojson,
+                    properties: {
+                      ...row.geojson.properties,
+                      has_image: null,
+                      image_url: null,
+                    },
+                  },
+                }
+              : row,
+          )
+        }
+        if (type === 'moorage') {
+          //console.debug('removing moorage photo', mooragesList.value)
+          mooragesList.value = mooragesList.value.map((row) =>
+            row.properties.id === item.id
+              ? {
+                  properties: {
+                    ...row.properties,
+                    has_image: null,
+                    image_url: null,
+                  },
+                }
+              : row,
+          )
+          // Cleanup localstorage cache
+          CacheStore.moorages_map = CacheStore.moorages_map.map((row) =>
+            row.geojson?.properties?.id === item.id
+              ? {
+                  ...row,
+                  geojson: {
+                    ...row.geojson,
+                    properties: {
+                      ...row.geojson.properties,
+                      has_image: null,
+                      image_url: null,
+                    },
+                  },
+                }
+              : row,
+          )
+        }
+        if (type === 'stay') {
+          //console.debug('removing stay photo', rowsData.value)
+          rowsData.value = rowsData.value.map((row) =>
+            row.stay_id === item.stay_id ? { ...row, has_image: null, image_url: null } : row,
+          )
+          // Cleanup localstorage cache
+          // TODO: update CacheStore stays_list
+        }
+
+        if (import.meta.env.VITE_S3_URL) {
+          // Now delete the image from S3 using presigned URL
+          try {
+            // Step 1: Get presigned DELETE URL from backend
+            const presignResponse = await api.getPresignedDeleteUrl({
+              _image_type: `image/${item.image_url.split('.')[3]}`, // extract file extension
+              _id: String(item.id),
+              _type: type,
+              _vessel_id: vesselId,
+            })
+            // Step 2: Upload the file directly
+            const DeleteResult = await fetch(presignResponse, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': type,
+              },
+            })
+
+            if (!DeleteResult.ok) {
+              throw new Error(`Upload failed: ${DeleteResult.statusText}`)
+            }
+          } catch (err) {
+            console.error('Image deleting error:', err)
+            apiError.value = 'Failed to deleting image.'
+          }
+        } else {
+          throw { response }
+        }
+      }
+    } catch (err) {
+      console.error('Image update error:', err)
+      apiError.value = 'Failed to update image.'
+    } finally {
+      isBusy.value = false
+    }
+  }
   onBeforeUnmount(async () => {
     if (map.value) {
       map.value.remove()
+      apiError.value = null
     }
   })
 </script>
-
-<template>
-  <template v-if="apiError">
-    <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ apiError }}</va-alert>
-  </template>
-  <va-inner-loading v-if="logsList.length > 0 || isBusy" :loading="isBusy">
-    <div class="explore-maps leaflet-map__full">
-      <div>
-        <div id="sidepanel" class="sidepanel" aria-label="side panel" aria-hidden="false">
-          <div class="sidepanel-inner-wrapper">
-            <nav class="sidepanel-tabs-wrapper" aria-label="sidepanel tab navigation">
-              <ul class="sidepanel-tabs">
-                <li class="sidepanel-tab">
-                  <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-1" @click="onLogsTabClick">
-                    <va-icon name="timeline" />
-                  </a>
-                </li>
-                <li class="sidepanel-tab">
-                  <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-2" @click="onMooragesTabClick">
-                    <va-icon name="anchor" />
-                  </a>
-                </li>
-                <li class="sidepanel-tab">
-                  <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-3" @click="onMonitoringTabClick">
-                    <va-icon name="my_location" />
-                  </a>
-                </li>
-              </ul>
-            </nav>
-            <div class="sidepanel-content-wrapper">
-              <div class="sidepanel-content">
-                <div id="logs-list" class="sidepanel-tab-content" data-tab-content="tab-1">
-                  <div>
-                    <ol>
-                      <li class="line-item" v-if="logsList.length > 0" v-for="(log, index) in logsList" :key="index">
-                        {{ index + 1 }}.
-                        <a
-                          class="va-link"
-                          @mouseenter="onLogMouseEnter(log.properties.logIndex)"
-                          @click="onLogClickNavigate(log.properties.centercoords, log.properties.logIndex)"
-                          >{{ log.properties.name }} • {{ durationFormatHours(log.properties.duration) }} h •
-                          {{ distanceFormatMiles(log.properties.distance) }}
-                        </a>
-                      </li>
-                    </ol>
-                    <hr class="cool-hr" />
-                    <div v-if="logsList.length > 0" class="stats-list">
-                      <div class="stat-line">
-                        <strong>{{ $t('stats.count') }}:</strong> {{ stats.logs.count }}
-                      </div>
-                      <div class="stat-line">
-                        <strong>{{ $t('stats.sum_duration') }}:</strong> {{ stats.logs.duration }}
-                      </div>
-                      <div class="stat-line">
-                        <strong>{{ $t('stats.sum_distance') }}:</strong> {{ stats.logs.distance }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div id="moorages-list" class="sidepanel-tab-content" data-tab-content="tab-2">
-                  <div>
-                    <ol>
-                      <li
-                        class="line-item"
-                        v-if="mooragesList.length > 0"
-                        v-for="(moorage, index) in mooragesList"
-                        :key="index"
-                      >
-                        {{ index + 1 }}.
-                        <img :src="moorage.properties.iconUrl" style="height: 24px; width: 24px" />
-                        <a
-                          class="va-link"
-                          @mouseenter="onMoorageMouseEnter(moorage.properties.moorageIndex)"
-                          @mouseleave="stopBouncingMarker(moorage.properties.moorageIndex)"
-                          @click="onMoorageClickNavigate(moorage.geometry.coordinates, moorage.properties.moorageIndex)"
-                          >{{ moorage.properties.name }}</a
-                        >
-                      </li>
-                    </ol>
-                  </div>
-                </div>
-                <div id="real-time" class="sidepanel-tab-content" data-tab-content="tab-3">
-                  <div class="w-full" v-if="items">
-                    <h2 class="flex items-center gap-2">
-                      {{ items.updated }} <span class="dot" :style="{ backgroundColor: statusColor }"></span>
-                      <VaImage :src="`/realtime.svg`" class="w-6 h-6 inline-block align-middle" />
-                    </h2>
-                    <hr class="cool-hr" />
-                    <h3 class="font-semibold">Wind & Depth</h3>
-                    <div class="w-full flex justify-center items-center">
-                      <div
-                        class="flex items-center space-x-4"
-                        v-if="items.wind.speed !== null && items.wind.speed !== undefined"
-                      >
-                        <!-- Left Column -->
-                        <div class="flex flex-col text-sm space-y-1 min-w-[100px]">
-                          <div>Wind Speed: {{ speedFormatKnots(items.wind.speed) }}</div>
-                          <div>Wind Direction: {{ angleFormat(items.wind.direction) }}</div>
-                          <div>Depth: {{ depthFormatI18n(items.water.depth) }}</div>
-                        </div>
-
-                        <!-- Right Column (Wind Compass) -->
-                        <div
-                          class="wind-compass group relative"
-                          :title="`Wind: ${items.wind.speed} Kt, ${items.wind.direction} deg`"
-                        >
-                          <!-- Circular wind speed ring -->
-                          <svg class="speed-circle" viewBox="0 0 100 100">
-                            <circle class="bg" cx="50" cy="50" r="45" />
-                            <circle
-                              class="progress"
-                              :stroke="getSpeedColor(items.wind.speed)"
-                              cx="50"
-                              cy="50"
-                              r="45"
-                              :stroke-dasharray="dashArray"
-                              stroke-dashoffset="0"
-                            />
-                          </svg>
-
-                          <!-- Rotating Arrow -->
-                          <svg
-                            class="arrow-svg"
-                            :style="{ transform: `rotate(${items.wind.direction}deg)` }"
-                            viewBox="0 0 36 36"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              x="3"
-                              y="3"
-                              width="25"
-                              height="25"
-                              transform="rotate(-249.5,15.5,15.5)"
-                              fill="#145da0"
-                              d="M26.675824776131577 2.519999999999989L2.500000600307402 13.822982731554148 2.500000600307402 14.764897959183662 10.46703356734037 18.728791208791197ZM11.291209391516192 19.55296703296702L15.25510264112373 27.51999999999999 16.197017868753242 27.51999999999999 27.500000600307402 3.3441758241758133Z"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-
-                    <hr class="cool-hr" />
-                    <h3 class="font-semibold">Temperature</h3>
-                    <div class="w-full h-24" v-if="items.temperature.inside">
-                      <echartsProgress
-                        :series="[items.temperature.inside]"
-                        title="Inside"
-                        :alarm="items.alarm.low_indoor_temperature_threshold"
-                      />
-                    </div>
-                    <div class="w-full h-24" v-if="items.temperature.outside">
-                      <echartsProgress
-                        :series="[items.temperature.outside]"
-                        title="Outside"
-                        :alarm="items.alarm.low_outdoor_temperature_threshold"
-                      />
-                    </div>
-                    <div class="w-full h-24" v-if="items.water.temperature">
-                      <echartsProgress
-                        :series="[items.water.temperature]"
-                        title="Water"
-                        :alarm="items.alarm.low_water_temperature_threshold"
-                      />
-                    </div>
-                    <hr class="cool-hr" />
-                    <h3 class="font-semibold">Humidity</h3>
-                    <div class="w-full h-24" v-if="items.humidity.inside">
-                      <echartsProgress :series="[items.humidity.inside]" title="Inside" :max="100" unit="%" />
-                    </div>
-                    <div class="w-full h-24" v-if="items.humidity.outside">
-                      <echartsProgress :series="[items.humidity.outside]" title="Outside" :max="100" unit="%" />
-                    </div>
-                    <template v-if="items.outsidepressurehistory">
-                      <hr class="cool-hr" />
-                      <h3 class="font-semibold">Barometer</h3>
-                      <div class="w-full h-28">
-                        <echartsPressure :series="items.outsidepressurehistory" title="Outside" />
-                      </div>
-                    </template>
-                    <template v-if="items.battery.charge">
-                      <hr class="cool-hr" />
-                      <h3 class="font-semibold">Battery</h3>
-                      <div class="w-full h-28">
-                        <echartsGauge :series="[items.battery.charge, items.battery.voltage]" />
-                      </div>
-                    </template>
-                    <template v-if="items.solar.power">
-                      <hr class="cool-hr" />
-                      <h3 class="font-semibold">Solar</h3>
-                      <div class="w-full h-28">
-                        <echartsGauge
-                          :series="[items.solar.power, items.solar.voltage]"
-                          :max="items.solar.power + 50"
-                          unit="W"
-                        />
-                      </div>
-                    </template>
-                    <template v-if="items.tank.level">
-                      <hr class="cool-hr" />
-                      <h3 class="font-semibold">Tank</h3>
-                      <div class="w-full h-28">
-                        <echartsGauge :series="[items.tank.level, items.tank.level]" unit="%" />
-                      </div>
-                    </template>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="sidepanel-toggle-container">
-            <button class="sidepanel-toggle-button" type="button" aria-label="toggle side panel"></button>
-          </div>
-        </div>
-        <div id="explore-map" class="leaflet-map"></div>
-      </div>
-    </div>
-    <template v-if="logsSlider.length > 1">
-      <div class="map-controls">
-        <div class="date-slider">
-          <va-slider
-            v-model="filter.dateRange"
-            :range="true"
-            :min="0"
-            :max="logsSlider.length - 1"
-            :step="1"
-            show-markers
-            :tooltip="true"
-            :tooltip-label="tooltipLabel"
-          />
-          {{ formattedDateRange }}
-        </div>
-
-        <div class="tag-selector py-2">
-          <va-select
-            v-model="filter.tags"
-            :placeholder="$t('logs.list.filter.tags')"
-            :options="logsTags"
-            multiple
-            text-by="text"
-            style="width: 90%"
-          >
-            <template #content="{ value }">
-              <va-chip
-                v-for="chip in value"
-                :key="chip.text"
-                size="small"
-                class="xs-chip mr-2"
-                outline
-                closeable
-                @update:modelValue="deleteChip(chip)"
-              >
-                {{ chip }}
-              </va-chip>
-            </template>
-          </va-select>
-        </div>
-      </div>
-    </template>
-  </va-inner-loading>
-</template>
 
 <style lang="scss">
   $map-height: calc(91vh - 3.5rem);
@@ -1259,68 +1531,6 @@
     }
   }
 
-  .wind-compass {
-    position: relative;
-    width: 80px;
-    height: 80px;
-  }
-
-  .speed-circle {
-    width: 80px;
-    height: 80px;
-    transform: rotate(-90deg);
-  }
-
-  circle.bg {
-    fill: none;
-    stroke: #eee;
-    stroke-width: 12;
-  }
-
-  circle.progress {
-    fill: none;
-    stroke-width: 12;
-    transition: stroke 0.3s;
-  }
-
-  .arrow-svg {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    width: 56px;
-    height: 56px;
-    opacity: 0.8;
-    transition: transform 0.5s ease;
-    transform-origin: center center;
-  }
-
-  .dot {
-    display: inline-block; /* Ensures it's on the same line as the text */
-    width: 10px; /* Size of the dot */
-    height: 10px; /* Size of the dot */
-    //background-color: green; /* Green color for the dot */
-    border-radius: 50%; /* Makes it circular */
-    animation: pulseAnimation 1s infinite; /* Makes it pulse */
-    margin-left: 10px; /* Adds space between the text and the dot */
-  }
-
-  @keyframes pulseAnimation {
-    0% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(1.5); /* Increase the size slightly */
-      opacity: 0.6;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-  .cool-hr {
-    margin: 5px;
-  }
   .map-controls {
     position: absolute;
     //bottom: 10px;
