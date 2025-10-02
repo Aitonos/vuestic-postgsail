@@ -25,6 +25,7 @@ const defaultState = {
   openweather: null,
   currentweather: {},
   monitoring2: [],
+  monitoringlive: [],
   stats: {
     stats_logs: {
       name: null,
@@ -232,6 +233,17 @@ export const useGlobalStore = defineStore('global', {
         console.log(error)
       }
     },
+    async fetchMonitoringLive() {
+      const api = new PostgSail()
+      try {
+        const response = await api.monitoring_live()
+        this.monitoringlive = response
+        console.log('GlobalStore fetchMonitoringLive response', response)
+        return this.monitoringlive
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async fetchStats() {
       const payload = {
         start_date: null,
@@ -281,6 +293,7 @@ export const useGlobalStore = defineStore('global', {
     imperialUnits: (state) => state.settings?.preferences?.use_imperial_units || false,
     doubleCount: (state) => state.count * 2,
     Monitoring2: (state) => state.monitoring2,
+    MonitoringLive: (state) => state.monitoringlive[0] || {},
     stats_logs: (state) => state.stats?.stats_logs || {},
     stats_moorages: (state) => state.stats?.stats_moorages || {},
     openWeather: (state) => state.openweather,
