@@ -174,8 +174,8 @@
   const { t } = useI18n()
 
   const GlobalStore = useGlobalStore()
-  const { userName, versions, currentWeather, Monitoring2, hasLogs } = storeToRefs(GlobalStore)
-  const { fetchVersions, fetchWeatherForecast, fetchMonitoring2, fetchStats } = GlobalStore
+  const { userName, versions, currentWeather, Monitoring2, MonitoringLive, hasLogs } = storeToRefs(GlobalStore)
+  const { fetchVersions, fetchWeatherForecast, fetchMonitoring2, fetchMonitoringLive, fetchStats } = GlobalStore
 
   const CacheStore = useCacheStore()
   const { getInfoTiles, GetLastLogId } = storeToRefs(CacheStore)
@@ -240,18 +240,9 @@
 
   let re = new RegExp(/electrical\.batteries.*\.stateOfCharge/, 'i')
   const stateOfCharge = computed(() => {
-    if (!Array.isArray(Monitoring2.value)) return Array.isArray(Monitoring2.value)
     let obj = { key: 'stateOfCharge', value: 0 }
-    console.log('stateOfCharge')
-    re = new RegExp(/electrical\.batteries.*\.stateOfCharge/, 'i')
-    Monitoring2.value.forEach(({ key, value }) => {
-      //console.log(re.test(key))
-      if (re.test(key)) {
-        console.log(key, value)
-        obj.key = key.split('.').slice(1).join('.')
-        obj.value = Math.round(value * 100)
-      }
-    })
+    console.debug('stateOfCharge', MonitoringLive.value)
+    obj.value = Math.round(MonitoringLive.value.data.battery.charge * 100)
     return obj
   })
   const panelPower = computed(() => {
@@ -271,18 +262,9 @@
     return obj
   })
   const tanksCapacity = computed(() => {
-    if (!Array.isArray(Monitoring2.value)) return Array.isArray(Monitoring2.value)
-    let obj = { key: 'tankscurrentLevel', value: 0 }
-    console.log('tankscurrentLevel')
-    re = new RegExp(/tanks\..*\.currentLevel.*/, 'i')
-    Monitoring2.value.forEach(({ key, value }) => {
-      //console.log(re.test(key))
-      if (re.test(key)) {
-        console.log(key, value)
-        obj.key = key.split('.').slice(1).join('.')
-        obj.value = Math.round(value * 100)
-      }
-    })
+    let obj = { key: 'tanksCapacity', value: 0 }
+    console.debug('tanksCapacity', MonitoringLive.value)
+    obj.value = Math.round(MonitoringLive.value.data.tank.level * 100)
     return obj
   })
   const Power = computed(() => {
@@ -376,7 +358,7 @@
     const api = new PostgSail()
     try {
       let response = await api.monitoring()
-      if (response && response[0]) {
+      if (response && Array.isArray(response) && response[0]) {
         monitoring.value = response[0]
         console.log('monitoring success', response)
       } else {
@@ -410,6 +392,17 @@
       console.log('Dashboard onMounted Monitoring2.value', Monitoring2.value)
     } catch (err) {
       console.log('fetchMonitoring2 failed', err)
+      //updateError.value = response.message
+    } finally {
+      //isBusy.value = false
+    }
+
+    // Energy MonitoringLive
+    try {
+      await fetchMonitoringLive()
+      console.log('Dashboard onMounted MonitoringLive.value', MonitoringLive.value)
+    } catch (err) {
+      console.log('fetchMonitoringLive failed', err)
       //updateError.value = response.message
     } finally {
       //isBusy.value = false
