@@ -1,15 +1,15 @@
 <script setup lang="ts">
   import { PropType, computed, ref } from 'vue'
-  import { useVModel } from '@vueuse/core'
   import { Trip, FormData } from '../types'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
   import { useGlobalStore } from '../../../stores/global-store'
   import { seaState, visibility } from '../../../utils/PostgSail'
   import MySelect from '../../../components/vaSelect.vue'
+  import PhotoUploaderModal from '../../../components/PhotoUploaderModal.vue'
   import PostgSail from '../../../services/api-client'
   import { useCacheStore } from '../../../stores/cache-store'
-  const { isLoggedIn, publicVessel, instagram, website } = useGlobalStore()
+  const { isLoggedIn } = useGlobalStore()
   const CacheStore = useCacheStore()
   const { t } = useI18n()
   const route = useRoute()
@@ -29,8 +29,7 @@
   })
 
   const emit = defineEmits<{
-    (event: 'save', log: Trip): void
-    (event: 'delete', log: Trip): void
+    (event: 'updated', log: Trip): void
   }>()
 
   // handle Observations
@@ -79,7 +78,42 @@
       })
   }
 
-  const visibility_value = computed(() => props.logbook.visibility)
+  const selectedLog = ref(null)
+  const showPhotoModal = ref(false)
+  function openPhotoModal(log: any) {
+    selectedLog.value = log
+    showPhotoModal.value = true
+  }
+  const handlePhotoUpdated = (updatedPhoto: any) => {
+    showPhotoModal.value = false
+    console.log('handlePhotoUpdated', updatedPhoto)
+    emit('updated', { ...props.logbook, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url })
+  }
+
+  async function handleDelete(log: any) {
+    console.debug('Removing image')
+    const api = new PostgSail()
+    const payload = {
+      image_b64: null,
+      image_type: null,
+      image: null,
+      ref_id: log.id || null,
+      image_url: null,
+    }
+    try {
+      const response = await api.image_update(payload, 'logbook')
+      //console.log(response)
+      if (response) {
+        console.log('Image update success', response)
+      } else {
+        throw { response }
+      }
+    } catch (err) {
+      console.error('Image update error:', err)
+    } finally {
+      emit('updated', { ...props.logbook, has_image: false, image_url: null })
+    }
+  }
 </script>
 
 <template>
@@ -137,5 +171,30 @@
         {{ logbook.visibility }}
       </template>
     </div>
+    <div class="text-xs uppercase my-2">{{ $t('boats.boat.photo') }}</div>
+    <div class="text-sm">
+      <template v-if="!logbook.image_url">
+        <va-icon name="photo_camera" :title="t('photoUploader.select_photo')" @click="openPhotoModal(logbook)" />
+      </template>
+      <template v-else>
+        <div v-if="logbook.image_url" class="relative">
+          <VaButton
+            icon="delete"
+            color="secondary"
+            class="absolute top-2 right-2 text-red-500"
+            :title="t('photoUploader.delete')"
+            @click="handleDelete(logbook)"
+          />
+          <img :src="logbook.image_url" class="w-full max-h-48 object-contain border rounded" />
+        </div>
+      </template>
+    </div>
   </div>
+  <PhotoUploaderModal
+    v-if="selectedLog"
+    v-model="showPhotoModal"
+    :item="selectedLog"
+    type="logbook"
+    @updated="handlePhotoUpdated"
+  />
 </template>
