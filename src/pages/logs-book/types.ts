@@ -17,6 +17,9 @@ export type Log = {
   _to_moorage_id: number
   fromMoorageId: number
   toMoorageId: number
+  has_image: boolean
+  image_url: string | null
+  notes: string
   tags: []
 }
 
@@ -49,6 +52,8 @@ export type Trip = {
   seaState: number
   cloudCoverage: number
   visibility: number
+  has_image: boolean
+  image_url: string | null
   tags: Array<string>
 }
 
