@@ -81,7 +81,7 @@ const defaultState = {
         high_wind_speed_threshold: 30,
         low_water_depth_threshold: 1.0,
         high_pressure_drop_threshold: 12,
-        low_battery_charge_threshold: 50,
+        low_battery_charge_threshold: 90,
         low_battery_voltage_threshold: 12.5,
         low_water_temperature_threshold: 10.0,
         low_indoor_temperature_threshold: 7.0,
@@ -200,8 +200,10 @@ export const useGlobalStore = defineStore('global', {
     },
     set_currentWeather() {
       if (this.openweather && this.openweather['daily']) {
+        const temp = this.openweather['current']['temperature_2m']
         this.currentweather = Object.assign({
-          temp: this.openweather['current']['temperature_2m'],
+          tempUnit: this.imperialUnits ? 'F' : 'C',
+          temp: this.imperialUnits ? Math.round(temp * 1.8) + 32 : temp || 'n/a',
           description: WMO[this.openweather['current']['weather_code']]['day']['description'],
           img: WMO[this.openweather['current']['weather_code']]['day']['image'],
           sunriseTime: moment.unix(this.openweather['daily']['sunrise'][0]).format('HH:mm'),
