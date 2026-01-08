@@ -1,31 +1,41 @@
 <template>
   <div class="dashboard flex flex-wrap p-2 gap-4">
     <va-card v-if="monitoring && status" class="flex card-width">
-      <va-card-content>
-        <table class="va-table va-table--hoverable va-text-center">
-          <tbody>
-            <tr>
-              <td>{{ t('dashboard.local_time') }}</td>
-              <td>{{ status.local_time }}</td>
-            </tr>
-            <tr>
-              <td>{{ t('boats.boat.last_contact') }}</td>
-              <td>{{ status.last_updated }}</td>
-            </tr>
-            <tr>
-              <td>{{ t('monitoring.title') }}</td>
-              <td>
-                {{ status.monitoring }}
-                <span class="relative inline-block size-3">
-                  <span
-                    :class="['absolute inline-flex h-full w-full animate-ping rounded-full opacity-75', healthClass]"
+      <va-card-content class="grid grid-cols-12">
+        <div class="col-span-6 flex flex-col va-text-center">
+          <table class="va-table va-table--hoverable va-text-center">
+            <tbody>
+              <tr>
+                <td>{{ t('dashboard.local_time') }}</td>
+                <td>{{ status.local_time }}</td>
+              </tr>
+              <tr>
+                <td>{{ t('boats.boat.last_contact') }}</td>
+                <td>{{ status.last_updated }}</td>
+              </tr>
+              <tr>
+                <td>{{ t('monitoring.title') }}</td>
+                <td>
+                  {{ status.monitoring }}
+                  <span class="relative inline-block size-3">
+                    <span
+                      :class="['absolute inline-flex h-full w-full animate-ping rounded-full opacity-75', healthClass]"
+                    ></span>
+                    <span :class="['relative inline-flex size-3 rounded-full', healthClass]"></span
                   ></span>
-                  <span :class="['relative inline-flex size-3 rounded-full', healthClass]"></span
-                ></span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-span-6 flex flex-col va-text-center">
+          <div class="grid gap-4 va-text-center">
+            <div>
+              <img :src="statusText.img" :width="84" :height="84" alt="status icon" style="margin-left: 30%" />
+              {{ statusText.text }}
+            </div>
+          </div>
+        </div>
       </va-card-content>
     </va-card>
     <template v-if="monitoring.geojson">
@@ -34,7 +44,17 @@
           <div class="col-span-6 flex flex-col va-text-center">
             <p style="font-size: 3rem; line-height: 54px">
               {{ currentWeather.temp }}
-              <span style="font-size: 1rem; line-height: 32px; vertical-align: super; opacity: 0.8; top: 15px">°C</span>
+              <span
+                style="
+                  font-size: 1rem;
+                  line-height: 32px;
+                  vertical-align: super;
+                  opacity: 0.8;
+                  top: 15px;
+                  font-weight: bold;
+                "
+                >°{{ currentWeather.tempUnit }}</span
+              >
             </p>
             <div class="grid grid-cols-2 gap-4">
               <div>
@@ -161,6 +181,7 @@
   import PostgSail from '../../services/api-client'
   import { fromNow, localTime } from '../../utils/dateFormatter.js'
   import { Moon } from 'lunarphase-js'
+  import { te } from 'date-fns/locale'
   const moon_phases = [
     'New',
     'Waxing Crescent',
@@ -241,6 +262,7 @@
   let re = new RegExp(/electrical\.batteries.*\.stateOfCharge/, 'i')
   const stateOfCharge = computed(() => {
     let obj = { key: 'stateOfCharge', value: 0 }
+    if (!MonitoringLive.value?.data?.battery?.charge) return obj
     console.debug('stateOfCharge', MonitoringLive.value)
     obj.value = Math.round(MonitoringLive.value.data.battery.charge * 100)
     return obj
@@ -263,6 +285,7 @@
   })
   const tanksCapacity = computed(() => {
     let obj = { key: 'tanksCapacity', value: 0 }
+    if (!MonitoringLive.value?.data?.tank?.level) return obj
     console.debug('tanksCapacity', MonitoringLive.value)
     obj.value = Math.round(MonitoringLive.value.data.tank.level * 100)
     return obj
@@ -433,6 +456,34 @@
       'bg-green-500': status.value.health == 0,
       'bg-yellow-500': status.value.health == 1,
       'bg-red-500': status.value.health == 2,
+    }
+  })
+
+  const statusText = computed(() => {
+    //console.log('statusText', monitoring.value)
+    const props = monitoring.value?.live?.properties || null
+    let status = monitoring.value?.status || null
+    let img = null
+    if (status == 'moored') {
+      if (props?.stay_code == 1) {
+        // Unknown stay type
+        status = monitoring.value.status
+      } else if (props?.stay_code == 2) {
+        status += ' at anchor in '
+        img = '/anchoricon.png'
+      } else if (props?.stay_code == 3) {
+        status += ' at mooring buoy in '
+        img = '/mooring_icon.png'
+      } else if (props?.stay_code == 4) {
+        status += ' at dock in '
+        img = '/dock_icon.png'
+      }
+      return { text: `${status}${props.name}`, img: img }
+    } else if (status != 'moored') {
+      status += ' underway '
+      return { text: `${status}`, img: '/apple-touch-icon.png' }
+    } else {
+      return { text: 'No stay detected', img: img }
     }
   })
 </script>
