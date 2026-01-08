@@ -30,11 +30,51 @@
         <template #cell(createdAt)="{ value }">
           {{ value }}
         </template>
-        <template #cell(actions)="{ rowData }">
+        <template #cell(token)="{ rowData }">
+          <GetBoatToken :item="rowData" />
+        </template>
+        <template #cell(actions)="{}">
+          <va-dropdown class="">
+            <template #anchor>
+              <va-icon name="more_vert" />
+            </template>
+            <va-dropdown-content class="float-left">
+              <div class="py-1">
+                <router-link :to="{ name: 'boat-mapping' }">
+                  <va-button
+                    class="grid grid-cols-1"
+                    preset="secondary"
+                    icon="schema"
+                    color="secondary"
+                    size="medium"
+                    title="Mapping paths"
+                    :disabled="!vesselSuccess"
+                  >
+                    Mapping paths
+                  </va-button>
+                </router-link>
+                <router-link :to="{ name: 'boat-polar' }">
+                  <va-button
+                    class="grid grid-cols-1"
+                    preset="secondary"
+                    icon="sports_score"
+                    color="secondary"
+                    size="medium"
+                    title="Set a Polar CSV of your boat"
+                    :disabled="!vesselSuccess"
+                  >
+                    Polar CSV
+                  </va-button>
+                </router-link>
+              </div>
+            </va-dropdown-content>
+          </va-dropdown>
+          <!--
           <div class="flex items-center space-x-2">
             <GetBoatToken :item="rowData" />
             <router-link :to="{ name: 'boat-mapping' }">
               <va-button icon="schema" color="primary" size="medium" title="Mapping paths" :disabled="!vesselSuccess" />
+              Mapping paths
             </router-link>
             <router-link :to="{ name: 'boat-polar' }">
               <va-button
@@ -44,8 +84,10 @@
                 title="Set a Polar CSV of your boat"
                 :disabled="!vesselSuccess"
               />
+              Polar CSV
             </router-link>
           </div>
+        -->
         </template>
       </va-data-table>
       <template v-if="items.length > perPage">
@@ -104,6 +146,7 @@
     { key: 'status', label: t('boats.boat.status'), sortable: true },
     { key: 'lastContact', label: t('boats.boat.last_contact'), sortable: true },
     { key: 'createdAt', label: t('boats.boat.created_at'), sortable: true },
+    { key: 'token', label: t('boats.boat.token_modal.button') },
     { key: 'actions', label: t('boats.list.actions') },
   ])
   const items = computed(() => {
