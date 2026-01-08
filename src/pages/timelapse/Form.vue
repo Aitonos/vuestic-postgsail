@@ -210,10 +210,9 @@
               </table>
               <dl class="row mb-3">
                 <dt></dt>
-                <dl style="min-width: 100%">
-                  <div style="min-width: 100%">
-                    <va-button style="min-width: 100%" :to="timelapse_link">{{ $t('logs.list.replay') }} ▶</va-button>
-                  </div>
+                <dl style="min-width: 100%; display: flex; gap: 1rem">
+                  <va-button style="flex: 1" :to="timelapse_link"> {{ $t('logs.list.replay') }} ▶ </va-button>
+                  <va-button style="flex: 1" :to="timelapse3d_link"> {{ $t('logs.list.replay') }} 3D ▶ </va-button>
                 </dl>
               </dl>
             </va-form>
@@ -268,6 +267,11 @@
     console.log('formData', formData)
     const searchParams = new URLSearchParams(formData)
     return `/timelapse?${searchParams.toString()}`
+  })
+  const timelapse3d_link = computed(() => {
+    console.log('formData', formData)
+    const searchParams = new URLSearchParams(formData)
+    return `/timelapse3d?${searchParams.toString()}`
   })
   const timelapse_public_link = computed(() => {
     console.log('public formData', formData)
