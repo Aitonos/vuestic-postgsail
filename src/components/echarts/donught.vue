@@ -33,11 +33,11 @@
 
         let formatted = ''
         if (duration.asDays() >= 1) {
-          formatted = `${Math.floor(duration.asDays())}d ${duration.hours()}h ${duration.minutes()}m`
+          formatted = `${Math.floor(duration.asDays())}d`
         } else if (duration.asHours() >= 1) {
-          formatted = `${duration.hours()}h ${duration.minutes()}m`
+          formatted = `${Math.floor(duration.asHours())}h`
         } else {
-          formatted = `${duration.minutes()}m`
+          formatted = `${Math.floor(duration.asMinutes())}m`
         }
 
         return `${params.marker}${params.name}: ${formatted}`
