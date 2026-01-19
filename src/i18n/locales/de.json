@@ -722,10 +722,13 @@
     "formats": "Accepted formats: JPG, PNG",
     "uploading": "Uploading...",
     "deleting": "Deleting...",
-    "error": "Error uploading photo. Please try again.",
+    "error_upload": "Error uploading photo. Please try again.",
+    "error_delete": "Error deleting photo. Please try again.",
     "no_photos": "No photos uploaded yet.",
-    "photo_deleted": "Photo deleted successfully.",
+    "success_delete": "Photo deleted successfully.",
+    "success_upload": "Photo uploaded successfully.",
     "lastUpdated": "Last updated",
-    "edit_note": "Edit Note"
+    "edit_note": "Edit Note",
+    "confirm_delete": "Are you sure you want to delete this photo?"
   }
 }

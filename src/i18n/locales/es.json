@@ -706,19 +706,22 @@
     }
   },
   "photoUploader": {
-    "title": "Photo Uploader",
-    "preview": "Preview Photo",
-    "delete": "Delete Photo",
-    "set_as_avatar": "Set as Avatar",
-    "select_photo": "Select a photo to upload",
-    "max_size": "Maximum file size: 5MB",
-    "formats": "Accepted formats: JPG, PNG",
-    "uploading": "Uploading...",
-    "deleting": "Deleting...",
-    "error": "Error uploading photo. Please try again.",
-    "no_photos": "No photos uploaded yet.",
-    "photo_deleted": "Photo deleted successfully.",
-    "lastUpdated": "Last updated",
-    "edit_note": "Edit Note"
+    "title": "Cargador de fotos",
+    "preview": "Vista previa de la foto",
+    "delete": "Eliminar foto",
+    "set_as_avatar": "Establecer como avatar",
+    "select_photo": "Selecciona una foto para subir",
+    "max_size": "Tamaño máximo de archivo: 5MB",
+    "formats": "Formatos aceptados: JPG, PNG",
+    "uploading": "Subiendo...",
+    "deleting": "Eliminando...",
+    "error_upload": "Error al subir la foto. Por favor, inténtalo de nuevo.",
+    "error_delete": "Error al eliminar la foto. Por favor, inténtalo de nuevo.",
+    "no_photos": "No se han subido fotos todavía.",
+    "success_delete": "Foto eliminada con éxito.",
+    "success_upload": "Foto subida con éxito.",
+    "lastUpdated": "Última actualización",
+    "edit_note": "Editar nota",
+    "confirm_delete": "¿Estás seguro de que quieres eliminar esta foto?"
   }
 }
