@@ -48,31 +48,127 @@
                       <!-- Bottom row: Image + Icons + Notes -->
                       <div class="mt-2 text-xs text-gray-600 flex flex-col gap-2">
                         <!-- Image or placeholder icon -->
-                        <div class="relative">
-                          <template v-if="!log.properties.image_url">
+                        <template v-if="imageSupport">
+                          <div v-if="imageSupport" class="relative">
                             <va-icon
                               name="photo_camera"
                               class="cursor-pointer text-gray-400"
                               :title="t('photoUploader.select_photo')"
                               @click="openPhotoModal(log.properties, 'logbook')"
                             />
-                          </template>
+                            <div v-if="log.properties.images && log.properties.images.length > 0">
+                              <!-- Horizontal scrollable gallery -->
+                              <div class="flex gap-2 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+                                <div
+                                  v-for="(image, index) in log.properties.images"
+                                  :key="image.id"
+                                  class="relative flex-shrink-0 w-40 h-40 sm:w-48 sm:h-48 snap-center"
+                                  @click="openImage(index)"
+                                >
+                                  <img
+                                    :src="image.url"
+                                    :alt="`Image ${index + 1}`"
+                                    class="w-full h-full object-cover rounded-lg cursor-pointer"
+                                  />
+                                  <!-- Delete button -->
+                                  <VaButton
+                                    icon="delete"
+                                    size="small"
+                                    color="danger"
+                                    class="absolute top-2 right-2 shadow-lg"
+                                    :title="t('photoUploader.delete')"
+                                    @click.stop="confirmDeleteCurrent(log.properties, 'logbook', image)"
+                                  />
+                                </div>
+                              </div>
 
-                          <template v-else>
-                            <VaButton
-                              icon="delete"
-                              color="secondary"
-                              class="absolute top-2 right-2 text-red-500"
-                              size="small"
-                              :title="t('photoUploader.delete')"
-                              @click="handleDelete(log.properties, 'logbook')"
-                            />
-                            <img
-                              :src="log.properties.image_url"
-                              class="w-full max-h-48 object-contain border rounded-lg"
-                            />
-                          </template>
-                        </div>
+                              <!-- Mobile-friendly image viewer -->
+                              <Transition name="slide-up">
+                                <div
+                                  v-if="viewerOpen"
+                                  class="fixed inset-0 z-50 bg-black"
+                                  @touchstart="handleTouchStart"
+                                  @touchmove="handleTouchMove"
+                                  @touchend="handleTouchEnd"
+                                >
+                                  <!-- Header -->
+                                  <div
+                                    class="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/80 to-transparent p-4 flex items-center justify-between z-10"
+                                  >
+                                    <span class="text-white text-sm">
+                                      {{ currentImageIndex + 1 }} / {{ log.properties.images.length }}
+                                    </span>
+                                    <div class="flex items-center gap-4">
+                                      <!-- Delete button in viewer -->
+                                      <VaButton
+                                        icon="delete"
+                                        size="small"
+                                        color="danger"
+                                        class="shadow-lg"
+                                        :title="t('photoUploader.delete')"
+                                        @click="
+                                          confirmDeleteCurrent(
+                                            log.properties,
+                                            'logbook',
+                                            log.properties.images[currentImageIndex],
+                                          )
+                                        "
+                                      />
+                                      <!-- Close button -->
+                                      <button type="button" class="text-white text-3xl" @click="closeImage">
+                                        &times;
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  <!-- Image container with swipe support -->
+                                  <div class="h-full flex items-center justify-center px-4">
+                                    <img
+                                      v-if="log.properties.images[currentImageIndex]"
+                                      :src="log.properties.images[currentImageIndex].url"
+                                      class="max-w-full max-h-full object-contain"
+                                      :style="{ transform: `translateX(${swipeOffset}px)` }"
+                                    />
+                                  </div>
+
+                                  <!-- Navigation dots -->
+                                  <div
+                                    v-if="log.properties.images.length > 1"
+                                    class="absolute bottom-8 left-0 right-0 flex justify-center gap-2"
+                                  >
+                                    <button
+                                      v-for="(image, index) in log.properties.images"
+                                      :key="index"
+                                      type="button"
+                                      class="w-2 h-2 rounded-full transition-all"
+                                      :class="index === currentImageIndex ? 'bg-white w-6' : 'bg-white/50'"
+                                      @click="currentImageIndex = index"
+                                    />
+                                  </div>
+
+                                  <!-- Desktop navigation arrows -->
+                                  <button
+                                    v-if="log.properties.images.length > 1"
+                                    type="button"
+                                    class="hidden sm:block absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-gray-300 transition-colors"
+                                    @click="previousImage(log.properties)"
+                                  >
+                                    &#8249;
+                                  </button>
+
+                                  <button
+                                    v-if="log.properties.images.length > 1"
+                                    type="button"
+                                    class="hidden sm:block absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-gray-300 transition-colors"
+                                    @click="nextImage(log.properties)"
+                                  >
+                                    &#8250;
+                                  </button>
+                                </div>
+                              </Transition>
+                            </div>
+                          </div>
+                        </template>
 
                         <!-- Icons + Notes -->
                         <div class="flex items-start gap-2">
@@ -104,39 +200,150 @@
               <div id="moorages-list" class="sidepanel-tab-content" data-tab-content="tab-2">
                 <div v-if="mooragesList.length > 0">
                   <ol>
-                    <li v-for="(moorage, index) in mooragesList" :key="index" class="line-item">
-                      {{ index + 1 }}.
-                      <img :src="moorage.properties.iconUrl" style="height: 24px; width: 24px" />
-                      <a
-                        class="va-link"
-                        @mouseenter="onMoorageMouseEnter(moorage.properties.moorageIndex)"
-                        @mouseleave="stopBouncingMarker(moorage.properties.moorageIndex)"
-                        @click="onMoorageClickNavigate(moorage.geometry.coordinates, moorage.properties.moorageIndex)"
-                        >{{ moorage.properties.name }}</a
-                      >
-                      <br />
+                    <li v-for="(moorage, index) in mooragesList" :key="index">
+                      <div class="line-item">
+                        {{ index + 1 }}.
+                        <img :src="moorage.properties.iconUrl" style="height: 24px; width: 24px" />
+                        <a
+                          class="va-link"
+                          @mouseenter="onMoorageMouseEnter(moorage.properties.moorageIndex)"
+                          @mouseleave="stopBouncingMarker(moorage.properties.moorageIndex)"
+                          @click="onMoorageClickNavigate(moorage.geometry.coordinates, moorage.properties.moorageIndex)"
+                          >{{ moorage.properties.name }}</a
+                        >
+                      </div>
                       <span class="text-xs text-gray-500">
-                        <template v-if="!moorage.properties.image_url">
-                          <va-icon
-                            name="photo_camera"
-                            :title="t('photoUploader.select_photo')"
-                            @click="openPhotoModal(moorage.properties, 'moorage')"
-                          />
-                        </template>
-                        <template v-else>
-                          <div v-if="moorage.properties.image_url" class="relative">
-                            <VaButton
-                              icon="delete"
-                              color="secondary"
-                              class="absolute top-2 right-2 text-red-500"
-                              size="small"
-                              :title="t('photoUploader.delete')"
-                              @click="handleDelete(moorage.properties, 'moorage')"
-                            />
-                            <img
-                              :src="moorage.properties.image_url"
-                              class="w-full max-h-48 object-contain border rounded"
-                            />
+                        <template v-if="imageSupport">
+                          <!-- Image or placeholder icon -->
+                          <div v-if="imageSupport" class="relative">
+                            <template v-if="!moorage.properties.images">
+                              <va-icon
+                                name="photo_camera"
+                                class="cursor-pointer text-gray-400"
+                                :title="t('photoUploader.select_photo')"
+                                @click="openPhotoModal(moorage.properties, 'moorage')"
+                              />
+                            </template>
+
+                            <template v-else>
+                              <va-icon
+                                name="photo_camera"
+                                class="cursor-pointer text-gray-400"
+                                :title="t('photoUploader.select_photo')"
+                                @click="openPhotoModal(moorage.properties, 'moorage')"
+                              />
+                              <div v-if="moorage.properties.images && moorage.properties.images.length > 0">
+                                <!-- Horizontal scrollable gallery -->
+                                <div class="flex gap-2 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+                                  <div
+                                    v-for="(image, index) in moorage.properties.images"
+                                    :key="image.id"
+                                    class="relative flex-shrink-0 w-40 h-40 sm:w-48 sm:h-48 snap-center"
+                                    @click="openImage(index)"
+                                  >
+                                    <img
+                                      :src="image.url"
+                                      :alt="`Image ${index + 1}`"
+                                      class="w-full h-full object-cover rounded-lg cursor-pointer"
+                                    />
+                                    <!-- Delete button -->
+                                    <VaButton
+                                      icon="delete"
+                                      size="small"
+                                      color="danger"
+                                      class="absolute top-2 right-2 shadow-lg"
+                                      :title="t('photoUploader.delete')"
+                                      @click.stop="confirmDeleteCurrent(moorage.properties, 'moorage', image)"
+                                    />
+                                  </div>
+                                </div>
+
+                                <!-- Mobile-friendly image viewer -->
+                                <Transition name="slide-up">
+                                  <div
+                                    v-if="viewerOpen"
+                                    class="fixed inset-0 z-50 bg-black"
+                                    @touchstart="handleTouchStart"
+                                    @touchmove="handleTouchMove"
+                                    @touchend="handleTouchEnd"
+                                  >
+                                    <!-- Header -->
+                                    <div
+                                      class="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/80 to-transparent p-4 flex items-center justify-between z-10"
+                                    >
+                                      <span class="text-white text-sm">
+                                        {{ currentImageIndex + 1 }} / {{ moorage.properties.images.length }}
+                                      </span>
+                                      <div class="flex items-center gap-4">
+                                        <!-- Delete button in viewer -->
+                                        <VaButton
+                                          icon="delete"
+                                          size="small"
+                                          color="danger"
+                                          class="shadow-lg"
+                                          :title="t('photoUploader.delete')"
+                                          @click="
+                                            confirmDeleteCurrent(
+                                              moorage.properties,
+                                              'moorage',
+                                              moorage.properties.images[currentImageIndex],
+                                            )
+                                          "
+                                        />
+                                        <!-- Close button -->
+                                        <button type="button" class="text-white text-3xl" @click="closeImage">
+                                          &times;
+                                        </button>
+                                      </div>
+                                    </div>
+
+                                    <!-- Image container with swipe support -->
+                                    <div class="h-full flex items-center justify-center px-4">
+                                      <img
+                                        v-if="moorage.properties.images[currentImageIndex]"
+                                        :src="moorage.properties.images[currentImageIndex].url"
+                                        class="max-w-full max-h-full object-contain"
+                                        :style="{ transform: `translateX(${swipeOffset}px)` }"
+                                      />
+                                    </div>
+
+                                    <!-- Navigation dots -->
+                                    <div
+                                      v-if="moorage.properties.images.length > 1"
+                                      class="absolute bottom-8 left-0 right-0 flex justify-center gap-2"
+                                    >
+                                      <button
+                                        v-for="(image, index) in moorage.properties.images"
+                                        :key="index"
+                                        type="button"
+                                        class="w-2 h-2 rounded-full transition-all"
+                                        :class="index === currentImageIndex ? 'bg-white w-6' : 'bg-white/50'"
+                                        @click="currentImageIndex = index"
+                                      />
+                                    </div>
+
+                                    <!-- Desktop navigation arrows -->
+                                    <button
+                                      v-if="moorage.properties.images.length > 1"
+                                      type="button"
+                                      class="hidden sm:block absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-gray-300 transition-colors"
+                                      @click="previousImage(moorage.properties)"
+                                    >
+                                      &#8249;
+                                    </button>
+
+                                    <button
+                                      v-if="moorage.properties.images.length > 1"
+                                      type="button"
+                                      class="hidden sm:block absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-gray-300 transition-colors"
+                                      @click="nextImage(moorage.properties)"
+                                    >
+                                      &#8250;
+                                    </button>
+                                  </div>
+                                </Transition>
+                              </div>
+                            </template>
                           </div>
                         </template>
                         <va-icon
@@ -168,24 +375,133 @@
                           <br />
                           <span>{{ note.dms }}</span>
                           <span class="text-xs text-gray-500">
-                            <template v-if="!note.image_url">
-                              <va-icon
-                                name="photo_camera"
-                                :title="t('photoUploader.select_photo')"
-                                @click="openPhotoModal(note, 'stay')"
-                              />
-                            </template>
-                            <template v-else>
-                              <div v-if="note.image_url" class="relative">
-                                <VaButton
-                                  icon="delete"
-                                  color="secondary"
-                                  class="absolute top-2 right-2 text-red-500"
-                                  size="small"
-                                  :title="t('photoUploader.delete')"
-                                  @click="handleDelete(note, 'stay')"
-                                />
-                                <img :src="note.image_url" class="w-full max-h-48 object-contain border rounded" />
+                            <template v-if="imageSupport">
+                              <!-- Image or placeholder icon -->
+                              <div v-if="imageSupport" class="relative">
+                                <template v-if="!note.images">
+                                  <va-icon
+                                    name="photo_camera"
+                                    class="cursor-pointer text-gray-400"
+                                    :title="t('photoUploader.select_photo')"
+                                    @click="openPhotoModal(note, 'stay')"
+                                  />
+                                </template>
+
+                                <template v-else>
+                                  <va-icon
+                                    name="photo_camera"
+                                    class="cursor-pointer text-gray-400"
+                                    :title="t('photoUploader.select_photo')"
+                                    @click="openPhotoModal(note, 'stay')"
+                                  />
+                                  <div v-if="note.images && note.images.length > 0">
+                                    <!-- Horizontal scrollable gallery -->
+                                    <div class="flex gap-2 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+                                      <div
+                                        v-for="(image, index) in note.images"
+                                        :key="image.id"
+                                        class="relative flex-shrink-0 w-40 h-40 sm:w-48 sm:h-48 snap-center"
+                                        @click="openImage(index)"
+                                      >
+                                        <img
+                                          :src="image.url"
+                                          :alt="`Image ${index + 1}`"
+                                          class="w-full h-full object-cover rounded-lg cursor-pointer"
+                                        />
+                                        <!-- Delete button -->
+                                        <VaButton
+                                          icon="delete"
+                                          size="small"
+                                          color="danger"
+                                          class="absolute top-2 right-2 shadow-lg"
+                                          :title="t('photoUploader.delete')"
+                                          @click.stop="confirmDeleteCurrent(note, 'stay', image)"
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <!-- Mobile-friendly image viewer -->
+                                    <Transition name="slide-up">
+                                      <div
+                                        v-if="viewerOpen"
+                                        class="fixed inset-0 z-50 bg-black"
+                                        @touchstart="handleTouchStart"
+                                        @touchmove="handleTouchMove"
+                                        @touchend="handleTouchEnd"
+                                      >
+                                        <!-- Header -->
+                                        <div
+                                          class="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/80 to-transparent p-4 flex items-center justify-between z-10"
+                                        >
+                                          <span class="text-white text-sm">
+                                            {{ currentImageIndex + 1 }} / {{ note.images.length }}
+                                          </span>
+                                          <div class="flex items-center gap-4">
+                                            <!-- Delete button in viewer -->
+                                            <VaButton
+                                              icon="delete"
+                                              size="small"
+                                              color="danger"
+                                              class="shadow-lg"
+                                              :title="t('photoUploader.delete')"
+                                              @click="
+                                                confirmDeleteCurrent(note, 'stay', note.images[currentImageIndex])
+                                              "
+                                            />
+                                            <!-- Close button -->
+                                            <button type="button" class="text-white text-3xl" @click="closeImage">
+                                              &times;
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        <!-- Image container with swipe support -->
+                                        <div class="h-full flex items-center justify-center px-4">
+                                          <img
+                                            v-if="note.images[currentImageIndex]"
+                                            :src="note.images[currentImageIndex].url"
+                                            class="max-w-full max-h-full object-contain"
+                                            :style="{ transform: `translateX(${swipeOffset}px)` }"
+                                          />
+                                        </div>
+
+                                        <!-- Navigation dots -->
+                                        <div
+                                          v-if="note.images.length > 1"
+                                          class="absolute bottom-8 left-0 right-0 flex justify-center gap-2"
+                                        >
+                                          <button
+                                            v-for="(image, index) in note.images"
+                                            :key="index"
+                                            type="button"
+                                            class="w-2 h-2 rounded-full transition-all"
+                                            :class="index === currentImageIndex ? 'bg-white w-6' : 'bg-white/50'"
+                                            @click="currentImageIndex = index"
+                                          />
+                                        </div>
+
+                                        <!-- Desktop navigation arrows -->
+                                        <button
+                                          v-if="note.images.length > 1"
+                                          type="button"
+                                          class="hidden sm:block absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-gray-300 transition-colors"
+                                          @click="previousImage(note)"
+                                        >
+                                          &#8249;
+                                        </button>
+
+                                        <button
+                                          v-if="note.images.length > 1"
+                                          type="button"
+                                          class="hidden sm:block absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-gray-300 transition-colors"
+                                          @click="nextImage(note)"
+                                        >
+                                          &#8250;
+                                        </button>
+                                      </div>
+                                    </Transition>
+                                  </div>
+                                </template>
                               </div>
                             </template>
                             <va-icon
@@ -285,6 +601,8 @@
   import 'leaflet-rotatedmarker'
   import SmoothMarkerBouncing from 'leaflet.smooth_marker_bouncing'
   import 'leaflet.fullscreen'
+  import { useToast } from 'vuestic-ui'
+  const { init: initToast } = useToast()
 
   import PostgSail from '../../services/api-client'
   import {
@@ -320,7 +638,7 @@
   import { useVesselStore } from '../../stores/vessel-store'
 
   const GlobalStore = useGlobalStore()
-  const { isSidebarMinimized, currentTheme } = storeToRefs(GlobalStore)
+  const { isSidebarMinimized, currentTheme, imageSupport } = storeToRefs(GlobalStore)
   const { vesselName, vesselType, vesselModel, vesselImage, vesselId } = useVesselStore()
 
   const CacheStore = useCacheStore()
@@ -1155,12 +1473,7 @@
           coordinates: [row.longitude, row.latitude],
           stay_notes: row.stay_notes,
           moorage_notes: row.moorage_notes,
-          image_url:
-            !row.has_image || !row.image_url
-              ? null
-              : row.image_url.startsWith('http')
-              ? row.image_url
-              : import.meta.env.VITE_PGSAIL_URL + row.image_url,
+          images: row.has_images ? row.images || [] : [],
           iconUrl:
             row.stay_code === 3 ? '/mooring_icon.png' : row.stay_code === 4 ? '/dock_icon.png' : '/anchoricon.png',
         }))
@@ -1234,7 +1547,7 @@
       //console.debug('updating log photo', logsList.value)
       logsList.value = logsList.value.map((row) =>
         row.properties.id === updatedPhoto.id
-          ? { properties: { ...row.properties, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url } }
+          ? { properties: { ...row.properties, has_images: updatedPhoto.has_images, images: updatedPhoto.images } }
           : row,
       )
       CacheStore.logs_map = CacheStore.logs_map.map((row) =>
@@ -1245,8 +1558,8 @@
                 ...row.geojson,
                 properties: {
                   ...row.geojson.properties,
-                  has_image: updatedPhoto.has_image,
-                  image_url: updatedPhoto.image_url,
+                  has_images: updatedPhoto.has_images,
+                  images: updatedPhoto.images,
                 },
               },
             }
@@ -1257,7 +1570,7 @@
       //console.debug('updating moorage photo', mooragesList.value)
       mooragesList.value = mooragesList.value.map((row) =>
         row.properties.id === updatedPhoto.id
-          ? { properties: { ...row.properties, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url } }
+          ? { properties: { ...row.properties, has_images: updatedPhoto.has_images, images: updatedPhoto.images } }
           : row,
       )
       CacheStore.moorages_map = CacheStore.moorages_map.map((row) =>
@@ -1268,8 +1581,8 @@
                 ...row.geojson,
                 properties: {
                   ...row.geojson.properties,
-                  has_image: updatedPhoto.has_image,
-                  image_url: updatedPhoto.image_url,
+                  has_images: updatedPhoto.has_images,
+                  images: updatedPhoto.images,
                 },
               },
             }
@@ -1277,12 +1590,17 @@
       )
     }
     if (typeData.value === 'stay') {
+      //console.debug('updating stays photo', rowsData.value)
       rowsData.value = rowsData.value.map((row) =>
         row.stay_id === updatedPhoto.stay_id
-          ? { ...row, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url }
+          ? { ...row, has_images: updatedPhoto.has_images, images: updatedPhoto.images }
           : row,
       )
-      // TODO: update CacheStore stays_list
+      CacheStore.stays = CacheStore.stays.map((row) =>
+        row.stay_id === updatedPhoto.stay_id
+          ? { ...row, has_images: updatedPhoto.has_images, images: updatedPhoto.images }
+          : row,
+      )
     }
     // Clean CacheStore and force refresh
     //await CacheStore.resetCache()
@@ -1318,8 +1636,8 @@
     typeData.value = type
     showPhotoModal.value = true
   }
-  async function handleDelete(item, type) {
-    console.debug('Removing image', item, type)
+  async function handleDelete(item, type, image) {
+    console.debug('Removing image', item, type, image)
     const isDelete = true
     apiError.value = null
 
@@ -1327,17 +1645,19 @@
     apiError.value = null
     const api = new PostgSail()
     const payload = {
-      image_b64: null,
-      image_type: null,
-      image: null,
-      ref_id: item.id || item.stay_id || null,
-      image_url: null,
+      _image_id: image.id,
+      _id: item.id ? item.id : item.stay_id,
+      _type: type,
+      _operation: 'delete',
+      _vessel_id: vesselId,
     }
     try {
-      const response = await api.image_update(payload, type)
+      const response = await api.image_update(payload)
       //console.log(response)
       if (response) {
         console.log('Image update success', response)
+        // Filter out the deleted image
+        const updatedImages = item.images.filter((img) => img.id !== image.id)
         apiError.value = null
         if (type === 'logbook') {
           //console.debug('removing log photo', logsList.value)
@@ -1346,8 +1666,8 @@
               ? {
                   properties: {
                     ...row.properties,
-                    has_image: null,
-                    image_url: null,
+                    has_images: updatedImages.length > 0,
+                    images: updatedImages,
                   },
                 }
               : row,
@@ -1362,8 +1682,8 @@
                     ...row.geojson,
                     properties: {
                       ...row.geojson.properties,
-                      has_image: null,
-                      image_url: null,
+                      has_images: updatedImages.length > 0,
+                      images: updatedImages,
                     },
                   },
                 }
@@ -1377,8 +1697,8 @@
               ? {
                   properties: {
                     ...row.properties,
-                    has_image: null,
-                    image_url: null,
+                    has_images: updatedImages.length > 0,
+                    images: updatedImages,
                   },
                 }
               : row,
@@ -1392,8 +1712,8 @@
                     ...row.geojson,
                     properties: {
                       ...row.geojson.properties,
-                      has_image: null,
-                      image_url: null,
+                      has_images: updatedImages.length > 0,
+                      images: updatedImages,
                     },
                   },
                 }
@@ -1403,36 +1723,52 @@
         if (type === 'stay') {
           //console.debug('removing stay photo', rowsData.value)
           rowsData.value = rowsData.value.map((row) =>
-            row.stay_id === item.stay_id ? { ...row, has_image: null, image_url: null } : row,
+            row.stay_id === item.stay_id
+              ? { ...row, has_images: updatedImages.length > 0, images: updatedImages }
+              : row,
           )
-          // Cleanup localstorage cache
-          // TODO: update CacheStore stays_list
+          // Cleanup localstorage stays
+          CacheStore.stays = CacheStore.stays.map((row) =>
+            row.stay_id === item.stay_id
+              ? { ...row, has_images: updatedImages.length > 0, images: updatedImages }
+              : row,
+          )
         }
 
         if (import.meta.env.VITE_S3_URL) {
           // Now delete the image from S3 using presigned URL
           try {
             // Step 1: Get presigned DELETE URL from backend
-            const presignResponse = await api.getPresignedDeleteUrl({
-              _image_type: `image/${item.image_url.split('.')[3]}`, // extract file extension
-              _id: String(item.id),
+            const deleteUrl = await api.getPresignedDeleteUrl({
+              _image_type: image.type,
+              _id: item.id ? item.id : item.stay_id,
               _type: type,
               _vessel_id: vesselId,
+              _idx: image.id, // Index of images array for stays, moorages, logbooks
             })
             // Step 2: Upload the file directly
-            const DeleteResult = await fetch(presignResponse, {
+            const deleteResult = await fetch(deleteUrl, {
               method: 'DELETE',
-              headers: {
-                'Content-Type': type,
-              },
             })
 
-            if (!DeleteResult.ok) {
-              throw new Error(`Upload failed: ${DeleteResult.statusText}`)
+            if (!deleteResult.ok) {
+              throw new Error(`Upload failed: ${deleteResult.statusText}`)
             }
+            // Filter out the deleted image
+            const updatedImages = item.images.filter((img) => img.id !== image.id)
+            initToast({
+              message: t('photoUploader.success_delete'),
+              position: 'top-right',
+              color: 'success',
+            })
           } catch (err) {
             console.error('Image deleting error:', err)
             apiError.value = 'Failed to deleting image.'
+            initToast({
+              message: t('photoUploader.error_delete'),
+              position: 'top-right',
+              color: 'warning',
+            })
           }
         } else {
           throw { response }
@@ -1451,6 +1787,80 @@
       apiError.value = null
     }
   })
+  const viewerOpen = ref(false)
+  const currentImageIndex = ref(0)
+  const swipeOffset = ref(0)
+  const touchStartX = ref(0)
+  const touchCurrentX = ref(0)
+
+  const openImage = (index) => {
+    currentImageIndex.value = index
+    viewerOpen.value = true
+    document.body.style.overflow = 'hidden' // Prevent background scrolling
+  }
+
+  const closeImage = () => {
+    viewerOpen.value = false
+    swipeOffset.value = 0
+    document.body.style.overflow = ''
+  }
+
+  const nextImage = (item) => {
+    if (currentImageIndex.value < item.images.length - 1) {
+      currentImageIndex.value++
+    }
+  }
+
+  const previousImage = (item) => {
+    if (currentImageIndex.value > 0) {
+      currentImageIndex.value--
+    }
+  }
+
+  // Touch gesture handlers
+  const handleTouchStart = (e) => {
+    touchStartX.value = e.touches[0].clientX
+  }
+
+  const handleTouchMove = (e) => {
+    touchCurrentX.value = e.touches[0].clientX
+    swipeOffset.value = touchCurrentX.value - touchStartX.value
+  }
+
+  const handleTouchEnd = () => {
+    const swipeThreshold = 50
+
+    if (swipeOffset.value > swipeThreshold) {
+      previousImage()
+    } else if (swipeOffset.value < -swipeThreshold) {
+      nextImage()
+    }
+
+    swipeOffset.value = 0
+    touchStartX.value = 0
+    touchCurrentX.value = 0
+  }
+  const handleDeleteCurrent = async (item) => {
+    const currentImage = item.images[currentImageIndex.value]
+    //console.log('handleDeleteCurrent', currentImage)
+
+    // Call your delete handler
+    await handleDelete(item, currentImage)
+    // Adjust current index if needed
+    if (currentImageIndex.value >= item.images.length) {
+      currentImageIndex.value = Math.max(0, item.images.length - 1)
+    }
+
+    // Close viewer if no images left
+    if (item.images.length === 0) {
+      closeImage()
+    }
+  }
+  async function confirmDeleteCurrent(item, type, image) {
+    if (!confirm(t('photoUploader.confirm_delete'))) return
+    const currentImage = item.images[currentImageIndex.value]
+    await handleDelete(item, type, currentImage)
+  }
 </script>
 
 <style lang="scss">
@@ -1564,5 +1974,26 @@
     height: auto; /* Maintain aspect ratio */
     object-fit: contain; /* Ensures it fits within bounds without distortion */
     border-radius: 4px; /* Optional: rounds corners slightly */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    transition: transform 0.3s ease-out;
+  }
+
+  .slide-up-enter-from {
+    transform: translateY(100%);
+  }
+
+  .slide-up-leave-to {
+    transform: translateY(100%);
   }
 </style>
