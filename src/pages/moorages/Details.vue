@@ -146,11 +146,13 @@
                 </div>
 
                 <!-- Photo -->
-                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
-                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('boats.boat.photo') }}</dt>
-                  <dd class="text-gray-800 dark:text-white">
-                    <PhotoUploader :item="item" type="moorage" @updated="handlePhotoUpdated" />
-                  </dd>
+                <div v-if="imageSupport">
+                  <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                    <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('boats.boat.photo') }}</dt>
+                    <dd class="text-gray-800 dark:text-white">
+                      <PhotoUploader :item="item" type="moorage" @updated="handlePhotoUpdated" />
+                    </dd>
+                  </div>
                 </div>
               </dl>
 
@@ -210,6 +212,7 @@
     name: null,
     notes: null,
   })
+  const { readOnly, imageSupport } = useGlobalStore()
 
   const item = computed(() => {
     return apiData.row
@@ -227,12 +230,7 @@
           last_seen: apiData.row.stay_last_seen,
           first_seen_id: apiData.row.stay_first_seen_id,
           last_seen_id: apiData.row.stay_last_seen_id,
-          image_url:
-            !apiData.row.has_image || !apiData.row.image_url
-              ? null
-              : apiData.row.image_url.startsWith('http')
-              ? apiData.row.image_url
-              : import.meta.env.VITE_PGSAIL_URL + apiData.row.image_url,
+          images: apiData.row.has_images ? apiData.row?.images || [] : [],
           image_updated_at: apiData.row.image_updated_at ? dateFormatUTC(apiData.row.image_updated_at) : null,
         }
       : {}
@@ -421,13 +419,13 @@
       updateError.value = response.message
     } finally {
       isBusy.value = false
-      router.push({ name: 'logs' })
+      router.push({ name: 'moorages' })
     }
   }
 
   const handlePhotoUpdated = async (updatedPhoto) => {
     console.log('handlePhotoUpdated', updatedPhoto)
-    apiData.row = { ...apiData.row, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url }
+    apiData.row = { ...apiData.row, has_images: updatedPhoto.has_images, images: updatedPhoto.images }
     // Clean CacheStore and force refresh
     await CacheStore.resetCache()
     await CacheStore.getAPI('moorage_get', apiData.row.id)
