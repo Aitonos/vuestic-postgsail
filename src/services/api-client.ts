@@ -119,7 +119,11 @@ class ApiClient extends HttpClient {
   }
 
   async vessel_get_polar() {
-    return this.get('metadata_ext?select=polar,polar_updated_at')
+    return this.get('metadata?select=polar:user_data->>polar,polar_updated_at:user_data->>polar_updated_at')
+  }
+
+  async vessel_update(payload: JSObj) {
+    return this.post('rpc/update_metadata_userdata_fn', payload)
   }
 
   /*
@@ -410,19 +414,8 @@ class ApiClient extends HttpClient {
   /*
    * image update for vessel, stay, moorage, logbook
    */
-  async image_update(payload: JSObj, type: string) {
-    this.setHeader('Prefer', 'missing=default,return=headers-only,resolution=merge-duplicates')
-    let data = null
-    if (type === 'vessel') data = this.post('metadata_ext?on_conflict=vessel_id', payload)
-    else if (type === 'stay') data = this.post('stays_ext?on_conflict=ref_id', payload)
-    else if (type === 'moorage') data = this.post('moorages_ext?on_conflict=ref_id', payload)
-    else if (type === 'logbook') data = this.post('logbook_ext?on_conflict=ref_id', payload)
-    else {
-      console.error('Unknown type for image upload:', type)
-      throw new Error('Unknown type for image upload: ' + type)
-    }
-    this.delHeader('Prefer')
-    return data
+  async image_update(payload: JSObj) {
+    return this.post('rpc/manage_image_fn', payload)
   }
 
   async getPresignedUploadUrl(payload: JSObj) {
