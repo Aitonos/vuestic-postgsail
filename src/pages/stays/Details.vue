@@ -146,12 +146,14 @@
                   </dd>
                 </div>
                 <!-- Photo -->
-                <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
-                  <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('boats.boat.photo') }}</dt>
-                  <dd class="text-gray-800 dark:text-white">
-                    <PhotoUploader :item="item" type="stay" @updated="handlePhotoUpdated" />
-                  </dd>
-                </div>
+                <template v-if="imageSupport">
+                  <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                    <dt class="font-semibold text-gray-900 dark:text-white">{{ $t('boats.boat.photo') }}</dt>
+                    <dd class="text-gray-800 dark:text-white">
+                      <PhotoUploader :item="item" type="stay" @updated="handlePhotoUpdated" />
+                    </dd>
+                  </div>
+                </template>
               </dl>
               <template v-if="updateError">
                 <va-alert color="danger" outline class="mb-4">{{ $t('api.error') }}: {{ updateError }}</va-alert>
@@ -178,6 +180,7 @@
   import { setAppTitle } from '../../utils/app.js'
   import PostgSail from '../../services/api-client'
   import { useCacheStore } from '../../stores/cache-store'
+  import { useGlobalStore } from '../../stores/global-store'
   import { dateFormatUTC, durationI18nDaysHours } from '../../utils/dateFormatter.js'
   import Map from '../../components/maps/leafletMapMoorages.vue'
   import { asBusy } from '../../utils/handleExports'
@@ -191,6 +194,7 @@
 
   const route = useRoute()
   const CacheStore = useCacheStore()
+  const GlobalStore = useGlobalStore()
   const isBusy = ref(false)
   const apiError = ref(null)
   const updateError = ref(null)
@@ -200,6 +204,7 @@
     name: null,
     notes: null,
   })
+  const { readOnly, imageSupport } = useGlobalStore()
 
   const item = computed(() => {
     return apiData.row
@@ -220,12 +225,7 @@
           arrived_from_moorage_name: apiData.row.arrived_from_moorage_name,
           notes: apiData.row.notes,
           stayed_at_id: apiData.row.stayed_at_id,
-          image_url:
-            !apiData.row.has_image || !apiData.row.image_url
-              ? null
-              : apiData.row.image_url.startsWith('http')
-              ? apiData.row.image_url
-              : import.meta.env.VITE_PGSAIL_URL + apiData.row.image_url,
+          images: apiData.row.has_images ? apiData.row?.images || [] : [],
           image_updated_at: apiData.row.image_updated_at ? dateFormatUTC(apiData.row.image_updated_at) : null,
           polar: apiData.row.polar,
         }
@@ -334,7 +334,7 @@
   }
   const handlePhotoUpdated = async (updatedPhoto) => {
     console.log('handlePhotoUpdated', updatedPhoto)
-    apiData.row = { ...apiData.row, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url }
+    apiData.row = { ...apiData.row, has_images: updatedPhoto.has_images, images: updatedPhoto.images }
     // Clean CacheStore and force refresh
     await CacheStore.resetCache()
     await CacheStore.getAPI('stay_get', apiData.row.id)
