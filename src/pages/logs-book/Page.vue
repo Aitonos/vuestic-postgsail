@@ -65,6 +65,7 @@
         @edit="editTrip"
         @delete="onTripDeleted"
         @replay="replayTrip"
+        @replay3d="replayTrip3D"
         @merge="mergeTrip"
       />
       <logbook-table
@@ -77,6 +78,7 @@
         @edit="editTrip"
         @delete="onTripDeleted"
         @replay="replayTrip"
+        @replay3d="replayTrip3D"
         @merge="mergeTrip"
       />
       <!--
@@ -284,6 +286,11 @@
 
   const replayTrip = async (log) => {
     router.push({ name: 'timelapse-replay', params: { id: log.id } })
+    return
+  }
+
+  const replayTrip3D = async (log) => {
+    router.push({ name: 'timelapse3d-replay', params: { id: log.id } })
     return
   }
 

@@ -24,6 +24,7 @@
     (event: 'edit', log: Log): void
     (event: 'delete', log: Log): void
     (event: 'replay', log: Log): void
+    (event: 'replay3d', log: Log): void
     (event: 'merge', log: Log): void
   }>()
 </script>
@@ -61,6 +62,15 @@
                         @click="$emit('replay', log)"
                       >
                         {{ t('logs.list.replay') }}
+                      </va-button>
+                      <va-button
+                        class="grid grid-cols-1"
+                        preset="secondary"
+                        icon="timelapse"
+                        color="secondary"
+                        @click="$emit('replay3d', log)"
+                      >
+                        {{ t('logs.list.replay') }} 3D
                       </va-button>
                       <va-button
                         class="grid grid-cols-1"
