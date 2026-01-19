@@ -98,8 +98,12 @@
                 </dt>
                 <dd class="text-gray-800 dark:text-white">
                   <router-link :to="{ name: 'monitoring' }">
-                    <va-chip :color="!item.offline ? 'success' : 'warning'" class="cursor-pointer">
+                    <va-chip
+                      :color="!item.offline ? 'success' : 'warning'"
+                      class="cursor-pointer group-hover:shadow-md transition-all"
+                    >
                       {{ offline_msg }}
+                      <va-icon name="edit" size="small" class="ml-1" />
                     </va-chip>
                   </router-link>
                 </dd>
@@ -112,8 +116,12 @@
                 </dt>
                 <dd class="text-gray-800 dark:text-white">
                   <router-link :to="{ name: 'boat-mapping' }">
-                    <va-chip :color="item.configuration ? 'success' : 'warning'" class="cursor-pointer">
+                    <va-chip
+                      :color="item.configuration ? 'success' : 'warning'"
+                      class="cursor-pointer group-hover:shadow-md transition-all"
+                    >
                       {{ configuration_msg }}
+                      <va-icon name="edit" size="small" class="ml-1" />
                     </va-chip>
                   </router-link>
                 </dd>
@@ -146,14 +154,16 @@
               </div>
 
               <!-- Photo -->
-              <div class="col-span-full mt-6 p-3 rounded transition hover:bg-gray-100 dark:hover:bg-gray-800">
-                <dt class="font-semibold text-gray-800 dark:text-white">
-                  {{ $t('boats.boat.photo') }}
-                </dt>
-                <dd class="mt-2">
-                  <PhotoUploader :item="item" type="vessel" @updated="handlePhotoUpdated" />
-                </dd>
-              </div>
+              <template v-if="image_support">
+                <div class="col-span-full mt-6 p-3 rounded transition hover:bg-gray-100 dark:hover:bg-gray-800">
+                  <dt class="font-semibold text-gray-800 dark:text-white">
+                    {{ $t('boats.boat.photo') }}
+                  </dt>
+                  <dd class="mt-2">
+                    <PhotoUploader :item="item" type="vessel" @updated="handlePhotoUpdated" />
+                  </dd>
+                </div>
+              </template>
             </dl>
           </template>
         </va-inner-loading>
@@ -175,7 +185,7 @@
   import vesselData from '../../data/boat.json'
 
   const { t } = useI18n()
-
+  const image_support = import.meta.env.VITE_S3_URL ? true : false
   const isBusy = ref(false)
   const apiError = ref(null)
   const apiData = reactive({ row: null })
@@ -214,15 +224,12 @@
           platform: apiData.row.platform,
           offline: apiData.row.offline,
           configuration: apiData.row.configuration,
-          image_url:
-            !apiData.row.has_image || !apiData.row.image_url
-              ? null
-              : apiData.row.image_url.startsWith('http')
-              ? apiData.row.image_url
-              : import.meta.env.VITE_PGSAIL_URL + apiData.row.image_url,
+          image_url: apiData.row.has_images ? apiData.row.image_url : null,
           image_updated_at: apiData.row.image_updated_at ? dateFormatUTC(apiData.row.image_updated_at) : null,
           make_model: apiData.row.make_model,
           has_polar: apiData.row.has_polar,
+          has_images: apiData.row.has_images,
+          images: apiData.row.images,
         }
       : {}
   })
@@ -284,7 +291,9 @@
 
     const api = new PostgSail()
     const payload = {
-      make_model: formData.value.make_model,
+      userdata: {
+        make_model: formData.value.make_model,
+      },
     }
     try {
       const response = await api.vessel_update(payload)
@@ -313,7 +322,12 @@
 
   const handlePhotoUpdated = async (updatedPhoto) => {
     console.log('handlePhotoUpdated', updatedPhoto)
-    apiData.row = { ...apiData.row, has_image: updatedPhoto.has_image, image_url: updatedPhoto.image_url }
+    apiData.row = {
+      ...apiData.row,
+      has_images: updatedPhoto.has_images,
+      image_url: updatedPhoto.image_url,
+      images: updatedPhoto.images,
+    }
   }
 </script>
 
