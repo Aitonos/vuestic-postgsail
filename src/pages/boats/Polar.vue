@@ -173,7 +173,9 @@
 
     const api = new PostgSail()
     const payload = {
-      polar: csvContent.value,
+      userdata: {
+        polar: csvContent.value.trim(),
+      },
     }
     try {
       const response = await api.vessel_update(payload)
