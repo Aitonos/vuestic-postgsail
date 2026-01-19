@@ -167,6 +167,14 @@
     <va-icon class="flex-none" name="route" :size="32" />
     <div class="flex-grow ml-2 text-sm">{{ logbook.distance }} / {{ logbook.duration }}</div>
   </div>
+  <!-- Segments display -->
+  <div v-if="logbook.segments && logbook.segments.length > 0" class="ml-10">
+    <div v-for="segment in logbook.segments" :key="segment.segment_num" class="text-sm text-gray-600 mb-1">
+      <span class="flex-grow ml-2 text-sm">{{ segment.segment_num }}:</span>
+      {{ segment.distance }} / {{ segment.duration }}
+    </div>
+  </div>
+
   <div v-if="logbook.engineHours && logbook.engineHours.length > 0">
     <div class="text-xs uppercase">ENGINE</div>
     <div class="flex items-center">
