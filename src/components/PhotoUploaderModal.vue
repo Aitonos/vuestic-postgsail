@@ -38,7 +38,7 @@
                     color="secondary"
                     class="absolute top-2 right-2 text-red-500"
                     :title="t('photoUploader.delete')"
-                    @click="handleDelete()"
+                    @click="handleDelete(item, item.id)"
                   />
                   <img :src="item.image_url" class="w-full max-h-48 object-contain border rounded" />
                 </div>
@@ -95,14 +95,13 @@
   const imgObj = computed(() => {
     const obj = {
       id: props.item.id,
-      image_url: props.item.image_url,
-      image_updated_at: props.item.image_updated_at,
+      images: props.item?.images || [],
       type: props.type,
     }
     if (props.type === 'stay' && props.item.stay_id) {
       obj.id = props.item.stay_id
     }
-    console.debug('imgObj', props.item, obj)
+    console.debug('imgObj', props, obj)
     return obj
   })
 
@@ -137,71 +136,17 @@
     apiError.value = null
     imgPreview.value = URL.createObjectURL(selected)
     //console.debug('Selected file:', imgPreview.value)
-    if (import.meta.env.VITE_S3_URL) {
-      // If S3 URL is set, use the old method
-      return submitImage()
+    if (!import.meta.env.VITE_S3_URL) {
+      return
     }
 
     const reader = new FileReader()
     reader.onload = (e) => {
       //imgPreview.value = reader.result
       //console.debug(selected)
-      submitImage2(e.target.result, selected.type)
+      submitImage()
     }
     reader.readAsDataURL(selected)
-  }
-
-  async function submitImage2(img, type) {
-    //if (!fileUpload.value) return
-    //console.debug('submitImage2', img, type)
-    let isDelete = false
-    if (imgObj.value.image_url && !img && !type) {
-      console.debug('Removing image')
-      isDelete = true
-      fileUpload.value = null
-      imgPreview.value = null
-      apiError.value = null
-      imgObj.value.image_url = null
-    }
-
-    isBusy.value = true
-    apiError.value = null
-    const api = new PostgSail()
-    const payload = {
-      image_b64: img ? img.split(',')[1] : null, // get the base64 part without the header
-      image_type: type,
-      ref_id: imgObj.value.id,
-    }
-    try {
-      const response = await api.image_update(payload, props.type)
-      //console.log(response)
-      if (response) {
-        console.log('Image update success', response)
-        apiError.value = null
-        emit('updated', {
-          ...props.item,
-          has_image: true,
-          image_url: `/rpc/image?entity=${props.type}&v_id=${vesselId}&_id=${payload.ref_id}`,
-        })
-      } else {
-        throw { response }
-      }
-    } catch (err) {
-      console.error('Image update error:', err)
-      apiError.value = 'Failed to update image.'
-    } finally {
-      let notifyMsg = apiError.value ? `Error uploading image` : `Successfully uploaded image`
-      if (isDelete) {
-        apiError.value ? `Error deleting image` : `Successfully deleted image`
-      }
-      initToast({
-        message: notifyMsg,
-        position: 'top-right',
-        color: apiError.value ? 'warning' : 'success',
-      })
-      isBusy.value = false
-      showCustomContent.value = false
-    }
   }
 
   async function submitImage() {
@@ -216,15 +161,15 @@
 
     try {
       // Step 1: Get presigned PUT URL from backend
-      const presignResponse = await api.getPresignedUploadUrl({
+      const uploadUrl = await api.getPresignedUploadUrl({
         _image_type: type,
-        _id: String(imgObj.value.id),
+        _id: imgObj.value.type === 'vessel' ? null : String(imgObj.value.id), // Id for stays, moorages, logbooks
         _type: imgObj.value.type,
         _vessel_id: vesselId,
+        _idx: (props.item.images?.length || 0) + 1, // Index of images array for stays, moorages, logbooks
       })
-      isBusy.value = true
       // Step 2: Upload the file directly
-      const uploadResult = await fetch(presignResponse, {
+      const uploadResult = await fetch(uploadUrl, {
         method: 'PUT',
         headers: {
           'Content-Type': type,
@@ -236,20 +181,22 @@
         throw new Error(`Upload failed: ${uploadResult.statusText}`)
       }
 
-      const image_url = `${import.meta.env.VITE_S3_URL}/postgsail/${vesselId}/${props.type}s/${
-        props.type
-      }_${vesselId}_${imgObj.value.id}.${type.split('/')[1]}`
+      const image_url = uploadUrl.split('?')[0]
 
       const payload = {
-        image_type: type,
-        ref_id: imgObj.value.id,
-        image_url: imgObj.value.image_url ? imgObj.value.image_url : image_url,
+        _image_type: type,
+        _id: imgObj.value.type === 'vessel' ? null : String(imgObj.value.id),
+        _type: imgObj.value.type,
+        _vessel_id: vesselId,
+        _image_url: image_url,
       }
+      let responseObj = null
       try {
-        const response = await api.image_update(payload, props.type)
+        const response = await api.image_update(payload)
         //console.log(response)
         if (response) {
           console.log('Image update success', response)
+          responseObj = response
         } else {
           throw { response }
         }
@@ -261,10 +208,13 @@
       // Step 3: Emit update
       emit('updated', {
         ...props.item,
-        has_image: true,
-        image_url: image_url,
+        has_images: true,
+        images: [
+          ...(props.item.images || []).map((img) => ({ ...img })), // Create plain objects
+          responseObj,
+        ],
       })
-
+      // Step 4: Notify user
       initToast({
         message: 'Successfully uploaded image',
         position: 'top-right',
@@ -285,7 +235,7 @@
     }
   }
 
-  async function handleDelete(item, type) {
+  async function handleDelete() {
     console.debug('Removing image handleDelete, do nothing')
   }
 

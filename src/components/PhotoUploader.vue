@@ -1,26 +1,126 @@
 <template>
   <!-- Photo Upload/Preview -->
   <dd class="mt-2">
-    <template v-if="!item.image_url">
-      <input type="file" accept="image/*" @change="onFileChange" />
-      <div v-if="imgPreview" class="mt-4">
-        <p class="text-sm text-gray-500 mb-2">{{ t('photoUploader.preview') }}:</p>
-        <img :src="imgPreview" class="w-full max-h-48 object-contain border rounded" />
-      </div>
-    </template>
-    <template v-else>
-      <div v-if="item.image_url" class="relative">
-        <VaButton
-          icon="delete"
-          color="secondary"
-          class="absolute top-2 right-2 text-red-500"
-          :title="t('photoUploader.delete')"
-          @click="handleDelete()"
+    <div class="text-xs uppercase my-2 flex items-center justify-between">
+      <!-- Hidden file input with label approach -->
+      <label class="cursor-pointer">
+        <input type="file" accept="image/*" class="hidden" @change="onFileChange" />
+        <va-icon
+          name="photo_camera"
+          class="cursor-pointer hover:text-primary transition-colors"
+          :title="t('photoUploader.select_photo')"
         />
-        <img :src="item.image_url" class="w-full max-h-48 object-contain border rounded" />
-        <p class="text-sm text-gray-400 mt-1">{{ t('photoUploader.lastUpdated') }}: {{ item.image_updated_at }}</p>
+      </label>
+    </div>
+
+    <div v-if="item.images && item.images.length > 0">
+      <!-- Horizontal scrollable gallery -->
+      <div class="flex gap-2 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+        <div
+          v-for="(image, index) in item.images"
+          :key="image.id"
+          class="relative flex-shrink-0 w-40 h-40 sm:w-48 sm:h-48 snap-center"
+          @click="openImage(index)"
+        >
+          <img
+            :src="image.url"
+            :alt="`Image ${index + 1}`"
+            class="w-full h-full object-cover rounded-lg cursor-pointer"
+          />
+          <!-- Delete button -->
+          <VaButton
+            icon="delete"
+            size="small"
+            color="danger"
+            class="absolute top-2 right-2 shadow-lg"
+            :title="t('photoUploader.delete')"
+            @click.stop="confirmDelete(image)"
+          />
+        </div>
       </div>
-    </template>
+
+      <!-- Mobile-friendly image viewer -->
+      <Transition name="slide-up">
+        <div
+          v-if="viewerOpen"
+          class="fixed inset-0 z-50 bg-black"
+          @touchstart="handleTouchStart"
+          @touchmove="handleTouchMove"
+          @touchend="handleTouchEnd"
+        >
+          <!-- Header -->
+          <div
+            class="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/80 to-transparent p-4 flex items-center justify-between z-10"
+          >
+            <span class="text-white text-sm"> {{ currentImageIndex + 1 }} / {{ item.images.length }} </span>
+            <div class="flex items-center gap-4">
+              <!-- Delete button in viewer -->
+              <VaButton
+                icon="delete"
+                size="small"
+                color="danger"
+                class="shadow-lg"
+                :title="t('photoUploader.delete')"
+                @click="confirmDeleteCurrent"
+              />
+              <!-- Close button -->
+              <button type="button" class="text-white text-3xl" @click="closeImage">&times;</button>
+            </div>
+          </div>
+
+          <!-- Image container with swipe support -->
+          <div class="h-full flex items-center justify-center px-4">
+            <img
+              v-if="item.images[currentImageIndex]"
+              :src="item.images[currentImageIndex].url"
+              class="max-w-full max-h-full object-contain"
+              :style="{ transform: `translateX(${swipeOffset}px)` }"
+            />
+          </div>
+
+          <!-- Navigation dots -->
+          <div v-if="item.images.length > 1" class="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
+            <button
+              v-for="(image, index) in item.images"
+              :key="index"
+              type="button"
+              class="w-2 h-2 rounded-full transition-all"
+              :class="index === currentImageIndex ? 'bg-white w-6' : 'bg-white/50'"
+              @click="currentImageIndex = index"
+            />
+          </div>
+
+          <!-- Desktop navigation arrows -->
+          <button
+            v-if="item.images.length > 1"
+            type="button"
+            class="hidden sm:block absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-gray-300 transition-colors"
+            @click="previousImage"
+          >
+            &#8249;
+          </button>
+
+          <button
+            v-if="item.images.length > 1"
+            type="button"
+            class="hidden sm:block absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl hover:text-gray-300 transition-colors"
+            @click="nextImage"
+          >
+            &#8250;
+          </button>
+        </div>
+      </Transition>
+    </div>
+
+    <!-- Empty state -->
+    <label
+      v-else
+      class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors block"
+    >
+      <input type="file" accept="image/*" class="hidden" @change="onFileChange" />
+      <va-icon name="add_photo_alternate" :size="48" class="text-gray-400 mb-2" />
+      <p class="text-sm text-gray-500">{{ t('photoUploader.no_photos') }}</p>
+    </label>
   </dd>
 </template>
 
@@ -45,28 +145,39 @@
       required: true,
     },
   })
-  const isBusy = ref(true)
+
+  const isBusy = ref(false)
   const apiError = ref(null)
-  const showCustomContent = ref(false)
   const fileUpload = ref(null)
   const imgPreview = ref(null)
   const emit = defineEmits(['updated'])
-  const imgObj = computed(() => {
-    const obj = {
-      id: props.item.id,
-      image_url: props.item.image_url,
-      image_updated_at: props.item.image_updated_at,
-      type: props.type,
-    }
-    //console.debug('imgObj', obj)
-    return obj
-  })
+
+  const imgObj = computed(() => ({
+    id: props.item.id,
+    images: props.item.images,
+    has_images: props.item.has_images,
+    type: props.type,
+  }))
+  console.debug('imgObj', props.item)
+
+  // Gallery viewer state
+  const viewerOpen = ref(false)
+  const currentImageIndex = ref(0)
+  const swipeOffset = ref(0)
+  const touchStartX = ref(0)
+  const touchCurrentX = ref(0)
 
   onMounted(() => {
     imgPreview.value = null
     fileUpload.value = null
     apiError.value = null
     isBusy.value = false
+  })
+
+  onBeforeUnmount(() => {
+    if (imgPreview.value) {
+      URL.revokeObjectURL(imgPreview.value)
+    }
   })
 
   function onFileChange(event) {
@@ -79,7 +190,7 @@
     }
 
     if (!selected.type.startsWith('image/')) {
-      apiError.value = 'Please select a valid image file.'
+      apiError.value = t('photoUploader.formats')
       fileUpload.value = null
       return
     }
@@ -87,76 +198,20 @@
     fileUpload.value = selected
     apiError.value = null
     imgPreview.value = URL.createObjectURL(selected)
-    //console.debug('Selected file:', imgPreview.value)
-    if (import.meta.env.VITE_S3_URL) {
-      // If S3 URL is set, use the old method
-      return submitImage()
+
+    if (!import.meta.env.VITE_S3_URL) {
+      return
     }
 
     const reader = new FileReader()
-    reader.onload = (e) => {
-      //imgPreview.value = reader.result
-      //console.debug(selected)
-      submitImage2(e.target.result, selected.type)
+    reader.onload = () => {
+      return submitImage()
     }
     reader.readAsDataURL(selected)
   }
 
-  async function submitImage2(img, type) {
-    //if (!fileUpload.value) return
-    //console.debug('submitImage2', img, type)
-    let isDelete = false
-    if (imgObj.value.image_url && !img && !type) {
-      console.debug('Removing image')
-      isDelete = true
-      fileUpload.value = null
-      imgPreview.value = null
-      apiError.value = null
-      imgObj.value.image_url = null
-    }
-
-    isBusy.value = true
-    apiError.value = null
-    const api = new PostgSail()
-    const payload = {
-      image_b64: img ? img.split(',')[1] : null, // get the base64 part without the header
-      image_type: type,
-      ref_id: imgObj.value.id,
-    }
-    try {
-      const response = await api.image_update(payload, props.type)
-      //console.log(response)
-      if (response) {
-        console.log(`Image ${props.type} update success`, response)
-        apiError.value = null
-        emit('updated', {
-          ...props.item,
-          has_image: true,
-          image_url: `/rpc/image?entity=${props.type}&v_id=${vesselId}&_id=${payload.ref_id}`,
-        })
-      } else {
-        throw { response }
-      }
-    } catch (err) {
-      console.error('Image update error:', err)
-      apiError.value = 'Failed to update image.'
-    } finally {
-      let notifyMsg = apiError.value ? `Error uploading image` : `Successfully uploaded image`
-      if (isDelete) {
-        apiError.value ? `Error deleting image` : `Successfully deleted image`
-      }
-      initToast({
-        message: notifyMsg,
-        position: 'top-right',
-        color: apiError.value ? 'warning' : 'success',
-      })
-      isBusy.value = false
-      showCustomContent.value = false
-    }
-  }
-
   async function submitImage() {
-    if (!fileUpload.value) return
+    if (!fileUpload.value || isBusy.value) return
 
     const file = fileUpload.value
     const type = file.type
@@ -167,60 +222,64 @@
 
     try {
       // Step 1: Get presigned PUT URL from backend
-      const presignResponse = await api.getPresignedUploadUrl({
+      const uploadUrl = await api.getPresignedUploadUrl({
         _image_type: type,
-        _id: String(imgObj.value.id),
+        _id: imgObj.value.type === 'vessel' ? null : String(imgObj.value.id),
         _type: imgObj.value.type,
         _vessel_id: vesselId,
+        _idx: imgObj.value.type === 'vessel' ? null : props.item.images?.length + 1 || 1,
       })
-      isBusy.value = true
+
       // Step 2: Upload the file directly
-      const uploadResult = await fetch(presignResponse, {
+      const uploadResult = await fetch(uploadUrl, {
         method: 'PUT',
         headers: {
           'Content-Type': type,
         },
-        body: file, // Directly use the binary File object
+        body: file,
       })
 
       if (!uploadResult.ok) {
         throw new Error(`Upload failed: ${uploadResult.statusText}`)
       }
 
-      let image_url = `${import.meta.env.VITE_S3_URL}/postgsail/${vesselId}/${props.type}s/${props.type}_${vesselId}_${
-        imgObj.value.id
-      }.${type.split('/')[1]}`
-      if (props.type === 'vessel') {
-        image_url = `${import.meta.env.VITE_S3_URL}/postgsail/${vesselId}/${vesselId}.${type.split('/')[1]}`
-      }
+      // Step 3: Construct image URL
+      const image_url = uploadUrl.split('?')[0]
 
       const payload = {
-        image_type: type,
-        ref_id: imgObj.value.id,
-        image_url: imgObj.value.image_url ? imgObj.value.image_url : image_url,
-      }
-      try {
-        const response = await api.image_update(payload, props.type)
-        //console.log(response)
-        if (response) {
-          console.log('Image update success', response)
-        } else {
-          throw { response }
-        }
-      } catch (err) {
-        console.error('Image update error:', err)
-        apiError.value = 'Failed to update image.'
+        _image_type: type,
+        _id: imgObj.value.type === 'vessel' ? null : String(imgObj.value.id),
+        _type: imgObj.value.type,
+        _vessel_id: vesselId,
+        _image_url: image_url,
       }
 
-      // Step 3: Emit update
-      emit('updated', {
-        ...props.item,
-        has_image: true,
-        image_url: image_url,
-      })
-      // Notify user
+      const response = await api.image_update(payload)
+      if (!response) {
+        throw new Error('Failed to update image')
+      }
+      //console.log('Image update success', response)
+
+      // Step 4: Emit update
+      if (imgObj.value.type === 'vessel') {
+        emit('updated', {
+          ...props.item,
+          image_url: image_url,
+          image_updated_at: new Date().toISOString(),
+          has_images: true,
+          images: [...(props.item.images || []), response],
+        })
+      } else {
+        emit('updated', {
+          ...props.item,
+          has_images: true,
+          images: [...(props.item.images || []), response],
+        })
+      }
+
+      // Step 5: Notify user
       initToast({
-        message: 'Successfully uploaded image',
+        message: t('photoUploader.success_upload'),
         position: 'top-right',
         color: 'success',
       })
@@ -229,72 +288,187 @@
       apiError.value = 'Failed to upload image.'
 
       initToast({
-        message: 'Error uploading image',
+        message: t('photoUploader.error_upload'),
         position: 'top-right',
         color: 'warning',
       })
     } finally {
       isBusy.value = false
-      showCustomContent.value = false
+      fileUpload.value = null
     }
   }
 
-  async function handleDelete() {
-    console.debug('Removing image')
-    const isDelete = true
-    fileUpload.value = null
-    imgPreview.value = null
-    apiError.value = null
-    imgObj.value.image_url = null
+  async function confirmDelete(image) {
+    if (!confirm(t('photoUploader.confirm_delete'))) return
+    await handleDelete(image)
+  }
+
+  async function confirmDeleteCurrent() {
+    if (!confirm(t('photoUploader.confirm_delete'))) return
+    const currentImage = props.item.images[currentImageIndex.value]
+    await handleDelete(currentImage)
+  }
+
+  async function handleDelete(image) {
+    if (isBusy.value) return
+
+    console.debug('Removing image', image)
 
     isBusy.value = true
     apiError.value = null
     const api = new PostgSail()
+
     const payload = {
-      image_b64: null,
-      image_type: null,
-      image: null,
-      ref_id: imgObj.value.id,
-      image_url: null,
-      image_updated_at: null,
+      _id: imgObj.value.type === 'vessel' ? null : String(imgObj.value.id),
+      _image_id: image.id,
+      _type: imgObj.value.type,
+      _vessel_id: vesselId,
+      _operation: 'delete',
     }
+
     try {
-      const response = await api.image_update(payload, props.type)
-      //console.log(response)
-      if (response) {
-        console.log('Image update success', response)
-        apiError.value = null
-        emit('updated', { ...props.item, has_image: false, image_url: null })
-      } else {
-        throw { response }
+      const response = await api.image_update(payload)
+      if (!response) {
+        throw new Error('Failed to delete image')
       }
-    } catch (err) {
-      console.error('Image update error:', err)
-      apiError.value = 'Failed to update image.'
-    } finally {
-      let notifyMsg = apiError.value ? `Error uploading image` : `Successfully uploaded image`
-      if (isDelete) {
-        apiError.value ? `Error deleting image` : `Successfully deleted image`
+      //console.log('Image delete success', response)
+
+      // Filter out the deleted image
+      const updatedImages = (props.item.images || []).filter((img) => img.id !== image.id)
+
+      emit('updated', {
+        ...props.item,
+        has_images: updatedImages.length > 0,
+        images: updatedImages,
+      })
+
+      // Adjust viewer state if in viewer
+      if (viewerOpen.value) {
+        if (updatedImages.length === 0) {
+          closeImage()
+        } else if (currentImageIndex.value >= updatedImages.length) {
+          currentImageIndex.value = Math.max(0, updatedImages.length - 1)
+        }
       }
+
       initToast({
-        message: notifyMsg,
+        message: t('photoUploader.success_delete'),
         position: 'top-right',
-        color: apiError.value ? 'warning' : 'success',
+        color: 'success',
+      })
+    } catch (err) {
+      console.error('Image delete error:', err)
+      apiError.value = 'Failed to delete image.'
+
+      initToast({
+        message: t('photoUploader.error_delete'),
+        position: 'top-right',
+        color: 'warning',
+      })
+    } finally {
+      // Step 1: Get presigned DELETE URL from backend
+      const deleteUrl = await api.getPresignedDeleteUrl({
+        _image_type: image.type,
+        _id: props.type === 'vessel' ? null : String(imgObj.value.id),
+        _type: props.type,
+        _vessel_id: vesselId,
+        _idx: image.id, // Index of images array for stays, moorages, logbooks
+      })
+      // Step 2: Delete the file directly
+      const deleteResult = await fetch(deleteUrl, {
+        method: 'DELETE',
+      })
+
+      if (!deleteResult.ok) {
+        console.error('Delete failed:', deleteResult.statusText)
+        //throw new Error(`Delete failed: ${deleteResult.statusText}`)
+      }
+      // Filter out the deleted image
+      const updatedImages = props.item.images.filter((img) => img.id !== image.id)
+      emit('updated', {
+        ...props.item,
+        has_images: updatedImages.length > 0,
+        images: updatedImages,
+      })
+      initToast({
+        message: 'Successfully deleted image',
+        position: 'top-right',
+        color: 'success',
       })
       isBusy.value = false
-      showCustomContent.value = false
     }
   }
 
-  onBeforeUnmount(() => {
-    if (imgPreview.value) {
-      URL.revokeObjectURL(imgPreview.value)
+  // Gallery viewer functions
+  const openImage = (index) => {
+    currentImageIndex.value = index
+    viewerOpen.value = true
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeImage = () => {
+    viewerOpen.value = false
+    swipeOffset.value = 0
+    document.body.style.overflow = ''
+  }
+
+  const nextImage = () => {
+    if (currentImageIndex.value < props.item.images.length - 1) {
+      currentImageIndex.value++
     }
-  })
+  }
+
+  const previousImage = () => {
+    if (currentImageIndex.value > 0) {
+      currentImageIndex.value--
+    }
+  }
+
+  // Touch gesture handlers
+  const handleTouchStart = (e) => {
+    touchStartX.value = e.touches[0].clientX
+  }
+
+  const handleTouchMove = (e) => {
+    touchCurrentX.value = e.touches[0].clientX
+    swipeOffset.value = touchCurrentX.value - touchStartX.value
+  }
+
+  const handleTouchEnd = () => {
+    const swipeThreshold = 50
+
+    if (swipeOffset.value > swipeThreshold) {
+      previousImage()
+    } else if (swipeOffset.value < -swipeThreshold) {
+      nextImage()
+    }
+
+    swipeOffset.value = 0
+    touchStartX.value = 0
+    touchCurrentX.value = 0
+  }
 </script>
 
 <style scoped>
-  input[type='file'] {
-    display: block;
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .slide-up-enter-active,
+  .slide-up-leave-active {
+    transition: transform 0.3s ease-out;
+  }
+
+  .slide-up-enter-from {
+    transform: translateY(100%);
+  }
+
+  .slide-up-leave-to {
+    transform: translateY(100%);
   }
 </style>
