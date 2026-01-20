@@ -51,6 +51,7 @@
   import { pascalToHectoPascal } from '../../utils/presureFormatter.js'
   import { floatToPercentage } from '../../utils/percentageFormatter.js'
   import { decimalToDMS } from '../../utils/dms'
+  import { default as utils } from '../../utils/utils.js'
 
   import { useGlobalStore } from '../../stores/global-store'
   import { useVesselStore } from '../../stores/vessel-store'
@@ -173,8 +174,16 @@
         let latitude = parseFloat(feature.geometry.coordinates[0].toFixed(3))
         let longitude = parseFloat(feature.geometry.coordinates[1].toFixed(3))
         let dmsCoords = decimalToDMS(latitude, longitude)
-        let text = `<div class='mpopup'><h4>${vesselName}: ${status}</h4><br/>
-                          <table class='data'><tbody>
+        let text = `<div class='mpopup'><h4>${vesselName}: ${status}</h4><br/>`
+        if (!this.onSaveNote && vesselImage) {
+          // is monitoring mode
+          text += `<div style="display: flex; justify-content: center; align-items: center;"><img src='${vesselImage}' alt='${vesselName}' style='width:200px;height:auto;'/><br/></div>`
+        }
+        if (!this.onSaveNote && vesselModel) {
+          // is monitoring mode
+          text += `<div style="text-align: center; font-style: italic; margin-bottom: 10px;">${vesselModel}</div>`
+        }
+        text += `<table class='data'><tbody>
                             <tr><th>Time</th><td>${time}</td></tr>
                             <tr><th>Position</th><td>${dmsCoords.toString()}</td></tr>`
         // If monitoring moorage point
@@ -203,7 +212,7 @@
         if (feature.properties.windspeedapparent) {
           text += `<tr><th>Wind</th><td>${aws}`
           if (feature.properties.truewinddirection) {
-            text += ` / ${twd}`
+            text += ` / ${twd} ${utils.deriveWindDir(feature.properties.truewinddirection)}`
           }
           text += `</td></tr>`
         }
@@ -277,6 +286,31 @@
         return text
       }
 
+      const textPopupLineSegment = (feature) => {
+        let starttime = dateFormatUTC(feature.properties.period_start)
+        let endtime = dateFormatUTC(feature.properties.period_end)
+        let duration = durationFormatHours(feature.properties.duration)
+        let distance = distanceFormatMiles(feature.properties.distance)
+        let avg_speed = speedFormatKnots(feature.properties.avg_speed)
+        let max_speed = speedFormatKnots(feature.properties.max_speed)
+        let avg_wind = speedFormatKnots(feature.properties.avg_wind_speed)
+        let max_wind = speedFormatKnots(feature.properties.max_wind_speed)
+        let text = `<div class='mpopup'>
+                        <h4><a href="/log/${feature.properties.id}">${feature.properties.name}</a></h4><br/>
+                        <table class='data'><tbody>
+                          <tr><th>Start Time</th><td>${starttime}</td></tr>
+                          <tr><th>End Time</th><td>${endtime}</td></tr>
+                          <tr><th>Distance</th><td>${distance}</td></tr>
+                          <tr><th>Duration</th><td>${duration} hours</td></tr>
+                          <tr><th>Speed</th><td>avg ${avg_speed} / max ${max_speed}</td></tr>
+                          <tr><th>Wind</th><td>avg ${avg_wind} / max ${max_wind}</td></tr>
+                          <tr><th>Segment</th><td>${feature.properties.segment_num}</td></tr>
+                        </tbody></table></br>
+                        <a href="/timelapse/${feature.properties.id}">Replay</a>
+                      </div>`
+        return text
+      }
+
       const popup = (feature, layer) => {
         var popupContent = '<p>GeoJSON ' + feature.geometry.type + " now I'm a Leaflet vector!</p>"
         if (feature.properties && feature.properties.time) {
@@ -284,6 +318,9 @@
         }
         if (feature.properties && feature.properties._from_time) {
           popupContent = textPopupLine(feature)
+        }
+        if (feature.properties && feature.properties.segment_num >= 0) {
+          popupContent = textPopupLineSegment(feature)
         }
         layer.bindPopup(popupContent).on('popupopen', () => {
           const saveButton = document.getElementById('saveNoteButton')
@@ -314,7 +351,7 @@
           return true
         }
         if (feature.geometry) {
-          // If the geometry is not a LineString, return false (don't render features under construction)
+          // If the geometry is not a LineString, return false
           return feature.geometry.type != 'LineString' ? false : true
         }
         return false
@@ -322,7 +359,6 @@
 
       const boatTypes = boatMarkerTypes()
       const boatIcon = vesselType === 'Sailing' ? boatTypes['Sailboat'] : boatTypes['Powerboat']
-
       if (this.multigeojson) {
         let layers = []
         let featGroup = new L.FeatureGroup()
@@ -349,23 +385,43 @@
         }
         GeoJSONLayer.value = featGroup
       } else if (this.geoJsonFeatures && this.geoJsonFeatures.length > 0) {
+        const boatType = vesselType === 'Sailing' ? 'Sailboat' : vesselType === 'Pleasure Craft' ? 'Powerboat' : 'Dot'
         GeoJSONbasemapObj.value = {
           Sailboat: L.geoJSON(geojson, {
+            filter: (feature) => feature.properties && (feature.properties.time || feature.properties._from_time),
             pointToLayer: boatTypes['Sailboat'],
             onEachFeature: popup,
           }),
           SailboatSails: L.geoJSON(geojson, {
+            filter: (feature) => feature.properties && (feature.properties.time || feature.properties._from_time),
             pointToLayer: boatTypes['SailboatSails'],
             onEachFeature: popup,
           }),
           Powerboat: L.geoJSON(geojson, {
+            filter: (feature) => feature.properties && (feature.properties.time || feature.properties._from_time),
             pointToLayer: boatTypes['Powerboat'],
             onEachFeature: popup,
           }),
           Dot: L.geoJSON(geojson, {
+            filter: (feature) => feature.properties && (feature.properties.time || feature.properties._from_time),
             pointToLayer: boatTypes['Dot'],
             onEachFeature: popup,
           }),
+        }
+        // Check if the last feature is a LineString with segment_num
+        const lastFeature = this.geoJsonFeatures[this.geoJsonFeatures.length - 1]
+        if (
+          lastFeature &&
+          lastFeature.geometry.type === 'LineString' &&
+          lastFeature.properties &&
+          lastFeature.properties.segment_num >= 0
+        ) {
+          // Add the segmentsLayer only if the condition is met
+          GeoJSONbasemapObj.value.segmentsLayer = L.geoJSON(geojson, {
+            filter: (feature) => feature.properties && feature.properties.segment_num >= 0,
+            style: styleSegment, // Unique color per segment
+            onEachFeature: popup,
+          })
         }
         GeoJSONLayer.value =
           vesselType === 'Sailing'
@@ -477,6 +533,13 @@
         this.$emit('delete-point', coordinates)
       },
     },
+  }
+
+  const styleSegment = (feature) => {
+    if (feature.properties && feature.properties.segment_num >= 0) {
+      return { color: random_rgb_dark(), weight: 4 }
+    }
+    return { color: '#3388FF', weight: 2 } // Default style for main line
   }
 
   function random_rgb_dark() {
