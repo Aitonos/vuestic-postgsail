@@ -317,7 +317,7 @@ export const useGlobalStore = defineStore('global', {
       }
       return false
     },
-    imageSupport: () => {
+    imageSupport: (state) => {
       return import.meta.env.VITE_S3_URL ? true : false
     },
   },
