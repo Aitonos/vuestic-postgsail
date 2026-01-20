@@ -227,8 +227,9 @@
                 unavailable in your NMEA network, which is expected. You can use the awesome derived-data plugin to
                 easily calculate it. You need to have outdoor temperature coming through
                 environment.outside.temperature. This is required as Windy doesn't accept observations that don't
-                include temperature readings. The more marine weather observations we have, the better forecasts we will
-                collectively have! Thank you for your turning boat into a live weather station!
+                include temperature readings. All metrics without temperature readings will be ignored. The more marine
+                weather observations we have, the better forecasts we will collectively have! Thank you for your turning
+                boat into a live weather station!
                 <br />
                 It can take up to one hour for your station to be create and accessible in Windy. You will received a
                 notification when it is ready.
