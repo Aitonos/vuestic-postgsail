@@ -17,10 +17,16 @@ export type Log = {
   _to_moorage_id: number
   fromMoorageId: number
   toMoorageId: number
-  has_image: boolean
-  image_url: string | null
+  has_images: boolean
+  images: Array<{
+    id: number
+    url: string
+    updated_at: string
+    caption: string
+  }>
   notes: string
   tags: []
+  segments: []
 }
 
 export type EngineRunTime = {
@@ -52,9 +58,19 @@ export type Trip = {
   seaState: number
   cloudCoverage: number
   visibility: number
-  has_image: boolean
-  image_url: string | null
+  has_images: boolean
+  images: Array<{
+    id: number
+    url: string
+    updated_at: string
+    caption: string
+  }>
   tags: Array<string>
+  segments: Array<{
+    segment_num: number
+    distance: string
+    duration: string
+  }>
 }
 
 export type Pagination = {
