@@ -460,30 +460,39 @@
   })
 
   const statusText = computed(() => {
-    //console.log('statusText', monitoring.value)
     const props = monitoring.value?.live?.properties || null
     let status = monitoring.value?.status || null
     let img = null
-    if (status == 'moored') {
-      if (props?.stay_code == 1) {
+
+    if (status === 'moored') {
+      if (props?.stay_code === 1) {
         // Unknown stay type
         status = monitoring.value.status
-      } else if (props?.stay_code == 2) {
-        status += ' at anchor in '
+      } else if (props?.stay_code === 2) {
+        status = t('dashboard.status.moored_at_anchor', 'moored at anchor in')
         img = '/anchoricon.png'
-      } else if (props?.stay_code == 3) {
-        status += ' at mooring buoy in '
+      } else if (props?.stay_code === 3) {
+        status = t('dashboard.status.moored_at_buoy', 'moored at mooring buoy in')
         img = '/mooring_icon.png'
-      } else if (props?.stay_code == 4) {
-        status += ' at dock in '
+      } else if (props?.stay_code === 4) {
+        status = t('dashboard.status.moored_at_dock', 'moored at dock in')
         img = '/dock_icon.png'
       }
-      return { text: `${status}${props.name}`, img: img }
-    } else if (status != 'moored') {
-      status += ' underway '
-      return { text: `${status}`, img: '/apple-touch-icon.png' }
+      return {
+        text: `${status} ${props.name}`,
+        img: img,
+      }
+    } else if (status !== 'moored') {
+      const underwayText = t('dashboard.status.underway', 'underway')
+      return {
+        text: `${status} ${underwayText}`,
+        img: '/apple-touch-icon.png',
+      }
     } else {
-      return { text: 'No stay detected', img: img }
+      return {
+        text: t('dashboard.status.no_stay_detected', 'No stay detected'),
+        img: img,
+      }
     }
   })
 </script>
