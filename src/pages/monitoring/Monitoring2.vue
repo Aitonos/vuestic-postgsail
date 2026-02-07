@@ -33,9 +33,9 @@
                 >
                   <!-- Left Column -->
                   <div class="flex flex-col text-sm space-y-1 min-w-[100px]">
-                    <div>Wind Speed: {{ speedFormatKnots(items_modern.wind.speed) }}</div>
-                    <div>Wind Direction: {{ angleFormat(items_modern.wind.direction) }}</div>
-                    <div>Depth: {{ depthFormatI18n(items_modern.water.depth) }}</div>
+                    <div>{{ $t('monitoring.wind_speed') }}: {{ speedFormatKnots(items_modern.wind.speed) }}</div>
+                    <div>{{ $t('monitoring.wind_direction') }}: {{ angleFormat(items_modern.wind.direction) }}</div>
+                    <div>{{ $t('monitoring.depth') }}: {{ depthFormatI18n(items_modern.water.depth) }}</div>
                   </div>
 
                   <!-- Right Column (Wind Compass) -->
@@ -79,11 +79,11 @@
               </div>
 
               <hr class="cool-hr" />
-              <h3 class="font-semibold">Temperature</h3>
+              <h3 class="font-semibold">{{ $t('monitoring.temperature.headerString') }}</h3>
               <div v-if="items_modern.temperature.inside" class="w-full h-24">
                 <echartsProgress
                   :series="[items_modern.temperature.inside]"
-                  title="Inside"
+                  :title="$t('monitoring.inside')"
                   :alarm="items_modern.alarm.low_indoor_temperature_threshold"
                   :theme="currentTheme"
                 />
@@ -91,7 +91,7 @@
               <div v-if="items_modern.temperature.outside" class="w-full h-24">
                 <echartsProgress
                   :series="[items_modern.temperature.outside]"
-                  title="Outside"
+                  :title="$t('monitoring.outside')"
                   :alarm="items_modern.alarm.low_outdoor_temperature_threshold"
                   :theme="currentTheme"
                 />
@@ -99,17 +99,17 @@
               <div v-if="items_modern.water.temperature" class="w-full h-24">
                 <echartsProgress
                   :series="[items_modern.water.temperature]"
-                  title="Water"
+                  :title="$t('monitoring.water.headerString')"
                   :alarm="items_modern.alarm.low_water_temperature_threshold"
                   :theme="currentTheme"
                 />
               </div>
               <hr class="cool-hr" />
-              <h3 class="font-semibold">Humidity</h3>
+              <h3 class="font-semibold">{{ $t('monitoring.humidity.headerString') }}</h3>
               <div v-if="items_modern.humidity.inside" class="w-full h-24">
                 <echartsProgress
                   :series="[items_modern.humidity.inside]"
-                  title="Inside"
+                  :title="$t('monitoring.inside')"
                   :max="100"
                   unit="%"
                   :theme="currentTheme"
@@ -118,7 +118,7 @@
               <div v-if="items_modern.humidity.outside" class="w-full h-24">
                 <echartsProgress
                   :series="[items_modern.humidity.outside]"
-                  title="Outside"
+                  :title="$t('monitoring.outside')"
                   :max="100"
                   unit="%"
                   :theme="currentTheme"
@@ -126,18 +126,18 @@
               </div>
               <template v-if="items_modern.outsidepressurehistory">
                 <hr class="cool-hr" />
-                <h3 class="font-semibold">Barometer</h3>
+                <h3 class="font-semibold">{{ $t('monitoring.pressure.headerString') }}</h3>
                 <div class="w-full h-28">
                   <echartsPressure
                     :series="items_modern.outsidepressurehistory"
-                    title="Outside"
+                    :title="$t('monitoring.outside')"
                     :theme="currentTheme"
                   />
                 </div>
               </template>
               <template v-if="items_modern.battery.charge">
                 <hr class="cool-hr" />
-                <h3 class="font-semibold">Battery</h3>
+                <h3 class="font-semibold">{{ $t('monitoring.battery.headerString') }}</h3>
                 <div class="w-full h-28">
                   <echartsGauge
                     :series="[items_modern.battery.charge, items_modern.battery.voltage]"
@@ -149,7 +149,7 @@
               </template>
               <template v-if="items_modern.solar.power">
                 <hr class="cool-hr" />
-                <h3 class="font-semibold">Solar</h3>
+                <h3 class="font-semibold">{{ $t('monitoring.solar.headerString') }}</h3>
                 <div class="w-full h-28">
                   <echartsGauge
                     :series="[items_modern.solar.power, items_modern.solar.voltage]"
@@ -162,7 +162,7 @@
               </template>
               <template v-if="items_modern.tank.level">
                 <hr class="cool-hr" />
-                <h3 class="font-semibold">Tank</h3>
+                <h3 class="font-semibold">{{ $t('monitoring.tank.headerString') }}</h3>
                 <div class="w-full h-28">
                   <echartsGauge
                     :series="[items_modern.tank.level, items_modern.tank.level]"
@@ -213,7 +213,7 @@
   import noDataYet from '../../components/noDataScreen.vue'
 
   const GlobalStore = useGlobalStore()
-  const { isSidebarMinimized, currentTheme } = storeToRefs(GlobalStore)
+  const { currentTheme } = storeToRefs(GlobalStore)
   const { t } = useI18n()
 
   const isBusy = ref(false)
