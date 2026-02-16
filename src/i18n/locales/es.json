@@ -103,9 +103,20 @@
     "local_time": "Hora local",
     "charts": {
       "verticalBarChart": "Número de registros por mes",
-      "mixedChart": "Número de registros por mes y año",
+      "mixedMonthChart": "Número de registros por mes y año",
+      "mixedWeekChart": "Número de registros por semana y año",
       "lineChart": "Número de registros por año",
-      "HeatmapChart": "Cuadro por mes y dia"
+      "HeatmapChart": "Cuadro por mes y dia",
+      "NetworkGraph": "Routes Network",
+      "logEntries": "Número de registros",
+      "byMonth": "Por meses",
+      "byWeek": "Por semana",
+      "tripFrequency": "Trip Frequency",
+      "totalDistance": "Total Distance",
+      "totalDuration": "Total Duration",
+      "weightBy": "Weight by",
+      "minTrips": "Min trips",
+      "showLabels": "Show labels"
     },
     "panel": {
       "battery": "Batería",
@@ -113,6 +124,7 @@
       "power": "Energía",
       "tank": "Depósitos"
     },
+    "week_prefix": "S",
     "months": {
       "january": "Enero",
       "february": "Febrero",

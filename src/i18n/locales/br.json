@@ -102,10 +102,21 @@
     "overview": "Logbook Overview",
     "local_time": "Horário local",
     "charts": {
-      "verticalBarChart": "Log entry per month",
-      "mixedChart": "Log entry per month per year",
-      "lineChart": "Log entry per year",
-      "HeatmapChart": "Log entry per month per weekday"
+      "verticalBarChart": "Log entries per month",
+      "mixedMonthChart": "Log entries per month per year",
+      "mixedWeekChart": "Log entries per week per year",
+      "lineChart": "Log entries per year",
+      "HeatmapChart": "Log entries per month per weekday",
+      "NetworkGraph": "Routes Network",
+      "logEntries": "Log entries",
+      "byMonth": "Per month",
+      "byWeek": "Per weekday",
+      "tripFrequency": "Trip Frequency",
+      "totalDistance": "Total Distance",
+      "totalDuration": "Total Duration",
+      "weightBy": "Weight by",
+      "minTrips": "Min trips",
+      "showLabels": "Show labels"
     },
     "panel": {
       "battery": "Battery",
@@ -113,6 +124,7 @@
       "power": "Power",
       "tank": "Tank"
     },
+    "week_prefix": "W",
     "months": {
       "january": "January",
       "february": "February",

@@ -105,9 +105,20 @@
     "local_time": "Ortszeit",
     "charts": {
       "verticalBarChart": "Protokolleinträge pro Monat",
-      "mixedChart": "Protokolleinträge pro Monat pro Jahr",
+      "mixedMonthChart": "Log entries per month per year",
+      "mixedWeekChart": "Log entries per week per year",
       "lineChart": "Protokolleinträge pro Jahr",
-      "HeatmapChart": "Log entry per month per weekday"
+      "HeatmapChart": "Log entry per month per weekday",
+      "NetworkGraph": "Routes Network",
+      "logEntries": "Log entries",
+      "byMonth": "Per month",
+      "byWeek": "Per weekday",
+      "tripFrequency": "Trip Frequency",
+      "totalDistance": "Total Distance",
+      "totalDuration": "Total Duration",
+      "weightBy": "Weight by",
+      "minTrips": "Min trips",
+      "showLabels": "Show labels"
     },
     "panel": {
       "battery": "Battery",
@@ -115,6 +126,7 @@
       "power": "Power",
       "tank": "Tank"
     },
+    "week_prefix": "W",
     "months": {
       "january": "Januar",
       "february": "Februar",

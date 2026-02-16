@@ -103,9 +103,20 @@
     "local_time": "Heure locale",
     "charts": {
       "verticalBarChart": "Journal de bord mensuel",
-      "mixedChart": "Journal de bord mensuel par année",
+      "mixedMonthChart": "Journal de bord mensuel par année",
+      "mixedWeekChart": "Journal de bord semanal par année",
       "lineChart": "Journal de bord annuel",
-      "HeatmapChart": "Journal de bord : mois / jour de la semaine"
+      "HeatmapChart": "Journal de bord : mois / jour de la semaine",
+      "NetworkGraph": "Routes Network",
+      "logEntries": "Journal de bord",
+      "byMonth": "Par mois",
+      "byWeek": "Par semaine",
+      "tripFrequency": "Trip Frequency",
+      "totalDistance": "Total Distance",
+      "totalDuration": "Total Duration",
+      "weightBy": "Weight by",
+      "minTrips": "Min trips",
+      "showLabels": "Show labels"
     },
     "panel": {
       "battery": "Batterie",
@@ -113,6 +124,7 @@
       "power": "Energie",
       "tank": "Réservoir"
     },
+    "week_prefix": "S",
     "months": {
       "january": "Janvier",
       "february": "Février",
