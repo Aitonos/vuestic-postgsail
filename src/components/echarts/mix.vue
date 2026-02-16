@@ -71,9 +71,11 @@
     yAxis: [
       {
         type: 'value',
-        name: 'Log entry',
+        name: 'Log entries',
         min: 0,
         axisLabel: { formatter: '{value}' },
+        nameLocation: 'middle',
+        nameGap: 50,
       },
     ],
     series: props.series || [],
