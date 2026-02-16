@@ -288,7 +288,7 @@ class ApiClient extends HttpClient {
   }
 
   async notes_history() {
-    return this.get('stay_explore_view')
+    return this.get('stays_explore_view')
   }
 
   async moorages_map(payload: JSObj, page = 1) {
@@ -352,7 +352,7 @@ class ApiClient extends HttpClient {
   }
 
   async explore() {
-    return this.get(`explore_view`)
+    return this.get(`metrics_explore_view`)
   }
 
   async history(payload: JSObj) {
