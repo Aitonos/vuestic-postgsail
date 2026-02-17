@@ -16,14 +16,18 @@
           }}</va-card-title
         >
         <va-card-content v-if="logs.length >= 1">
-          <VaButtonGroup preset="primary">
-            <VaButton :class="{ active: granularity === 'month' }" @click="granularity = 'month'">
-              {{ t('dashboard.charts.byMonth') }}
-            </VaButton>
-            <VaButton :class="{ active: granularity === 'week' }" @click="granularity = 'week'">
-              {{ t('dashboard.charts.byWeek') }}
-            </VaButton>
-          </VaButtonGroup>
+          <div class="controls-row">
+            <div class="control-group">
+              <VaButtonGroup preset="primary">
+                <VaButton :class="{ active: granularity === 'month' }" @click="granularity = 'month'">
+                  {{ t('dashboard.charts.byMonth') }}
+                </VaButton>
+                <VaButton :class="{ active: granularity === 'week' }" @click="granularity = 'week'">
+                  {{ t('dashboard.charts.byWeek') }}
+                </VaButton>
+              </VaButtonGroup>
+            </div>
+          </div>
           <EchartsMix2 :logs="logs" :granularity="granularity" :theme="currentTheme" />
         </va-card-content>
       </va-card>
@@ -46,7 +50,6 @@
                   v-for="option in weightByOptions"
                   :key="option.value"
                   :color="weightBy === option.value ? 'primary' : 'secondary'"
-                  size="small"
                   @click="weightBy = option.value"
                 >
                   {{ option.text }}
@@ -74,6 +77,14 @@
           />
         </va-card-content>
       </va-card>
+      <!-- SunBurst 
+      <va-card class="chart-widget col-span-12">
+        <va-card-title>{{ t('dashboard.charts.NetworkGraph') }}</va-card-title>
+        <va-card-content v-if="stays.length >= 1 && moorages.length >= 1">
+          <EchartsSunburts :moorages="moorages" :stays="stays" :theme="currentTheme" />
+        </va-card-content>
+      </va-card>
+      -->
     </div>
     <!-- From stats -->
     <div class="dashboard flex flex-auto col-span-12 mt-4 gap-4">
@@ -108,7 +119,7 @@
   import { useI18n } from 'vue-i18n'
   import EchartsMix from '../../components/echarts/mix.vue'
   import EchartsMix2 from '../../components/echarts/mixmerge.vue'
-  import EchartsSunburts from '../../components/echarts/sunburst.vue'
+  //import EchartsSunburts from '../../components/echarts/sunburst.vue'
   import EchartsDonught from '../../components/echarts/donught.vue'
   import EchartsHeatmap from '../../components/echarts/heatmap.vue'
   import EchartsGraph from '../../components/echarts/seriesgraph.vue'
@@ -124,8 +135,8 @@
   const CacheStore = useCacheStore()
   const { logs, moorages, stays, logs_by_month, logs_by_year_by_month, logs_by_month_by_weekday } =
     storeToRefs(CacheStore)
-  console.log('echarts logs_by_year_by_month', logs_by_year_by_month.value)
-  console.log('echarts logs_by_month_by_weekday', logs_by_month_by_weekday.value)
+  //console.log('echarts logs_by_year_by_month', logs_by_year_by_month.value)
+  //console.log('echarts logs_by_month_by_weekday', logs_by_month_by_weekday.value)
 
   const granularity = ref('week')
   const showLabels = ref(true)
@@ -205,11 +216,11 @@
     ) {
       return {
         /*
-      1: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-      2: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-      3: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-      4: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-      */
+    1: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+    2: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+    3: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+    4: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+    */
       }
     }
 
