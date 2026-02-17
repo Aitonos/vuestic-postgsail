@@ -70,6 +70,7 @@
   const { isSidebarMinimized, isMobile } = storeToRefs(GlobalStore)
   const { fetchSettings } = GlobalStore
   const { fetchVessel } = VesselStore
+  const { vesselName } = storeToRefs(VesselStore)
 
   const checkIsTablet = () => window.innerWidth <= tabletBreakPointPX
   const checkIsMobile = () => window.innerWidth <= mobileBreakPointPX
@@ -151,6 +152,10 @@
     console.log('AppLayout onBeforeMount')
     if (!GlobalStore.isLoggedIn && GlobalStore.isPublic) {
       console.log('AppLayout onBeforeMount anonymous access isPublic', GlobalStore.isPublic)
+      if (!VesselStore.vesselName) {
+        await VesselStore.fetchVessel()
+      }
+      console.log('AppLayout onBeforeMount anonymous access fetchVessel', VesselStore.vesselName)
       return
     }
     await fetchSettings(true)
@@ -161,7 +166,7 @@
       })
     }
     console.log('AppLayout onBeforeMount fetchSettings', GlobalStore.settings)
-    if (!VesselStore.name) {
+    if (!VesselStore.vesselName) {
       await fetchVessel()
     }
     console.log('AppLayout onBeforeMount fetchVessel', VesselStore)
@@ -197,6 +202,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
+
     &__navbar {
       min-height: 4rem;
     }
@@ -229,12 +235,14 @@
         }
       }
     }
+
     &__page {
       flex-grow: 2;
       overflow-y: scroll;
 
       svg.va-icon.themed {
         fill: var(--va-on-background-primary);
+
         path {
           fill: var(--va-on-background-primary);
         }
@@ -265,6 +273,7 @@
   .va-data-table .va-data-table__table.striped .va-data-table__table-tr:nth-child(2n):not(.selected) {
     z-index: unset;
   }
+
   .va-data-table:not(.va-data-table--virtual-scroller) {
     overflow: unset;
   }
@@ -275,9 +284,11 @@
     .va-input {
       --va-input-wrapper-background: var(--va-background-secondary);
     }
+
     .va-select .va-input-wrapper {
       --va-input-wrapper-background: var(--va-background-secondary);
     }
+
     .va-switch .va-switch__checker-wrapper {
       background-color: var(--va-background-secondary);
     }
