@@ -793,6 +793,16 @@
     "snow_showers": "Chubascos de Nieve",
     "thunderstorm": "Tormenta Eléctrica",
     "light_thunderstorms_with_hail": "Tormentas Eléctricas Ligeras con Granizo",
-    "thunderstorm_with_hail": "Tormenta Eléctrica con Granizo"
+    "thunderstorm_with_hail": "Tormenta Eléctrica con Granizo",
+    "moon": {
+      "new": "New Moon",
+      "waxing_crescent": "Waxing Crescent",
+      "first_quarter": "First Quarter",
+      "waxing_gibbous": "Waxing Gibbous",
+      "full": "Full Moon",
+      "waning_gibbous": "Waning Gibbous",
+      "last_quarter": "Last Quarter",
+      "waning_crescent": "Waning Crescent"
+    }
   }
 }

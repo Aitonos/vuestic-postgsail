@@ -808,6 +808,16 @@
     "snow_showers": "Snow Showers",
     "thunderstorm": "Thunderstorm",
     "light_thunderstorms_with_hail": "Light Thunderstorms With Hail",
-    "thunderstorm_with_hail": "Thunderstorm With Hail"
+    "thunderstorm_with_hail": "Thunderstorm With Hail",
+    "moon": {
+      "new": "New Moon",
+      "waxing_crescent": "Waxing Crescent",
+      "first_quarter": "First Quarter",
+      "waxing_gibbous": "Waxing Gibbous",
+      "full": "Full Moon",
+      "waning_gibbous": "Waning Gibbous",
+      "last_quarter": "Last Quarter",
+      "waning_crescent": "Waning Crescent"
+    }
   }
 }

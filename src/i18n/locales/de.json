@@ -799,6 +799,16 @@
     "snow_showers": "Schneeschauer",
     "thunderstorm": "Gewitter",
     "light_thunderstorms_with_hail": "Leichte Gewitter mit Hagel",
-    "thunderstorm_with_hail": "Gewitter mit Hagel"
+    "thunderstorm_with_hail": "Gewitter mit Hagel",
+    "moon": {
+      "new": "New Moon",
+      "waxing_crescent": "Waxing Crescent",
+      "first_quarter": "First Quarter",
+      "waxing_gibbous": "Waxing Gibbous",
+      "full": "Full Moon",
+      "waning_gibbous": "Waning Gibbous",
+      "last_quarter": "Last Quarter",
+      "waning_crescent": "Waning Crescent"
+    }
   }
 }

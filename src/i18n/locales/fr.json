@@ -802,6 +802,16 @@
     "snow_showers": "Averses de Neige",
     "thunderstorm": "Orage",
     "light_thunderstorms_with_hail": "Orages Légers avec Grêle",
-    "thunderstorm_with_hail": "Orage avec Grêle"
+    "thunderstorm_with_hail": "Orage avec Grêle",
+    "moon": {
+      "new": "Nouvelle Lune",
+      "waxing_crescent": "Premier Croissant",
+      "first_quarter": "Premier Quartier",
+      "waxing_gibbous": "Lune Gibbeuse Croissante",
+      "full": "Pleine Lune",
+      "waning_gibbous": "Lune Gibbeuse Décroissante",
+      "last_quarter": "Dernier Quartier",
+      "waning_crescent": "Dernier Croissant"
+    }
   }
 }
