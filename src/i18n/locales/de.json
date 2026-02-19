@@ -105,9 +105,20 @@
     "local_time": "Ortszeit",
     "charts": {
       "verticalBarChart": "Protokolleinträge pro Monat",
-      "mixedChart": "Protokolleinträge pro Monat pro Jahr",
+      "mixedMonthChart": "Log entries per month per year",
+      "mixedWeekChart": "Log entries per week per year",
       "lineChart": "Protokolleinträge pro Jahr",
-      "HeatmapChart": "Log entry per month per weekday"
+      "HeatmapChart": "Log entry per month per weekday",
+      "NetworkGraph": "Routes Network",
+      "logEntries": "Log entries",
+      "byMonth": "Per month",
+      "byWeek": "Per weekday",
+      "tripFrequency": "Trip Frequency",
+      "totalDistance": "Total Distance",
+      "totalDuration": "Total Duration",
+      "weightBy": "Weight by",
+      "minTrips": "Min trips",
+      "showLabels": "Show labels"
     },
     "panel": {
       "battery": "Battery",
@@ -115,6 +126,7 @@
       "power": "Power",
       "tank": "Tank"
     },
+    "week_prefix": "W",
     "months": {
       "january": "Januar",
       "february": "Februar",
@@ -137,6 +149,13 @@
       "friday": "Friday",
       "saturday": "Saturday",
       "sunday": "Sunday"
+    },
+    "status": {
+      "moored_at_anchor": "moored at anchor in",
+      "moored_at_buoy": "moored at mooring buoy in",
+      "moored_at_dock": "moored at dock in",
+      "underway": "underway",
+      "no_stay_detected": "No stay detected"
     }
   },
   "api": {
@@ -475,6 +494,11 @@
   "monitoring": {
     "title": "Überwachung",
     "error": "Abrufen von Überwachungsdaten nicht möglich",
+    "depth": "Tiefe",
+    "wind_speed": "Windgeschwindigkeit",
+    "wind_direction": "Windrichtung",
+    "inside": "Innen:",
+    "outside": "Außen:",
     "wind": {
       "headerString": "Wind",
       "unitString": "Kt",
@@ -510,12 +534,21 @@
       "unitString": "W",
       "detailString": "Voltage: "
     },
+    "tank": {
+      "headerString": "Tank",
+      "unitString": "%",
+      "detailString": "Volume: "
+    },
     "offline": {
       "offline": "Ihr Schiff ist offline. Echtzeitüberwachung erfordert eine Internetverbindung.",
       "lastupdate": "Wir haben innerhalb der letzten 70 Minuten keine Daten von Ihrem Sammler erhalten."
     },
     "history": {
-      "title": "Monitoring History"
+      "title": "Monitoring History",
+      "24h": "Last 24 Hours",
+      "48h": "Last 48 Hours",
+      "72h": "Last 72 Hours",
+      "7d": "Last 7 Days"
     },
     "explore": {
       "title": "Explore Data",
@@ -730,5 +763,52 @@
     "lastUpdated": "Last updated",
     "edit_note": "Edit Note",
     "confirm_delete": "Are you sure you want to delete this photo?"
+  },
+  "important_note": {
+    "title": "Wichtiger Hinweis",
+    "message": "PostgSail Cloud ist Open Source und kostenlos für den persönlichen Gebrauch mit einem einzelnen Schiff. Um mehrere Boote zu verwalten, kontaktieren Sie uns bitte. Sie können öffentliche oder private Flotten für Ihre Freunde, Segelvereine, Yachtclubs oder Flotillen erstellen. Für weitere Informationen kontaktieren Sie uns unter ",
+    "contact": "Contact us"
+  },
+  "weather": {
+    "sunny": "Sonnig",
+    "clear": "Klar",
+    "mainly_sunny": "Überwiegend Sonnig",
+    "mainly_clear": "Überwiegend Klar",
+    "partly_cloudy": "Teilweise Bewölkt",
+    "cloudy": "Bewölkt",
+    "foggy": "Neblig",
+    "rime_fog": "Raureifnebel",
+    "light_drizzle": "Leichter Nieselregen",
+    "drizzle": "Nieselregen",
+    "heavy_drizzle": "Starker Nieselregen",
+    "light_freezing_drizzle": "Leichter Gefrierender Nieselregen",
+    "freezing_drizzle": "Gefrierender Nieselregen",
+    "light_rain": "Leichter Regen",
+    "rain": "Regen",
+    "heavy_rain": "Starker Regen",
+    "light_freezing_rain": "Leichter Gefrierender Regen",
+    "freezing_rain": "Gefrierender Regen",
+    "light_snow": "Leichter Schneefall",
+    "snow": "Schnee",
+    "heavy_snow": "Starker Schneefall",
+    "snow_grains": "Schneegriesel",
+    "light_showers": "Leichte Schauer",
+    "showers": "Schauer",
+    "heavy_showers": "Starke Schauer",
+    "light_snow_showers": "Leichte Schneeschauer",
+    "snow_showers": "Schneeschauer",
+    "thunderstorm": "Gewitter",
+    "light_thunderstorms_with_hail": "Leichte Gewitter mit Hagel",
+    "thunderstorm_with_hail": "Gewitter mit Hagel",
+    "moon": {
+      "new": "New Moon",
+      "waxing_crescent": "Waxing Crescent",
+      "first_quarter": "First Quarter",
+      "waxing_gibbous": "Waxing Gibbous",
+      "full": "Full Moon",
+      "waning_gibbous": "Waning Gibbous",
+      "last_quarter": "Last Quarter",
+      "waning_crescent": "Waning Crescent"
+    }
   }
 }

@@ -103,9 +103,20 @@
     "local_time": "Hora local",
     "charts": {
       "verticalBarChart": "Número de registros por mes",
-      "mixedChart": "Número de registros por mes y año",
+      "mixedMonthChart": "Número de registros por mes y año",
+      "mixedWeekChart": "Número de registros por semana y año",
       "lineChart": "Número de registros por año",
-      "HeatmapChart": "Cuadro por mes y dia"
+      "HeatmapChart": "Cuadro por mes y dia",
+      "NetworkGraph": "Routes Network",
+      "logEntries": "Número de registros",
+      "byMonth": "Por meses",
+      "byWeek": "Por semana",
+      "tripFrequency": "Trip Frequency",
+      "totalDistance": "Total Distance",
+      "totalDuration": "Total Duration",
+      "weightBy": "Weight by",
+      "minTrips": "Min trips",
+      "showLabels": "Show labels"
     },
     "panel": {
       "battery": "Batería",
@@ -113,6 +124,7 @@
       "power": "Energía",
       "tank": "Depósitos"
     },
+    "week_prefix": "S",
     "months": {
       "january": "Enero",
       "february": "Febrero",
@@ -135,6 +147,13 @@
       "friday": "Viernes",
       "saturday": "Sábado",
       "sunday": "Domingo"
+    },
+    "status": {
+      "moored_at_anchor": "amarrado al ancla en",
+      "moored_at_buoy": "amarrado a boya de amarre en",
+      "moored_at_dock": "amarrado en el muelle en",
+      "underway": "en ruta",
+      "no_stay_detected": "No se detectó estancia"
     }
   },
   "api": {
@@ -279,7 +298,7 @@
     "date_range": "Rango de fecha",
     "badges": "Medallas recibidas",
     "logs": "Estadísticas de bitácora",
-    "": "Estadísticas de estancias",
+    "moorages": "Estadísticas de fondeaderos",
     "name": "Barco",
     "first": "Primer registro ",
     "last": "Último registro",
@@ -301,12 +320,13 @@
     "time_spent_at_home_port(s)": "Tiempo pasado en puerto base",
     "time_spent_away": "Tiempo fuera de puerto",
     "country": "País visitado",
-    "top_logs_by_distance": "Lista de registros ordenados por distancia",
-    "top_logs_by_duration": "Lista de registros ordenados por duración",
-    "top_logs_by_avg_speed": "Lista de registros ordenados por velocidad media",
-    "top_logs_by_max_speed": "Lista de registros ordenados por velocidad máxima",
-    "top_logs_by_wind_speed": "Lista de registros ordenados por velocidad máxima del viento",
-    "top_moorages_by_duration": "Lista de registros ordenados por duración",
+    "top_logs_by_distance": "Lista de Registros ordenados por distancia",
+    "top_logs_by_duration": "Lista de Registros ordenados por duración",
+    "top_logs_by_avg_speed": "Lista de Registros ordenados por velocidad media",
+    "top_logs_by_max_speed": "Lista de Registros ordenados por velocidad máxima",
+    "top_logs_by_wind_speed": "Lista de Registros ordenados por velocidad máxima del viento",
+    "top_moorages_by_duration": "Lista de Registros ordenados por duración",
+    "top_moorages_by_arrivals": "Top Moorages by Arrivals",
     "underway": "En navegación",
     "away": "Fuera del puerto base",
     "home": "En puerto base"
@@ -478,6 +498,11 @@
   "monitoring": {
     "title": "Monitorización",
     "error": "Incapaz de obtener datos de monitorización",
+    "depth": "Profundidad",
+    "wind_speed": "Velocidad del viento",
+    "wind_direction": "Dirección del viento",
+    "inside": "Interior:",
+    "outside": "Exterior:",
     "wind": {
       "headerString": "Viento",
       "unitString": "Kt",
@@ -513,12 +538,21 @@
       "unitString": "W",
       "detailString": "Voltaje: "
     },
+    "tank": {
+      "headerString": "Tank",
+      "unitString": "%",
+      "detailString": "Volume: "
+    },
     "offline": {
       "offline": "Tu embarcación está fuera de línea. La monitorización en tiempo real requiere una conexión a Internet.",
       "lastupdate": "No hemos recibido ningún dato de su barco en los últimos 70 minutos."
     },
     "history": {
-      "title": "Historial de monitorización"
+      "title": "Historial de monitorización",
+      "24h": "Últimas 24 horas",
+      "48h": "Últimas 48 horas",
+      "72h": "Últimas 72 horas",
+      "7d": "Últimos 7 días"
     },
     "explore": {
       "title": "Explorar datos",
@@ -723,5 +757,52 @@
     "lastUpdated": "Última actualización",
     "edit_note": "Editar nota",
     "confirm_delete": "¿Estás seguro de que quieres eliminar esta foto?"
+  },
+  "important_note": {
+    "title": "Nota Importante",
+    "message": "PostgSail Cloud es de código abierto y gratuito para uso personal con una sola embarcación. Para gestionar múltiples embarcaciones, por favor contáctenos. Puede crear flotas públicas o privadas para sus amigos, clubes de navegación, clubes náuticos o flotillas. Para más información, escríbanos a ",
+    "contact": "Contáctenos"
+  },
+  "weather": {
+    "sunny": "Soleado",
+    "clear": "Despejado",
+    "mainly_sunny": "Mayormente Soleado",
+    "mainly_clear": "Mayormente Despejado",
+    "partly_cloudy": "Parcialmente Nublado",
+    "cloudy": "Nublado",
+    "foggy": "Neblinoso",
+    "rime_fog": "Niebla Helada",
+    "light_drizzle": "Llovizna Ligera",
+    "drizzle": "Llovizna",
+    "heavy_drizzle": "Llovizna Fuerte",
+    "light_freezing_drizzle": "Llovizna Helada Ligera",
+    "freezing_drizzle": "Llovizna Helada",
+    "light_rain": "Lluvia Ligera",
+    "rain": "Lluvia",
+    "heavy_rain": "Lluvia Fuerte",
+    "light_freezing_rain": "Lluvia Helada Ligera",
+    "freezing_rain": "Lluvia Helada",
+    "light_snow": "Nieve Ligera",
+    "snow": "Nieve",
+    "heavy_snow": "Nevada Intensa",
+    "snow_grains": "Granizo de Nieve",
+    "light_showers": "Chubascos Ligeros",
+    "showers": "Chubascos",
+    "heavy_showers": "Chubascos Fuertes",
+    "light_snow_showers": "Chubascos de Nieve Ligeros",
+    "snow_showers": "Chubascos de Nieve",
+    "thunderstorm": "Tormenta Eléctrica",
+    "light_thunderstorms_with_hail": "Tormentas Eléctricas Ligeras con Granizo",
+    "thunderstorm_with_hail": "Tormenta Eléctrica con Granizo",
+    "moon": {
+      "new": "New Moon",
+      "waxing_crescent": "Waxing Crescent",
+      "first_quarter": "First Quarter",
+      "waxing_gibbous": "Waxing Gibbous",
+      "full": "Full Moon",
+      "waning_gibbous": "Waning Gibbous",
+      "last_quarter": "Last Quarter",
+      "waning_crescent": "Waning Crescent"
+    }
   }
 }

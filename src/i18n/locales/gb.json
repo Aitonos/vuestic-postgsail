@@ -104,10 +104,21 @@
     "overview": "Logbook Overview",
     "local_time": "Local Time",
     "charts": {
-      "verticalBarChart": "Log entry per month",
-      "mixedChart": "Log entry per month per year",
-      "lineChart": "Log entry per year",
-      "HeatmapChart": "Log entry per month per weekday"
+      "verticalBarChart": "Log entries per month",
+      "mixedMonthChart": "Log entries per month per year",
+      "mixedWeekChart": "Log entries per week per year",
+      "lineChart": "Log entries per year",
+      "HeatmapChart": "Log entries per month per weekday",
+      "NetworkGraph": "Routes Network",
+      "logEntries": "Log entries",
+      "byMonth": "Per month",
+      "byWeek": "Per weekday",
+      "tripFrequency": "Trip Frequency",
+      "totalDistance": "Total Distance",
+      "totalDuration": "Total Duration",
+      "weightBy": "Weight by",
+      "minTrips": "Min trips",
+      "showLabels": "Show labels"
     },
     "panel": {
       "battery": "Battery",
@@ -115,6 +126,7 @@
       "power": "Power",
       "tank": "Tank"
     },
+    "week_prefix": "W",
     "months": {
       "january": "January",
       "february": "February",
@@ -137,6 +149,13 @@
       "friday": "Friday",
       "saturday": "Saturday",
       "sunday": "Sunday"
+    },
+    "status": {
+      "moored_at_anchor": "moored at anchor in",
+      "moored_at_buoy": "moored at mooring buoy in",
+      "moored_at_dock": "moored at dock in",
+      "underway": "underway",
+      "no_stay_detected": "No stay detected"
     }
   },
   "api": {
@@ -479,6 +498,11 @@
   "monitoring": {
     "title": "Monitoring",
     "error": "Unable to fetch monitoring data",
+    "depth": "Depth",
+    "wind_speed": "Wind Speed",
+    "wind_direction": "Wind Direction",
+    "inside": "Inside:",
+    "outside": "Outside:",
     "imperial_units": {
       "temperature": "°F",
       "depth": "Ft"
@@ -491,7 +515,8 @@
     "temperature": {
       "headerString": "Temperature",
       "unitString": "°C",
-      "detailString": "Outside: "
+      "detailString": "Outside: ",
+      "water": "Water: "
     },
     "battery": {
       "headerString": "Battery",
@@ -518,12 +543,21 @@
       "unitString": "W",
       "detailString": "Voltage: "
     },
+    "tank": {
+      "headerString": "Tank",
+      "unitString": "%",
+      "detailString": "Volume: "
+    },
     "offline": {
       "offline": "Your vessel is offline. Real-time monitoring requires an Internet connection.",
       "lastupdate": "We have not received any data from your boat within the last 70 minutes."
     },
     "history": {
-      "title": "Monitoring History"
+      "title": "Monitoring History",
+      "24h": "Last 24 Hours",
+      "48h": "Last 48 Hours",
+      "72h": "Last 72 Hours",
+      "7d": "Last 7 Days"
     },
     "explore": {
       "title": "Explore Data",
@@ -738,5 +772,52 @@
     "lastUpdated": "Last updated",
     "edit_note": "Edit Note",
     "confirm_delete": "Are you sure you want to delete this photo?"
+  },
+  "important_note": {
+    "title": "Important Note",
+    "message": "PostgSail Cloud is open source and free for personal use with a single vessel. To manage multiple boats, please contact us. You can create public or private fleets for your friends, cruising clubs, yacht clubs, or flotillas. For more information, reach out to us at ",
+    "contact": "Contact us"
+  },
+  "weather": {
+    "sunny": "Sunny",
+    "clear": "Clear",
+    "mainly_sunny": "Mainly Sunny",
+    "mainly_clear": "Mainly Clear",
+    "partly_cloudy": "Partly Cloudy",
+    "cloudy": "Cloudy",
+    "foggy": "Foggy",
+    "rime_fog": "Rime Fog",
+    "light_drizzle": "Light Drizzle",
+    "drizzle": "Drizzle",
+    "heavy_drizzle": "Heavy Drizzle",
+    "light_freezing_drizzle": "Light Freezing Drizzle",
+    "freezing_drizzle": "Freezing Drizzle",
+    "light_rain": "Light Rain",
+    "rain": "Rain",
+    "heavy_rain": "Heavy Rain",
+    "light_freezing_rain": "Light Freezing Rain",
+    "freezing_rain": "Freezing Rain",
+    "light_snow": "Light Snow",
+    "snow": "Snow",
+    "heavy_snow": "Heavy Snow",
+    "snow_grains": "Snow Grains",
+    "light_showers": "Light Showers",
+    "showers": "Showers",
+    "heavy_showers": "Heavy Showers",
+    "light_snow_showers": "Light Snow Showers",
+    "snow_showers": "Snow Showers",
+    "thunderstorm": "Thunderstorm",
+    "light_thunderstorms_with_hail": "Light Thunderstorms With Hail",
+    "thunderstorm_with_hail": "Thunderstorm With Hail",
+    "moon": {
+      "new": "New Moon",
+      "waxing_crescent": "Waxing Crescent",
+      "first_quarter": "First Quarter",
+      "waxing_gibbous": "Waxing Gibbous",
+      "full": "Full Moon",
+      "waning_gibbous": "Waning Gibbous",
+      "last_quarter": "Last Quarter",
+      "waning_crescent": "Waning Crescent"
+    }
   }
 }

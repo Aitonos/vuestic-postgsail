@@ -70,8 +70,8 @@
           <div class="col-span-6 flex flex-col va-text-center">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <img class="" :src="currentWeather.img" :width="96" :height="96" />
-                <div>{{ currentWeather.description }}</div>
+                <img class="" :src="weatherObj.img" :width="96" :height="96" />
+                <div>{{ weatherObj.description }}</div>
               </div>
               <div>
                 <img class="" :src="Lunar.src" :width="96" :height="96" style="padding: 20%" />
@@ -181,17 +181,8 @@
   import PostgSail from '../../services/api-client'
   import { fromNow, localTime } from '../../utils/dateFormatter.js'
   import { Moon } from 'lunarphase-js'
-  import { te } from 'date-fns/locale'
-  const moon_phases = [
-    'New',
-    'Waxing Crescent',
-    'First Quarter',
-    'Waxing Gibbous',
-    'Full',
-    'Waning Gibbous',
-    'Last Quarter',
-    'Waning Crescent',
-  ]
+  import { moonPhases, getWMOData } from '../../utils/PostgSail'
+
   const { t } = useI18n()
 
   const GlobalStore = useGlobalStore()
@@ -318,12 +309,12 @@
   })
 
   const Lunar = computed(() => {
-    if (!Array.isArray(moon_phases)) return { src: '', text: '' }
+    if (!Array.isArray(moonPhases)) return { src: '', text: '' }
     const text = Moon.lunarPhase()
     const isPhase = (element) => element === text
-    const index = moon_phases.findIndex(isPhase)
+    const index = moonPhases.findIndex(isPhase)
     //console.log(`/moon_phase_${index}.svg`)
-    return { src: `/moon_phase_${index}.svg`, text: text.toLowerCase() }
+    return { src: `/moon_phase_${index}.svg`, text: t('weather.moon.' + text.toLowerCase()) }
   })
 
   const LogsImage = computed(() => {
@@ -460,30 +451,50 @@
   })
 
   const statusText = computed(() => {
-    //console.log('statusText', monitoring.value)
     const props = monitoring.value?.live?.properties || null
     let status = monitoring.value?.status || null
     let img = null
-    if (status == 'moored') {
-      if (props?.stay_code == 1) {
+
+    if (status === 'moored') {
+      if (props?.stay_code === 1) {
         // Unknown stay type
         status = monitoring.value.status
-      } else if (props?.stay_code == 2) {
-        status += ' at anchor in '
+      } else if (props?.stay_code === 2) {
+        status = t('dashboard.status.moored_at_anchor', 'moored at anchor in')
         img = '/anchoricon.png'
-      } else if (props?.stay_code == 3) {
-        status += ' at mooring buoy in '
+      } else if (props?.stay_code === 3) {
+        status = t('dashboard.status.moored_at_buoy', 'moored at mooring buoy in')
         img = '/mooring_icon.png'
-      } else if (props?.stay_code == 4) {
-        status += ' at dock in '
+      } else if (props?.stay_code === 4) {
+        status = t('dashboard.status.moored_at_dock', 'moored at dock in')
         img = '/dock_icon.png'
       }
-      return { text: `${status}${props.name}`, img: img }
-    } else if (status != 'moored') {
-      status += ' underway '
-      return { text: `${status}`, img: '/apple-touch-icon.png' }
+      return {
+        text: `${status} ${props.name}`,
+        img: img,
+      }
+    } else if (status !== 'moored') {
+      const underwayText = t('dashboard.status.underway', 'underway')
+      return {
+        text: `${status} ${underwayText}`,
+        img: '/apple-touch-icon.png',
+      }
     } else {
-      return { text: 'No stay detected', img: img }
+      return {
+        text: t('dashboard.status.no_stay_detected', 'No stay detected'),
+        img: img,
+      }
+    }
+  })
+
+  const weatherObj = computed(() => {
+    //console.log(currentWeather.value)
+    const wmoData = getWMOData()
+    const statusText = wmoData[currentWeather.value.weather_code]
+    //console.log(statusText['day'])
+    return {
+      description: statusText['day'].description,
+      img: statusText['day'].image,
     }
   })
 </script>

@@ -153,6 +153,24 @@
                 </dd>
               </div>
 
+              <!-- Polar -->
+              <div class="hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded transition">
+                <dt class="font-semibold text-gray-800 dark:text-white">
+                  {{ $t('boats.boat.polar.title') }}
+                </dt>
+                <dd class="text-gray-800 dark:text-white">
+                  <router-link :to="{ name: 'boat-polar' }">
+                    <va-chip
+                      :color="item.has_polar ? 'success' : 'warning'"
+                      class="cursor-pointer group-hover:shadow-md transition-all"
+                    >
+                      {{ polar_msg }}
+                      <va-icon name="edit" size="small" class="ml-1" />
+                    </va-chip>
+                  </router-link>
+                </dd>
+              </div>
+
               <!-- Photo -->
               <template v-if="image_support">
                 <div class="col-span-full mt-6 p-3 rounded transition hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -244,6 +262,9 @@
   })
   const configuration_msg = computed(() => {
     return item.value.configuration ? 'Present' : 'Missing'
+  })
+  const polar_msg = computed(() => {
+    return item.value.has_polar ? 'Present' : 'Missing'
   })
 
   onMounted(async () => {
