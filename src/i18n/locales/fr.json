@@ -25,7 +25,7 @@
     "errors": {
       "credentials": "Mauvaises informations d'identification",
       "email": "L'e-mail est requis",
-      "email_valid": "Email should be valid",
+      "email_valid": "L'e-mail doit être valide",
       "password": "Mot de passe requis",
       "mismatch_pass": "Mot de passe different",
       "short_pass": "Le mot de passe est trop court",
@@ -99,21 +99,21 @@
   "dashboard": {
     "title": "Tableau de bord",
     "versions": "Versions",
-    "overview": "Aperçu du journal de bord",
+    "overview": "Aperçu du Livre de bord",
     "local_time": "Heure locale",
     "charts": {
-      "verticalBarChart": "Journal de bord mensuel",
-      "mixedMonthChart": "Journal de bord mensuel par année",
-      "mixedWeekChart": "Journal de bord semanal par année",
-      "lineChart": "Journal de bord annuel",
-      "HeatmapChart": "Journal de bord : mois / jour de la semaine",
+      "verticalBarChart": "Livre de bord mensuel",
+      "mixedMonthChart": "Livre de bord mensuel par année",
+      "mixedWeekChart": "Livre de bord semanal par année",
+      "lineChart": "Livre de bord annuel",
+      "HeatmapChart": "Livre de bord : mois / jour de la semaine",
       "NetworkGraph": "Routes Network",
-      "logEntries": "Journal de bord",
+      "logEntries": "Livre de bord",
       "byMonth": "Par mois",
       "byWeek": "Par semaine",
       "tripFrequency": "Trip Frequency",
-      "totalDistance": "Total Distance",
-      "totalDuration": "Total Duration",
+      "totalDistance": "Distance totale",
+      "totalDuration": "Durée total",
       "weightBy": "Weight by",
       "minTrips": "Min trips",
       "showLabels": "Show labels"
@@ -152,7 +152,7 @@
       "moored_at_anchor": "amarré à l'ancre à",
       "moored_at_buoy": "amarré à une bouée d'amarrage à",
       "moored_at_dock": "amarré au quai à",
-      "underway": "en route",
+      "underway": "en navigation",
       "no_stay_detected": "Aucun séjour détecté"
     }
   },
@@ -161,7 +161,7 @@
   },
   "logs": {
     "list": {
-      "title": "Journal de bord pour",
+      "title": "Livre de bord pour",
       "filter": {
         "title": "Search for log",
         "name": "Filtrer par nom...",
@@ -189,7 +189,7 @@
       }
     },
     "details": {
-      "title": "Log Book"
+      "title": "Livre de bord pour"
     },
     "log": {
       "name": "Nom | Noms",
@@ -204,8 +204,8 @@
       "distance_nm": "Distance [NM]",
       "avg": "Moyenne",
       "max": "Max",
-      "speed": "Vitesse",
-      "wind_speed": "Vitesse du vent",
+      "speed": "Vitesse surface",
+      "wind_speed": "Force du vent",
       "note": "Note | Notes",
       "remarks": "Raconte ce qui s'est passé",
       "export": "Export",
@@ -266,8 +266,8 @@
         "reset": "Reset"
       },
       "moorage": "Amarrage",
-      "default_stay": "Default Stay",
-      "total_stay": "Total Stay [d]",
+      "default_stay": "Séjour par défaut",
+      "total_stay": "Séjour total [j]",
       "arrivals": "Arrivals & Departures"
     },
     "arrivals-departures": {
@@ -294,20 +294,20 @@
   },
   "stats": {
     "stats": "Statistiques pour",
-    "date_range": "Date Range",
-    "badges": "Badges Awarded",
-    "logs": "Statistiques du journal de bord",
+    "date_range": "Plage de dates",
+    "badges": "Badges obtenus",
+    "logs": "Statistiques du livre de bord",
     "moorages": "Statistiques des mouillages",
     "name": "Boat",
-    "first": "First entry",
-    "last": "Last entry",
-    "unclassified": "Unclassified",
+    "first": "Première entrée",
+    "last": "Dernière entrée",
+    "unclassified": "Non classifié",
     "anchor": "Ancre",
     "buoy": "Bouée",
     "dock": "Port",
     "count": "Nombre d'entrées",
-    "first_date": "First entry",
-    "last_date": "Last entry",
+    "first_date": "Première entrée",
+    "last_date": "Dernière entrée",
     "longest_nonstop": "La plus longue navigation sans escale",
     "max_speed": "Max Speed",
     "max_wind_speed": "Max Wind Speed",
@@ -367,9 +367,9 @@
       "signalk": "Ces données sont extraites de 'Vessel Base Data' depuis SignalK.",
       "platform": "Plateforme",
       "configuration": "Configuration Signalk Mapping",
-      "make_model": "Make and Model",
+      "make_model": "Marque et modèle",
       "photo": "Photo",
-      "last_updated": "Last updated"
+      "last_updated": "Dernière mise à jour"
     },
     "errors": {
       "name": "Name is required",
@@ -497,7 +497,7 @@
   "monitoring": {
     "title": "Monitoring",
     "error": "Unable to fetch monitoring data",
-    "depth": "Profondeur",
+    "depth": "Sonde",
     "wind_speed": "Vitesse du vent",
     "wind_direction": "Direction du vent",
     "inside": "Intérieur:",
@@ -548,10 +548,10 @@
     },
     "history": {
       "title": "Monitoring History",
-      "24h": "Last 24 Hours",
-      "48h": "Last 48 Hours",
-      "72h": "Last 72 Hours",
-      "7d": "Last 7 Days"
+      "24h": "Dernières 24 heures",
+      "48h": "Dernières 48 heures",
+      "72h": "Dernières 72 heures",
+      "7d": "7 derniers jours"
     },
     "explore": {
       "title": "Explore Data",
@@ -569,7 +569,7 @@
       "1": "Inconnu",
       "2": "Ancre",
       "3": "Bouée d'amarrage",
-      "4": "Quai"
+      "4": "Ponton"
     }
   },
   "seaState": {
