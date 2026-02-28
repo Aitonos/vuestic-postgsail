@@ -148,6 +148,8 @@
                 Postgsail ignores all metrics with an invalid status.
                 <br />
                 Postgsail ignores all metrics where the Speed Over Ground (SOG) exceeds 40 knots.<br />
+                <br />
+                Postgsail ignores all metrics where the Apparent Wind Speed (AWS) exceeds 200 knots.<br />
               </p>
             </div>
           </va-collapse>
@@ -247,12 +249,21 @@
                   >SignalK vessels specification<va-icon name="fa-external-link" size="small" /></a
                 ><br />
                 -
-                <a
-                  href="https://community.windy.com/topic/8168/report-your-weather-station-data-to-windy"
-                  target="_blank"
-                  class="va-text-bold va-link link"
+                <a href="https://stations.windy.com/" target="_blank" class="va-text-bold va-link link"
                   >Report your Weather Station Data to Windy<va-icon name="fa-external-link" size="small"
                 /></a>
+              </p>
+            </div>
+          </va-collapse>
+          <va-collapse header="AI agent (MCP)">
+            <div class="pa-3">
+              <p>
+                PostgSail provide an AI agent accesible via MCP protocol with read-only access to PostgSail marine data
+                systems. This server enables
+                <a href="https://lechat.ai" target="_blank" class="va-text-bold va-link link"
+                  >LeChat<va-icon name="fa-external-link" size="small" /></a
+                >, Claude and other AI assistants to search and navigate logs, moorages, and stays, monitor and analyze
+                your boat all in one place.
               </p>
             </div>
           </va-collapse>
