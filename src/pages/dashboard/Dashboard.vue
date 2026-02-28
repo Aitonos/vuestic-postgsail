@@ -1,6 +1,6 @@
 <template>
-  <div class="dashboard flex flex-wrap p-2 gap-4">
-    <va-card v-if="monitoring && status" class="flex card-width">
+  <div class="dashboard grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start p-2 gap-4">
+    <va-card v-if="monitoring && status">
       <va-card-content class="grid grid-cols-12">
         <div class="col-span-6 flex flex-col va-text-center">
           <table class="va-table va-table--hoverable va-text-center">
@@ -39,7 +39,7 @@
       </va-card-content>
     </va-card>
     <template v-if="monitoring.geojson">
-      <va-card v-if="currentWeather.temp" class="flex card-width">
+      <va-card v-if="currentWeather.temp">
         <va-card-content class="grid grid-cols-12">
           <div class="col-span-6 flex flex-col va-text-center">
             <p style="font-size: 3rem; line-height: 54px">
@@ -81,8 +81,8 @@
           </div>
         </va-card-content>
       </va-card>
-      <va-card v-if="monitoring.geojson" class="flex card-width">
-        <va-card-content style="width: 100%">
+      <va-card v-if="monitoring.geojson" class="h-full">
+        <va-card-content style="width: 100%; height: 100%">
           <l-map id="dashboard-map" :geo-json-feature="mapGeoJsonFeatures" :control-layer="false" :map-zoom="10" />
         </va-card-content>
       </va-card>
@@ -117,6 +117,7 @@
       </va-card>
     </template>
 
+    <!-- Info Tiles -->
     <va-card v-for="(info, idx) in infoTiles" :key="idx" :color="info.color" class="col-span-4">
       <router-link :to="info.text">
         <va-card-content>
@@ -125,11 +126,11 @@
         </va-card-content>
       </router-link>
     </va-card>
-    <!--
-    <charts class="col-span-12" />
--->
+
+    <!-- echarts -->
     <echarts class="col-span-12" />
 
+    <!-- Overview -->
     <va-card class="col-span-12">
       <va-card-title>{{ t('dashboard.overview') }}</va-card-title>
       <template v-if="LogsImage">
@@ -141,19 +142,8 @@
         <va-card-content>{{ t('nodata.nodata') }}</va-card-content>
       </template>
     </va-card>
-    <!--
-    <va-card class="col-span-12">
-      <va-card-title>{{ t('dashboard.overview') }}</va-card-title>
-      <template v-if="LogsImage">
-        <va-card-content v-if="LogsImage">
-          <lMapgl id="mapgl-full" />
-        </va-card-content>
-      </template>
-      <template v-else>
-        <va-card-content>{{ t('nodata.nodata') }}</va-card-content>
-      </template>
-    </va-card>
--->
+
+    <!-- Versions -->
     <va-card class="col-span-12">
       <va-card-title>{{ t('dashboard.versions') }}</va-card-title>
       <va-card-content>
@@ -174,10 +164,8 @@
   import { useVesselStore } from '../../stores/vessel-store'
   import { storeToRefs } from 'pinia'
   import { useI18n } from 'vue-i18n'
-  //const Charts = defineAsyncComponent(() => import('./Charts.vue'))
   const Echarts = defineAsyncComponent(() => import('./Echarts.vue'))
   const lMap = defineAsyncComponent(() => import('../../components/maps/leafletMap.vue'))
-  //const lMapgl = defineAsyncComponent(() => import('../../components/maps/leafletMapgl.vue'))
   import PostgSail from '../../services/api-client'
   import { fromNow, localTime } from '../../utils/dateFormatter.js'
   import { Moon } from 'lunarphase-js'
@@ -314,7 +302,7 @@
     const isPhase = (element) => element === text
     const index = moonPhases.findIndex(isPhase)
     //console.log(`/moon_phase_${index}.svg`)
-    return { src: `/moon_phase_${index}.svg`, text: t('weather.moon.' + text.toLowerCase()) }
+    return { src: `/moon_phase_${index}.svg`, text: t('weather.moon.' + text.toLowerCase().replace(/\s+/g, '_')) }
   })
 
   const LogsImage = computed(() => {
@@ -520,15 +508,6 @@
         justify-content: space-between;
       }
     }
-    .card-width {
-      width: 100%;
-      @media (min-width: 768px) {
-        width: calc((100% - 2rem) / 2);
-      }
-      @media (min-width: 1024px) {
-        width: calc((100% - 2rem) / 3);
-      }
-    }
 
     td:nth-child(1) {
       text-align: right;
@@ -541,19 +520,6 @@
   .row-separated {
     .flex + .flex {
       border-left: 1px solid var(--va-background-primary);
-    }
-  }
-
-  .rich-theme-card-text {
-    line-height: 1.5;
-  }
-
-  .gallery-carousel {
-    width: 80vw;
-    max-width: 100%;
-
-    @media all and (max-width: 576px) {
-      width: 100%;
     }
   }
 </style>

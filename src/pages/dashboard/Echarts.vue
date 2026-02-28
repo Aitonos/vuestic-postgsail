@@ -1,116 +1,97 @@
 <template>
-  <div class="charts">
-    <div class="grid grid-cols-12 gap-6">
-      <!-- mixedChart 
-      <va-card class="chart-widget col-span-12">
-        <va-card-title>{{ t('dashboard.charts.mixedMonthChart') }}</va-card-title>
-        <va-card-content v-if="logs.length >= 1">
-          <EchartsMix v-if="mixedChartDataComputed" :series="mixedChartDataComputed" :theme="currentTheme" />
-        </va-card-content>
-      </va-card> -->
-      <!-- mixedChart -->
-      <va-card class="chart-widget col-span-12">
-        <va-card-title>
-          {{
-            granularity === 'month' ? t('dashboard.charts.mixedMonthChart') : t('dashboard.charts.mixedWeekChart')
-          }}</va-card-title
-        >
-        <va-card-content v-if="logs.length >= 1">
-          <div class="controls-row">
-            <div class="control-group">
-              <VaButtonGroup preset="primary">
-                <VaButton :class="{ active: granularity === 'month' }" @click="granularity = 'month'">
-                  {{ t('dashboard.charts.byMonth') }}
-                </VaButton>
-                <VaButton :class="{ active: granularity === 'week' }" @click="granularity = 'week'">
-                  {{ t('dashboard.charts.byWeek') }}
-                </VaButton>
-              </VaButtonGroup>
-            </div>
-          </div>
-          <EchartsMix2 :logs="logs" :granularity="granularity" :theme="currentTheme" />
-        </va-card-content>
-      </va-card>
-      <!-- HeatmapChart -->
-      <va-card class="chart-widget col-span-12">
-        <va-card-title>{{ t('dashboard.charts.HeatmapChart') }}</va-card-title>
-        <va-card-content>
-          <EchartsHeatmap v-if="HeatmapChartComputed" :series="HeatmapChartComputed" :theme="currentTheme" />
-        </va-card-content>
-      </va-card>
-      <!-- NetworkGraph -->
-      <va-card class="chart-widget col-span-12">
-        <va-card-title>{{ t('dashboard.charts.NetworkGraph') }}</va-card-title>
-        <va-card-content v-if="logs.length >= 1">
-          <div class="controls-row">
-            <div class="control-group">
-              <span class="control-label">{{ t('dashboard.charts.weightBy') }}:</span>
-              <VaButtonGroup preset="primary">
-                <VaButton
-                  v-for="option in weightByOptions"
-                  :key="option.value"
-                  :color="weightBy === option.value ? 'primary' : 'secondary'"
-                  @click="weightBy = option.value"
-                >
-                  {{ option.text }}
-                </VaButton>
-              </VaButtonGroup>
-            </div>
-
-            <VaDivider vertical />
-
-            <div class="control-group">
-              <span class="control-label">{{ t('dashboard.charts.minTrips') }}:</span>
-              <VaCounter v-model="minTrips" :min="1" :max="20" style="width: 120px" />
-            </div>
-
-            <VaDivider vertical />
-
-            <VaSwitch v-model="showLabels" :label="t('dashboard.charts.showLabels')" size="small" />
-          </div>
-          <EchartsGraph
-            :logs="logs"
-            :weight-by="weightBy"
-            :min-trips="minTrips"
-            :show-labels="showLabels"
-            :theme="currentTheme"
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- mixedChart - Full width on all screens -->
+    <va-card class="col-span-1 md:col-span-2">
+      <va-card-title>
+        {{ granularity === 'month' ? t('dashboard.charts.mixedMonthChart') : t('dashboard.charts.mixedWeekChart') }}
+      </va-card-title>
+      <va-card-content v-if="logs.length >= 1">
+        <div class="controls-row">
+          <VaButtonToggle
+            v-model="granularity"
+            preset="primary"
+            :options="[
+              { label: t('dashboard.charts.byMonth'), value: 'month' },
+              { label: t('dashboard.charts.byWeek'), value: 'week' },
+            ]"
           />
-        </va-card-content>
-      </va-card>
-      <!-- SunBurst 
-      <va-card class="chart-widget col-span-12">
-        <va-card-title>{{ t('dashboard.charts.NetworkGraph') }}</va-card-title>
-        <va-card-content v-if="stays.length >= 1 && moorages.length >= 1">
-          <EchartsSunburts :moorages="moorages" :stays="stays" :theme="currentTheme" />
-        </va-card-content>
-      </va-card>
-      -->
-    </div>
-    <!-- From stats -->
-    <div class="dashboard flex flex-auto col-span-12 mt-4 gap-4">
-      <va-card class="flex-auto card-width">
-        <va-card-title>{{ t('stats.logs') }}</va-card-title>
-        <va-card-content style="width: 100%">
-          <template v-if="hasLogs != 0">
-            <EchartsDonught v-if="pieChartUnderway" :series="pieChartUnderway" :theme="currentTheme" />
-          </template>
-          <template v-else>
-            <va-card-content>{{ t('nodata.nodata') }}</va-card-content>
-          </template>
-        </va-card-content>
-      </va-card>
-      <va-card class="flex-auto card-width">
-        <va-card-title>{{ t('stats.moorages') }}</va-card-title>
-        <va-card-content style="width: 100%">
-          <template v-if="hasLogs != 0">
-            <EchartsDonught v-if="pieChartStayType" :series="pieChartStayType" :theme="currentTheme" />
-          </template>
-          <template v-else>
-            <va-card-content>{{ t('nodata.nodata') }}</va-card-content>
-          </template>
-        </va-card-content>
-      </va-card>
-    </div>
+        </div>
+        <EchartsMix2 :logs="logs" :granularity="granularity" :theme="currentTheme" />
+      </va-card-content>
+    </va-card>
+
+    <!-- HeatmapChart - Full width on all screens -->
+    <va-card class="col-span-1 md:col-span-2">
+      <va-card-title>{{ t('dashboard.charts.HeatmapChart') }}</va-card-title>
+      <va-card-content>
+        <EchartsHeatmap v-if="HeatmapChartComputed" :series="HeatmapChartComputed" :theme="currentTheme" />
+      </va-card-content>
+    </va-card>
+
+    <!-- NetworkGraph - Full width on all screens -->
+    <va-card class="col-span-1 md:col-span-2">
+      <va-card-title>{{ t('dashboard.charts.NetworkGraph') }}</va-card-title>
+      <va-card-content v-if="logs.length >= 1">
+        <div class="controls-row">
+          <div class="control-group">
+            <span class="control-label">{{ t('dashboard.charts.weightBy') }}:</span>
+            <VaButtonGroup preset="primary">
+              <VaButton
+                v-for="option in weightByOptions"
+                :key="option.value"
+                :color="weightBy === option.value ? 'primary' : 'secondary'"
+                @click="weightBy = option.value"
+              >
+                {{ option.text }}
+              </VaButton>
+            </VaButtonGroup>
+          </div>
+
+          <VaDivider vertical class="hidden md:block" />
+
+          <div class="control-group">
+            <span class="control-label">{{ t('dashboard.charts.minTrips') }}:</span>
+            <VaCounter v-model="minTrips" :min="1" :max="20" style="width: 120px" />
+          </div>
+
+          <VaDivider vertical class="hidden md:block" />
+
+          <VaSwitch v-model="showLabels" :label="t('dashboard.charts.showLabels')" size="small" />
+        </div>
+        <EchartsGraph
+          :logs="logs"
+          :weight-by="weightBy"
+          :min-trips="minTrips"
+          :show-labels="showLabels"
+          :theme="currentTheme"
+        />
+      </va-card-content>
+    </va-card>
+
+    <!-- Pie Charts - Stack on mobile, side by side on desktop -->
+    <va-card>
+      <va-card-title>{{ t('stats.logs') }}</va-card-title>
+      <va-card-content>
+        <template v-if="hasLogs != 0">
+          <EchartsDonught v-if="pieChartUnderway" :series="pieChartUnderway" :theme="currentTheme" />
+        </template>
+        <template v-else>
+          {{ t('nodata.nodata') }}
+        </template>
+      </va-card-content>
+    </va-card>
+
+    <va-card>
+      <va-card-title>{{ t('stats.moorages') }}</va-card-title>
+      <va-card-content>
+        <template v-if="hasLogs != 0">
+          <EchartsDonught v-if="pieChartStayType" :series="pieChartStayType" :theme="currentTheme" />
+        </template>
+        <template v-else>
+          {{ t('nodata.nodata') }}
+        </template>
+      </va-card-content>
+    </va-card>
   </div>
 </template>
 
@@ -216,11 +197,11 @@
     ) {
       return {
         /*
-    1: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-    2: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-    3: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-    4: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-    */
+  1: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+  2: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+  3: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+  4: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+  */
       }
     }
 
@@ -267,55 +248,40 @@
   })
 </script>
 
-<style lang="scss">
-  .dashboard {
-    .va-icon {
-      fill: var(--va-text-primary);
-    }
-
-    .va-card {
-      margin-bottom: 0 !important;
-
-      &__title {
-        display: flex;
-        justify-content: space-between;
-      }
-    }
-
-    .card-width {
-      width: 100%;
-
-      @media (min-width: 768px) {
-        width: calc((100% - 2rem) / 2);
-      }
-
-      @media (min-width: 1024px) {
-        width: calc((100% - 2rem) / 3);
-      }
-    }
-  }
-
+<style scoped>
   .controls-row {
     display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 12px 16px;
-    //background: var(--va-background-element);
-    border-radius: 8px;
-    margin-bottom: 16px;
     flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    /*background-color: var(--va-background-element);*/
+    border-radius: 0.5rem;
   }
 
   .control-group {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .control-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--va-text-primary);
+    font-weight: 600;
     white-space: nowrap;
+  }
+
+  /* Mobile specific */
+  @media (max-width: 768px) {
+    .controls-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .control-group {
+      width: 100%;
+      justify-content: space-between;
+    }
   }
 </style>
