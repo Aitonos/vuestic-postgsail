@@ -199,12 +199,14 @@ const routes: Array<RouteRecordRaw> = [
         //  window.open('https://app.openplotter.cloud', '_blank')
         //},
       },
+      /*
       {
         path: 'activate2',
         name: 'activate2',
         component: () => import('../pages/activate/Onboard.vue'),
         meta: { titleKey: 'auth.otp' },
       },
+      */
       {
         name: 'monitoring-menu',
         path: '/:boat(\\w+)?',
