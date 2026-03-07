@@ -9,9 +9,11 @@
       icon="generating_tokens"
       color="primary"
       size="medium"
-      :title="t('boats.boat.token_modal.button')"
+      :title="t('profile.token_modal.title')"
       @click="handleGetToken"
-    />
+    >
+      {{ t('profile.token_modal.title') }}
+    </va-button>
     <va-modal v-model="showModal" no-padding>
       <template #content="{ ok }">
         <va-card-title>
