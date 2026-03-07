@@ -819,6 +819,15 @@
     })
 
     //observer.observe(document.getElementById('explore-map'))
+    // Force map to recalculate size after initialization
+    setTimeout(() => {
+      if (this.map) {
+        console.log('Invalidate map size after timeout')
+        this.map.invalidateSize()
+        const elm = document.getElementById('explore-map')
+        console.debug('Leaflet map element size:', elm.getBoundingClientRect())
+      }
+    }, 300)
 
     // Add initial logs and moorages layer
     updateMap()
@@ -884,7 +893,7 @@
     logsListFull.value
       .filter((feature) => feature.geometry?.type === 'LineString')
       .forEach((feature) => {
-        const tags = feature.properties?.extra?.tags
+        const tags = feature.properties?.tags
         if (Array.isArray(tags)) {
           tags.forEach((tag) => tagSet.add(tag))
         }
@@ -1014,6 +1023,7 @@
       map.value.fitBounds(updatedBounds)
       // Save the bounds to the mapBounds ref
       mapBounds.value = updatedBounds
+      window.dispatchEvent(new Event('resize'))
     }
   } // End updateMap
 
