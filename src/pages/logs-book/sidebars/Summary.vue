@@ -137,27 +137,32 @@
       <div class="text-sm">{{ logbook.toTime }}</div>
     </div>
   </div>
-  <div class="mt-2 text-center text-sm">
+  <div class="mt-2 justify-center text-sm">
     <template v-if="isLoggedIn">
-      <router-link
-        v-if="typeof logbook.id !== 'undefined'"
-        class="va-text-bold va-link link"
-        :to="{ name: 'timelapse-replay', params: { id: $props.logbook.id } }"
-      >
-        Replay
-      </router-link>
+      <VaButtonGroup v-if="typeof logbook.id !== 'undefined'" preset="plain" color="primary">
+        <VaButton :to="{ name: 'timelapse-replay', params: { id: logbook.id } }">
+          <VaIcon name="play_arrow" size="small" class="mr-1" />
+          2D {{ t('logs.list.replay') }}
+        </VaButton>
+
+        <VaButton :to="{ name: 'timelapse3d-replay', params: { id: logbook.id } }">
+          <VaIcon name="view_in_ar" size="small" class="mr-1" />
+          3D {{ t('logs.list.replay') }}
+        </VaButton>
+      </VaButtonGroup>
     </template>
     <template v-else>
-      <router-link
-        v-if="typeof logbook.id !== 'undefined'"
-        class="va-text-bold va-link link"
-        :to="{
-          name: 'timelapse-replay',
-          params: { boat: publicVessel, id: logbook.id },
-        }"
-      >
-        Replay
-      </router-link>
+      <VaButtonGroup v-if="typeof logbook.id !== 'undefined'" preset="plain" color="primary">
+        <VaButton :to="{ name: 'timelapse-replay', params: { boat: publicVessel, id: logbook.id } }">
+          <VaIcon name="play_arrow" size="small" class="mr-1" />
+          2D {{ t('logs.list.replay') }}
+        </VaButton>
+
+        <VaButton :to="{ name: 'timelapse3d-replay', params: { boat: publicVessel, id: logbook.id } }">
+          <VaIcon name="view_in_ar" size="small" class="mr-1" />
+          3D {{ t('logs.list.replay') }}
+        </VaButton>
+      </VaButtonGroup>
     </template>
   </div>
 
