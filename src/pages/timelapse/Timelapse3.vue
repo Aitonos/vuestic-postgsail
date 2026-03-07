@@ -25,7 +25,7 @@
     sailBoatSailsIcon,
   } from '../../components/maps/leafletHelpers.js'
 
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, nextTick } from 'vue'
   import { useRoute } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { setAppTitle } from '../../utils/app.js'
@@ -39,8 +39,11 @@
   const { confirm } = useModal()
   import { useVesselStore } from '../../stores/vessel-store'
   import { useGlobalStore } from '../../stores/global-store'
+  import { storeToRefs } from 'pinia'
 
   const { isLoggedIn, publicVessel, publicTimelapse } = useGlobalStore()
+  const GlobalStore = useGlobalStore()
+  const { isSidebarMinimized } = storeToRefs(GlobalStore)
   const { vesselName, vesselType } = useVesselStore()
   const { t } = useI18n()
 
@@ -112,7 +115,8 @@
     delay = ref(route.query.delay || 0),
     zoom = ref(route.query.zoom || 13),
     color = ref(route.query.color || 'dodgerblue'),
-    map_height = ref(route.query.height || 'calc(100vh - 4.5rem)'),
+    //map_height = ref(route.query.height || 'calc(100vh - 4.5rem)'),
+    map_height = ref(route.query.height || `calc(100vh - var(--va-navbar-height, 64px))`),
     moorage_overlay = ref(parseBooleanQueryParam(route.query.moorage_overlay, true)),
     instruments = ref(parseBooleanQueryParam(route.query.instruments, true))
 
@@ -124,7 +128,7 @@
     end_date.value = start_date.value
   }
 
-  console.log(
+  console.debug(
     'Timelapse3 QS',
     start_log.value,
     end_log.value,
@@ -151,6 +155,9 @@
   }
 
   onMounted(async () => {
+    // Set sidebar to minimized on map load
+    isSidebarMinimized.value = true
+    await nextTick() // Wait for DOM to update
     const title = t('timelapse.title') + ': ' + vesselName
     document.title = setAppTitle(title)
     isBusy.value = true
@@ -458,6 +465,7 @@
     console.log('onRecordClick', e, play_pause.value)
     console.log('track length', timelapse.value.features.length)
     if (timelapse.value.features.length > 10000) {
+      /*
       initToast({
         message:
           'This track is too long to export in a reasonably sized video. Please choose a shorter track and try again.',
@@ -465,6 +473,8 @@
         color: 'warning',
       })
       return false
+      */
+      speed.value = speed.value * 2
     }
     if (publicTimelapse != true) {
       initToast({
@@ -494,7 +504,7 @@
   const record = async () => {
     const result = await confirm({
       message:
-        'This will export the current timelapse as a video of to use on social media. This process can take a while, do you want to continue?',
+        'This will export the current timelapse as a video. This process can take a while, do you want to continue?',
       title: 'Are you sure?',
       okText: 'Yes generate a ~45 seconds video',
       cancelText: 'No thanks!',
@@ -594,12 +604,20 @@
     })
 </script>
 
+<style>
+  /* Unscoped to affect parent */
+  .app-layout__page:has(.leaflet-map) {
+    overflow-y: hidden !important;
+    padding: 0 !important;
+  }
+</style>
+
 <style lang="scss" scoped>
   .leaflet-map:deep() {
     .legend {
       position: absolute;
       width: 260px;
-      height: 70px;
+      height: 80px;
       left: 50%;
       margin-left: -125px;
       padding: 0 0.7rem;
@@ -710,7 +728,12 @@
     }
   }
   .leaflet-map {
-    width: 100%;
+    width: 100vw;
+    //height: calc(100vh - var(--va-navbar-height, 64px));
     height: v-bind(map_height);
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
   }
 </style>
