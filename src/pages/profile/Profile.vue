@@ -39,8 +39,8 @@
 
   const tabs = {
     OverviewTab: defineAsyncComponent(() => import('./OverviewTab.vue')),
-    //MonitoringTab: defineAsyncComponent(() => import('./Correlations.vue')),
-    CorrelationsTab: defineAsyncComponent(() => import('./Correlations.vue')),
+    //MonitoringTab: defineAsyncComponent(() => import('./MonitoringTab.vue')),
+    //CorrelationsTab: defineAsyncComponent(() => import('./Correlations.vue')),
     NotificationsTab: defineAsyncComponent(() => import('./NotificationsTab.vue')),
   }
 
@@ -75,8 +75,7 @@
     font-weight: 600;
   }
   .overview-tab,
-  .notifications-tab,
-  .monitoring-tab {
+  .notifications-tab {
     &__item {
       height: 55px;
       &-icon {
