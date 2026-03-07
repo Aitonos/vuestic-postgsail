@@ -42,8 +42,10 @@
                 <trip-performance
                   v-if="item"
                   :winddata="wind_arr"
+                  :twddata="twd_arr"
                   :speeddata="speed_arr"
                   :labels="labels_arr"
+                  :polardata="item.polar"
                   :loading="isBusy"
                 />
               </template>
@@ -51,7 +53,13 @@
             <template #tab-observations><va-icon name="settings_suggest" /></template>
             <template #content-observations>
               <template v-if="item">
-                <trip-observations v-if="item" :logbook="item" :form-data="formData" :loading="isBusy" />
+                <trip-observations
+                  v-if="item"
+                  :logbook="item"
+                  :form-data="formData"
+                  :loading="isBusy"
+                  @updated="handlePhotoUpdated"
+                />
               </template>
             </template>
             <template #tab-export><va-icon name="ios_share" /></template>
@@ -74,7 +82,7 @@
   import { setAppTitle } from '../../utils/app.js'
   import PostgSail from '../../services/api-client'
   import { useCacheStore } from '../../stores/cache-store'
-  import { dateFormatUTC, durationFormatHours, durationI18nHours, dateFormatTime } from '../../utils/dateFormatter.js'
+  import { dateFormatUTC, durationFormatHours, durationI18nHours } from '../../utils/dateFormatter.js'
   import { distanceFormatMiles } from '../../utils/distanceFormatter.js'
   import { speedFormatKnots } from '../../utils/speedFormatter.js'
   import { useModal, useToast } from 'vuestic-ui'
@@ -83,6 +91,7 @@
   import logBook from '../../data/logbook.json'
   import { useGlobalStore } from '../../stores/global-store'
   import { useVesselStore } from '../../stores/vessel-store'
+  import { default as utils } from '../../utils/utils.js'
 
   const { t } = useI18n()
 
@@ -94,8 +103,11 @@
   import tripObservations from './sidebars/Observations.vue'
   import tripExport from './sidebars/Export.vue'
   import moment from 'moment'
+  import { storeToRefs } from 'pinia'
 
   const CacheStore = useCacheStore()
+  const GlobalStore = useGlobalStore()
+  const { isSidebarMinimized } = storeToRefs(GlobalStore)
   const router = useRouter()
   const route = useRoute()
   const isBusy = ref(false)
@@ -112,6 +124,7 @@
   const logMap = ref(null),
     speed_arr = ref([]),
     wind_arr = ref([]),
+    twd_arr = ref([]),
     labels_arr = ref([]),
     GeoJSONfeatures = ref(),
     tagsOptions = ref([])
@@ -147,14 +160,32 @@
           max_speed: speedFormatKnots(apiData.row.max_speed),
           max_wind_speed: speedFormatKnots(apiData.row.max_wind_speed),
           avg_wind_speed: speedFormatKnots(apiData.row?.extra?.avg_wind_speed || 0),
-          extra: apiData.row?.extra?.metrics,
+          extra: apiData.row?.extra || {},
           engineHours: extractEngineRunTimes(apiData.row?.extra?.metrics),
-          seaState: apiData.row?.extra?.observations?.seaState || -1,
-          cloudCoverage: apiData.row?.extra?.observations?.cloudCoverage || -1,
-          visibility: apiData.row?.extra?.observations?.visibility || -1,
-          tags: apiData.row?.extra?.tags || [],
+          seaState: apiData.row?.observations?.seaState || -1,
+          cloudCoverage: apiData.row?.observations?.cloudCoverage || -1,
+          visibility: apiData.row?.observations?.visibility || -1,
+          tags: apiData.row?.tags || [],
           from_moorage_id: apiData.row.from_moorage_id,
           to_moorage_id: apiData.row.to_moorage_id,
+          images: apiData.row.has_images ? apiData.row?.images || [] : [],
+          image_updated_at: apiData.row.image_updated_at ? dateFormatUTC(apiData.row.image_updated_at) : null,
+          polar: apiData.row.polar || null,
+          // Extract segment data from GeoJSON
+          segments:
+            apiData.row.geojson?.features
+              ?.filter(
+                (feature) => feature.geometry?.type === 'LineString' && feature.properties?.segment_num !== undefined,
+              )
+              .map((feature) => ({
+                segment_num: feature.properties.segment_num,
+                distance: distanceFormatMiles(feature.properties.distance),
+                duration:
+                  durationFormatHours(feature.properties.duration) +
+                  ' ' +
+                  durationI18nHours(feature.properties.duration),
+              }))
+              .sort((a, b) => a.segment_num - b.segment_num) || [],
         }
       : {}
   })
@@ -180,7 +211,7 @@
       formData.name = apiData.row.name || null
       formData.notes = apiData.row.notes || null
       formData.geojson = apiData.row.geojson || null
-      formData.tags = apiData.row?.extra?.tags || []
+      formData.tags = apiData.row?.tags || []
       tagsOptions.value = CacheStore.getTags()
       if (formData.name) {
         document.title = setAppTitle(t('logs.details.title') + ': ' + formData.name)
@@ -189,9 +220,13 @@
       for (var i = 1; i < geo_arr.length; i++) {
         //console.log(geo_arr[i].properties)
         wind_arr.value.push(geo_arr[i].properties.truewindspeed)
+        twd_arr.value.push(geo_arr[i].properties.truewinddirection)
         speed_arr.value.push(geo_arr[i].properties.speedoverground)
-        labels_arr.value.push(dateFormatTime(geo_arr[i].properties.time))
+        labels_arr.value.push(geo_arr[i].properties.time)
       }
+      // Minimize sidebar for map view
+      isSidebarMinimized.value = true
+      // Set GeoJSON features for map
       GeoJSONfeatures.value = mapGeoJsonFeatures.value
     } catch (e) {
       apiError.value = e
@@ -464,6 +499,18 @@
         })
         isBusy.value = false
       })
+  }
+
+  const handlePhotoUpdated = async (updatedPhoto) => {
+    console.log('handlePhotoUpdated', updatedPhoto)
+    apiData.row = {
+      ...apiData.row,
+      has_images: updatedPhoto.has_images,
+      images: updatedPhoto.images,
+    }
+    // Clean CacheStore and force refresh
+    await CacheStore.resetCache()
+    await CacheStore.getAPI('log_get', apiData.row.id)
   }
 </script>
 
