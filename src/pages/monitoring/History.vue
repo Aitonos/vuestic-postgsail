@@ -121,22 +121,22 @@
   const history_type = [
     {
       value: 0,
-      text: '24 hours',
+      text: t('monitoring.history.24h'),
       desc: 24,
     },
     {
       value: 1,
-      text: '48 hours',
+      text: t('monitoring.history.48h'),
       desc: 48,
     },
     {
       value: 2,
-      text: '72 hours',
+      text: t('monitoring.history.72h'),
       desc: 72,
     },
     {
       value: 3,
-      text: '7 days',
+      text: t('monitoring.history.7d'),
       desc: 168,
     },
   ]
@@ -206,7 +206,7 @@
         trigger: 'axis',
       },
       legend: {
-        data: ['Inside', 'Outside', 'Sea'],
+        data: [t('monitoring.inside'), t('monitoring.outside'), t('monitoring.water')],
       },
       xAxis: {
         type: 'category',
@@ -220,12 +220,12 @@
       },
       series: [
         {
-          name: 'Inside',
+          name: t('monitoring.inside'),
           type: 'line',
           data: temperaturesdata.value[0],
         },
         {
-          name: 'Outside',
+          name: t('monitoring.outside'),
           type: 'line',
           data: temperaturesdata.value[1],
           itemStyle: {
@@ -233,7 +233,7 @@
           },
         },
         {
-          name: 'Sea',
+          name: t('monitoring.water'),
           type: 'line',
           data: temperaturesdata.value[2],
           itemStyle: {
@@ -263,7 +263,7 @@
       },
       series: [
         {
-          name: 'Depth',
+          name: t('monitoring.depth'),
           type: 'line',
           data: depthdata.value, // Sea depth data
           lineStyle: { color: '#6495ed' }, // Customize line color
@@ -280,7 +280,7 @@
         trigger: 'axis',
       },
       legend: {
-        data: ['Inside', 'Outside'],
+        data: [t('monitoring.inside'), t('monitoring.outside')],
       },
       xAxis: {
         type: 'category',
@@ -294,12 +294,12 @@
       },
       series: [
         {
-          name: 'Inside',
+          name: t('monitoring.inside'),
           type: 'line',
           data: humiditydata.value[0],
         },
         {
-          name: 'Outside',
+          name: t('monitoring.outside'),
           type: 'line',
           data: humiditydata.value[1],
           itemStyle: {
@@ -313,7 +313,7 @@
         trigger: 'axis',
       },
       legend: {
-        data: ['Inside', 'Outside'],
+        data: [t('monitoring.inside'), t('monitoring.outside')],
       },
       xAxis: {
         type: 'category',
@@ -327,12 +327,12 @@
       },
       series: [
         {
-          name: 'Inside',
+          name: t('monitoring.inside'),
           type: 'line',
           data: humiditydata.value[0],
         },
         {
-          name: 'Outside',
+          name: t('monitoring.outside'),
           type: 'line',
           data: humiditydata.value[1],
           itemStyle: {
