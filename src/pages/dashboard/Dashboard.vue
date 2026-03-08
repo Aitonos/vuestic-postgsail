@@ -461,7 +461,7 @@
         text: `${status} ${props.name}`,
         img: img,
       }
-    } else if (status !== 'moored') {
+    } else if (status !== 'moored' && status !== null) {
       const underwayText = t('dashboard.status.underway', 'underway')
       return {
         text: `${status} ${underwayText}`,
@@ -469,8 +469,8 @@
       }
     } else {
       return {
-        text: t('dashboard.status.no_stay_detected', 'No stay detected'),
-        img: img,
+        text: t('dashboard.status.no_status_detected', 'No status detected'),
+        img: '/apple-touch-icon.png',
       }
     }
   })
