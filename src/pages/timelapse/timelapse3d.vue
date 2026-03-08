@@ -161,14 +161,17 @@
     end_log = ref(route.query.end_log || route.params.id || null),
     start_date = ref(route.query.start_date || null),
     end_date = ref(route.query.end_date || null),
-    map_type = ref(parseMapTypeQueryParam(route.query.map_type, 'mercator')),
+    map_type = ref(parseMapTypeQueryParam(route.query.map_type, 'globe')), // 'mercator' or 'globe'
+    view_mode = ref(route.query.view_mode || 'globe'), // NEW: camera view mode
     speed = ref(route.query.speed || 250),
     delay = ref(route.query.delay || 0),
     zoom = ref(route.query.zoom || 13),
     color = ref(colors[route.query.color] || [30, 144, 255, 200]), // Default to dodgerblue
     map_height = ref(route.query.height || `calc(100vh - var(--va-navbar-height, 64px))`),
     moorage_overlay = ref(parseBooleanQueryParam(route.query.moorage_overlay, true)),
-    instruments = ref(parseBooleanQueryParam(route.query.instruments, true))
+    instruments = ref(parseBooleanQueryParam(route.query.instruments, true)),
+    pitch = ref(parseInt(route.query.pitch) || 55),
+    smooth_animation = ref(parseBooleanQueryParam(route.query.smooth_animation, true))
 
   // Ensure we have end_ parameter if there is a start_ parameter
   if (end_log.value === null && start_log.value != null) {
@@ -192,6 +195,8 @@
     map_height.value,
     moorage_overlay.value,
     instruments.value,
+    pitch.value,
+    smooth_animation.value,
   )
 
   let overlay = null
@@ -386,15 +391,28 @@
     if (!timelapse.value) return
     const coords = timelapse.value.features.map((f) => f.geometry.coordinates)
 
+    // Set initial zoom and pitch based on view mode
+    let initialZoom = zoom.value
+    let initialPitch = pitch.value
+
+    if (view_mode.value === 'globe') {
+      initialZoom = 13
+      initialPitch = 0
+    } else if (view_mode.value === 'first_person') {
+      initialZoom = 16
+      initialPitch = 80
+    }
+
     map.value = new maplibregl.Map({
       container: 'mapContainer',
       style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
       //style: 'https://tiles.openfreemap.org/styles/liberty',
       center: coords[0],
-      zoom: 13,
-      pitch: 55,
-      bearing: -15,
-      renderWorldCopies: false, // Don't repeat world
+      zoom: initialZoom,
+      pitch: initialPitch,
+      bearing: view_mode.value === 'globe' ? -15 : 0,
+      renderWorldCopies: false,
+      essential: true,
     })
 
     map.value.on('load', () => {
@@ -402,7 +420,82 @@
       overlay = new MapboxOverlay({ interleaved: true })
       map.value.addControl(overlay)
       updateVisualization()
+      setTimeout(togglePlayPause, delay.value * 1000) // Initial delay before starting animation
     })
+  }
+
+  // Camera update function based on view mode
+  function updateCamera(currentFeature) {
+    if (!map.value || !currentFeature) return
+
+    const coords = currentFeature.geometry.coordinates
+    const speed = currentFeature.properties.speedoverground || 0
+    const course = currentFeature.properties.courseovergroundtrue || 0
+
+    const animationDuration = smooth_animation.value ? 200 / playbackSpeed.value : 0
+
+    switch (view_mode.value) {
+      case 'standard':
+        // Standard view - centered on vessel, fixed bearing
+        map.value.easeTo({
+          center: coords,
+          zoom: zoom.value,
+          pitch: pitch.value,
+          bearing: 0,
+          duration: animationDuration,
+          easing: (t) => t * (2 - t),
+        })
+        break
+
+      case 'follow_vessel':
+        // Follow vessel - center on vessel, rotate map so vessel always points up
+        map.value.easeTo({
+          center: coords,
+          zoom: zoom.value,
+          pitch: pitch.value,
+          bearing: -course, // Rotate map opposite to course so vessel points up
+          duration: animationDuration,
+          easing: (t) => t * (2 - t),
+        })
+        break
+
+      case 'first_person':
+        // First person - close zoom, high pitch, vessel heading
+        map.value.easeTo({
+          center: coords,
+          zoom: 16,
+          pitch: 85, // Almost looking straight ahead
+          bearing: course, // Look in direction of travel
+          duration: animationDuration,
+          easing: (t) => t * (2 - t),
+        })
+        break
+
+      case 'globe':
+        // Globe view - wide angle, minimal movement
+        if (currentFrame.value % 10 === 0) {
+          // Update less frequently for smoother globe rotation
+          map.value.easeTo({
+            center: coords,
+            zoom: zoom.value,
+            pitch: pitch.value,
+            bearing: map.value.getBearing() + 0.5, // Slow rotation
+            duration: animationDuration * 5,
+            easing: (t) => t,
+          })
+        }
+        break
+
+      default:
+        // Fallback to standard
+        map.value.easeTo({
+          center: coords,
+          zoom: zoom.value,
+          pitch: pitch.value,
+          duration: animationDuration,
+          easing: (t) => t * (2 - t),
+        })
+    }
   }
 
   function updateVisualization() {
@@ -461,19 +554,19 @@
           _lighting: 'pbr',
 
           /*
-        onHover: ({ object }) => {
-          if (object) {
-            const props = object.properties || {}
-            const info = `
-              <strong>${props.trip?.name || 'Trip'}</strong><br/>
-              Time: ${dateFormatUTC(props.time)}<br/>
-              Speed: ${speedFormatKnots(props.speedoverground || 0)}<br/>
-              Wind: ${speedFormatKnots(props.windspeedapparent || 0)} at ${Math.round(props.anglespeedapparent || 0)}°
-            `
-            initToast({ message: info, color: 'info', timeout: 5000 })
-          }
-        },
-        */
+      onHover: ({ object }) => {
+        if (object) {
+          const props = object.properties || {}
+          const info = `
+            <strong>${props.trip?.name || 'Trip'}</strong><br/>
+            Time: ${dateFormatUTC(props.time)}<br/>
+            Speed: ${speedFormatKnots(props.speedoverground || 0)}<br/>
+            Wind: ${speedFormatKnots(props.windspeedapparent || 0)} at ${Math.round(props.anglespeedapparent || 0)}°
+          `
+          initToast({ message: info, color: 'info', timeout: 5000 })
+        }
+      },
+      */
           onClick: ({ object }) => {
             if (object) {
               const props = object.properties || {}
@@ -503,16 +596,20 @@
       ],
     })
 
-    // Smooth camera follow with easing
-    if (map.value && currentFeature) {
-      map.value.easeTo({
-        center: currentFeature.geometry.coordinates,
-        duration: 200 / playbackSpeed.value,
-        //pitch: 45,           // Always top-down
-        //bearing: -course,   // Rotate map so boat always points up
-        easing: (t) => t * (2 - t),
-      })
-    }
+    /* Smooth camera follow with easing
+  if (map.value && currentFeature) {
+    map.value.easeTo({
+      center: currentFeature.geometry.coordinates,
+      duration: 200 / playbackSpeed.value,
+      //pitch: 45,           // Always top-down
+      //bearing: -course,   // Rotate map so boat always points up
+      easing: (t) => t * (2 - t),
+    })
+  }
+  */
+
+    // Use the camera update function
+    updateCamera(currentFeature)
   }
 
   function animate() {
