@@ -153,7 +153,7 @@
       "moored_at_buoy": "amarré à une bouée d'amarrage à",
       "moored_at_dock": "amarré au quai à",
       "underway": "en navigation",
-      "no_stay_detected": "Aucun séjour détecté"
+      "no_status_detected": "Aucun statut détecté"
     }
   },
   "api": {

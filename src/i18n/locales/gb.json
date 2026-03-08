@@ -112,7 +112,7 @@
       "NetworkGraph": "Routes Network",
       "logEntries": "Log entries",
       "byMonth": "Per month",
-      "byWeek": "Per weekday",
+      "byWeek": "Per week",
       "tripFrequency": "Trip Frequency",
       "totalDistance": "Total Distance",
       "totalDuration": "Total Duration",
@@ -155,7 +155,7 @@
       "moored_at_buoy": "moored at mooring buoy in",
       "moored_at_dock": "moored at dock in",
       "underway": "underway",
-      "no_stay_detected": "No stay detected"
+      "no_status_detected": "No status detected"
     }
   },
   "api": {

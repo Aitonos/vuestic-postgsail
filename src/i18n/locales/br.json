@@ -153,7 +153,7 @@
       "moored_at_buoy": "moored at mooring buoy in",
       "moored_at_dock": "moored at dock in",
       "underway": "underway",
-      "no_stay_detected": "No stay detected"
+      "no_status_detected": "No status detected"
     }
   },
   "api": {

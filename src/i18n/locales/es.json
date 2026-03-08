@@ -153,7 +153,7 @@
       "moored_at_buoy": "amarrado a boya de amarre en",
       "moored_at_dock": "amarrado en el muelle en",
       "underway": "en ruta",
-      "no_stay_detected": "No se detectó estancia"
+      "no_status_detected": "No se detectó estado"
     }
   },
   "api": {
