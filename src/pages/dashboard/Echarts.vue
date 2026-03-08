@@ -5,67 +5,82 @@
       <va-card-title>
         {{ granularity === 'month' ? t('dashboard.charts.mixedMonthChart') : t('dashboard.charts.mixedWeekChart') }}
       </va-card-title>
-      <va-card-content v-if="logs.length >= 1">
-        <div class="controls-row">
-          <VaButtonToggle
-            v-model="granularity"
-            preset="primary"
-            :options="[
-              { label: t('dashboard.charts.byMonth'), value: 'month' },
-              { label: t('dashboard.charts.byWeek'), value: 'week' },
-            ]"
-          />
-        </div>
-        <EchartsMix2 :logs="logs" :granularity="granularity" :theme="currentTheme" />
-      </va-card-content>
+      <template v-if="logs.length >= 1">
+        <va-card-content>
+          <div class="controls-row">
+            <VaButtonToggle
+              v-model="granularity"
+              preset="primary"
+              :options="[
+                { label: t('dashboard.charts.byMonth'), value: 'month' },
+                { label: t('dashboard.charts.byWeek'), value: 'week' },
+              ]"
+            />
+          </div>
+          <EchartsMix2 :logs="logs" :granularity="granularity" :theme="currentTheme" />
+        </va-card-content>
+      </template>
+      <template v-else>
+        <va-card-content>{{ t('nodata.nodata') }}</va-card-content>
+      </template>
     </va-card>
 
     <!-- HeatmapChart - Full width on all screens -->
     <va-card class="col-span-1 md:col-span-2">
       <va-card-title>{{ t('dashboard.charts.HeatmapChart') }}</va-card-title>
-      <va-card-content>
-        <EchartsHeatmap v-if="HeatmapChartComputed" :series="HeatmapChartComputed" :theme="currentTheme" />
-      </va-card-content>
+      <template v-if="logs.length >= 1">
+        <va-card-content>
+          <EchartsHeatmap v-if="HeatmapChartComputed" :series="HeatmapChartComputed" :theme="currentTheme" />
+        </va-card-content>
+      </template>
+      <template v-else>
+        <va-card-content>{{ t('nodata.nodata') }}</va-card-content>
+      </template>
     </va-card>
 
     <!-- NetworkGraph - Full width on all screens -->
     <va-card class="col-span-1 md:col-span-2">
       <va-card-title>{{ t('dashboard.charts.NetworkGraph') }}</va-card-title>
-      <va-card-content v-if="logs.length >= 1">
-        <div class="controls-row">
-          <div class="control-group">
-            <span class="control-label">{{ t('dashboard.charts.weightBy') }}:</span>
-            <VaButtonGroup preset="primary">
-              <VaButton
-                v-for="option in weightByOptions"
-                :key="option.value"
-                :color="weightBy === option.value ? 'primary' : 'secondary'"
-                @click="weightBy = option.value"
-              >
-                {{ option.text }}
-              </VaButton>
-            </VaButtonGroup>
+      <template v-if="logs.length >= 1">
+        <va-card-content>
+          <div class="controls-row">
+            <div class="control-group">
+              <span class="control-label">{{ t('dashboard.charts.weightBy') }}:</span>
+              <VaButtonGroup preset="primary">
+                <VaButton
+                  v-for="option in weightByOptions"
+                  :key="option.value"
+                  :color="weightBy === option.value ? 'primary' : 'secondary'"
+                  @click="weightBy = option.value"
+                >
+                  {{ option.text }}
+                </VaButton>
+              </VaButtonGroup>
+            </div>
+
+            <VaDivider vertical class="hidden md:block" />
+
+            <div class="control-group">
+              <span class="control-label">{{ t('dashboard.charts.minTrips') }}:</span>
+              <VaCounter v-model="minTrips" :min="1" :max="20" style="width: 120px" />
+            </div>
+
+            <VaDivider vertical class="hidden md:block" />
+
+            <VaSwitch v-model="showLabels" :label="t('dashboard.charts.showLabels')" size="small" />
           </div>
-
-          <VaDivider vertical class="hidden md:block" />
-
-          <div class="control-group">
-            <span class="control-label">{{ t('dashboard.charts.minTrips') }}:</span>
-            <VaCounter v-model="minTrips" :min="1" :max="20" style="width: 120px" />
-          </div>
-
-          <VaDivider vertical class="hidden md:block" />
-
-          <VaSwitch v-model="showLabels" :label="t('dashboard.charts.showLabels')" size="small" />
-        </div>
-        <EchartsGraph
-          :logs="logs"
-          :weight-by="weightBy"
-          :min-trips="minTrips"
-          :show-labels="showLabels"
-          :theme="currentTheme"
-        />
-      </va-card-content>
+          <EchartsGraph
+            :logs="logs"
+            :weight-by="weightBy"
+            :min-trips="minTrips"
+            :show-labels="showLabels"
+            :theme="currentTheme"
+          />
+        </va-card-content>
+      </template>
+      <template v-else>
+        <va-card-content>{{ t('nodata.nodata') }}</va-card-content>
+      </template>
     </va-card>
 
     <!-- Pie Charts - Stack on mobile, side by side on desktop -->
@@ -197,11 +212,11 @@
     ) {
       return {
         /*
-  1: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-  2: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-  3: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-  4: { durationMs: 25, percentage: 25, duration: 'PT25S' },
-  */
+1: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+2: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+3: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+4: { durationMs: 25, percentage: 25, duration: 'PT25S' },
+*/
       }
     }
 
