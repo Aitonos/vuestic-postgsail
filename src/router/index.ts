@@ -7,6 +7,7 @@ import AppLayout from '../layouts/AppLayout.vue'
 import Page404Layout from '../layouts/Page404Layout.vue'
 import RouteViewComponent from '../layouts/RouterBypass.vue'
 import { useGlobalStore } from '../stores/global-store'
+import { useVesselStore } from '../stores/vessel-store'
 
 //import { isArrayTypeNode } from 'typescript'
 //import { storeToRefs } from 'pinia'
@@ -58,6 +59,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'redirect',
         path: '',
         redirect: { name: 'login' },
+      },
+      {
+        path: 'activate',
+        name: 'activate',
+        component: () => import('../pages/auth/activate/OTP.vue'),
+        meta: { titleKey: 'auth.otp' },
       },
     ],
   },
@@ -160,16 +167,9 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'profile',
         name: 'profile',
-        component: () => import('../pages/profile/Profile.vue'),
+        component: () => import('../pages/profile/Settings.vue'),
         meta: { titleKey: 'profile.title' },
       },
-      /*
-      {
-        name: 'settings',
-        path: 'settings',
-        component: () => import('../pages/settings/Settings.vue'),
-      },
-      */
       {
         name: 'help-menu',
         path: '/:boat(\\w+)?',
@@ -199,21 +199,29 @@ const routes: Array<RouteRecordRaw> = [
         //  window.open('https://app.openplotter.cloud', '_blank')
         //},
       },
+      /*
       {
-        path: 'activate',
-        name: 'activate',
-        component: () => import('../pages/activate/Activate.vue'),
+        path: 'activate2',
+        name: 'activate2',
+        component: () => import('../pages/activate/Onboard.vue'),
         meta: { titleKey: 'auth.otp' },
       },
+      */
       {
         name: 'monitoring-menu',
         path: '/:boat(\\w+)?',
         component: RouteViewComponent,
         children: [
           {
+            name: 'monitoring2',
+            path: 'monitoring2',
+            component: () => import('../pages/monitoring/Monitoring.vue'),
+            meta: { titleKey: 'monitoring.title', isPublic: true, type: 'public_monitoring' },
+          },
+          {
             name: 'monitoring',
             path: 'monitoring',
-            component: () => import('../pages/monitoring/Monitoring.vue'),
+            component: () => import('../pages/monitoring/Monitoring2.vue'),
             meta: { titleKey: 'monitoring.title', isPublic: true, type: 'public_monitoring' },
           },
           {
@@ -260,6 +268,12 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/timelapse/Form.vue'),
             meta: { titleKey: 'timelapse.customize' },
           },
+          {
+            name: 'timelapse3d-replay',
+            path: 'timelapse3d/:id(\\d+)?',
+            component: () => import('../pages/timelapse/timelapse3d.vue'),
+            meta: { titleKey: 'timelapse.title', isPublic: true, type: 'public_timelapse' },
+          },
         ],
       },
       {
@@ -291,7 +305,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'explorer',
         component: () => import('../pages/explore/Map.vue'),
       },
-*/
+      */
       /*
       {
         name: 'map-timedimension',
@@ -360,6 +374,8 @@ router.beforeEach(async (to, from, next) => {
   )
   const GlobalStore = useGlobalStore()
   const { is_public } = GlobalStore
+  const VesselStore = useVesselStore()
+  const { fetchVessel } = VesselStore
   if (!isLoggedIn && to.path === '/login' && to.query.next) {
     if (
       /\w+\/(logs|timelapse|stats|monitoring|maplapse|logmap)/.test(to.query.next as string) ||
@@ -405,6 +421,7 @@ router.beforeEach(async (to, from, next) => {
         (parseFloat(to.params?.id as string) as number) || 0,
       )
       if (anonymous) {
+        await fetchVessel()
         next()
         return
       }

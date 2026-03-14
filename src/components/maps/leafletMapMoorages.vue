@@ -48,7 +48,11 @@
           </div>
         </div>
       </template>
-      <div ref="mapContainer" style="height: 100%" class="leaflet-map h-full" />
+      <div
+        ref="mapContainer"
+        style="width: 100%; height: 100%; position: absolute; left: 0; right: 0; top: 0; bottom: 0"
+        class="leaflet-map h-full"
+      />
     </va-card>
   </div>
 </template>
@@ -66,7 +70,7 @@
 
   import { defaultBaseMapType, fallbackBaseMapType, baseMaps, overlayMaps } from './leafletHelpers.js'
 
-  import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+  import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue'
   import PostgSail from '../../services/api-client'
   import mooragesGeoJSON from '../../data/moorages_geojson.json'
 
@@ -82,7 +86,7 @@
   import { storeToRefs } from 'pinia'
 
   const GlobalStore = useGlobalStore()
-  const { currentTheme } = storeToRefs(GlobalStore)
+  const { currentTheme, isSidebarMinimized } = storeToRefs(GlobalStore)
   const { vesselName, vesselType } = useVesselStore()
 
   const isBusy = ref(false),
@@ -178,13 +182,26 @@
     }
   })
 
-  const map_setup = () => {
+  const map_setup = async () => {
     const geojson = moorages_geojson.value
     let coord = geojson.features[0].geometry.coordinates
     if (props.moorageMapId != 0) {
       coord = geojson.features.filter((geog) => geog.properties.id == props.moorageMapId)[0].geometry.coordinates
     }
+    // minimize sidebar on map load
+    isSidebarMinimized.value = true
+    await nextTick() // Wait for DOM to update
+
     map.value = L.map(mapContainer.value, { zoomControl: false }).setView(coord, props.mapZoom)
+
+    // Force map to recalculate size after initialization
+    setTimeout(() => {
+      if (map.value) {
+        console.log('Invalidate map size after timeout')
+        map.value.invalidateSize()
+        console.log(mapContainer.value.getBoundingClientRect())
+      }
+    }, 300)
 
     const bMaps = baseMaps()
     const oMaps = overlayMaps()

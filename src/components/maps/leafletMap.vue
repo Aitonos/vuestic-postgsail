@@ -39,7 +39,7 @@
   import 'leaflet-rotatedmarker'
   import 'leaflet.sidepanel'
 
-  import { ref } from 'vue'
+  import { ref, nextTick, onUpdated } from 'vue'
 
   import { defaultBaseMapType, baseMaps, overlayMaps, boatMarkerTypes } from './leafletHelpers.js'
 
@@ -58,7 +58,7 @@
   import { storeToRefs } from 'pinia'
 
   const GlobalStore = useGlobalStore()
-  const { currentTheme } = storeToRefs(GlobalStore)
+  const { currentTheme, isSidebarMinimized } = storeToRefs(GlobalStore)
   const { vesselName, vesselType, vesselModel, vesselImage } = useVesselStore()
 
   const GeoJSONbasemapObj = ref({})
@@ -132,7 +132,10 @@
         map: null,
       }
     },
-    mounted() {
+    async mounted() {
+      // Set sidebar to minimized on map load
+      isSidebarMinimized.value = true
+      await nextTick() // Wait for DOM to update
       console.debug('Props mapType:', this.mapType, ' mapZoom:', this.mapZoom, 'showNote', this.showNote)
       let centerLat = 0
       let centerLng = 0
@@ -162,6 +165,16 @@
       console.debug(`LeafletMap centerLatLng: ${centerLat} ${centerLng}`)
       this.map = L.map(this.id, { zoomControl: false }).setView([centerLat, centerLng], this.mapZoom)
 
+      // Force map to recalculate size after initialization
+      setTimeout(() => {
+        if (this.map) {
+          console.log('Invalidate map size after timeout')
+          this.map.invalidateSize()
+          const elm = document.getElementsByClassName('leaflet-map')
+          console.debug('Leaflet map element size:', elm[0].getBoundingClientRect())
+        }
+      }, 300)
+
       const textPopupPoint = (feature) => {
         //console.debug('textPopupPoint', feature)
         let status = feature.properties.status || ''
@@ -171,8 +184,8 @@
         let twd = angleFormat(feature.properties.truewinddirection)
         let aws = speedFormatKnots(feature.properties.windspeedapparent)
         let awa = awaFormat(feature.properties.truewinddirection, feature.properties.courseovergroundtrue)
-        let latitude = parseFloat(feature.geometry.coordinates[0].toFixed(3))
-        let longitude = parseFloat(feature.geometry.coordinates[1].toFixed(3))
+        let latitude = parseFloat(feature.geometry.coordinates[1].toFixed(3))
+        let longitude = parseFloat(feature.geometry.coordinates[0].toFixed(3))
         let dmsCoords = decimalToDMS(latitude, longitude)
         let text = `<div class='mpopup'><h4>${vesselName}: ${status}</h4><br/>`
         if (!this.onSaveNote && vesselImage) {
@@ -189,17 +202,21 @@
         // If monitoring moorage point
         if (feature.properties.stay_code) {
           let stay_type = ''
+          if (feature.properties.stay_code == 1) {
+            // Unknown stay type
+            stay_type = feature.properties.status
+          }
           if (feature.properties.stay_code == 2) {
-            stay_type = 'At anchor in '
+            stay_type = `At anchor in ${feature.properties.name}`
           }
           if (feature.properties.stay_code == 3) {
-            stay_type = 'At mooring buoy in '
+            stay_type = `At mooring buoy in ${feature.properties.name}`
           }
           if (feature.properties.stay_code == 4) {
-            stay_type = 'At dock in '
+            stay_type = `At dock in ${feature.properties.name}`
           }
           text += `<tr><th>Updated</th><td>${fromNow(feature.properties.time)}`
-          text += `<tr><th>Status</th><td>${stay_type} ${feature.properties.name}`
+          text += `<tr><th>Status</th><td>${stay_type}`
           text += `<tr><th>Arrived</th><td>${dateFormatUTC(feature.properties.arrived)}`
         }
         if (feature.properties.speedoverground) {
@@ -311,6 +328,21 @@
         return text
       }
 
+      const textPopupInRoute = (feature) => {
+        let starttime = dateFormatUTC(feature.properties._from_time)
+        let duration = durationFormatHours(feature.properties.duration)
+        let distance = distanceFormatMiles(feature.properties.distance)
+        let text = `<div class='mpopup'>
+                        <h4>In route</h4><br/>
+                        <table class='data'><tbody>
+                          <tr><th>Start Time</th><td>${starttime}</td></tr>
+                          <tr><th>Distance</th><td>${distance}</td></tr>
+                          <tr><th>Duration</th><td>${duration} hours</td></tr>
+                        </tbody></table></br>
+                      </div>`
+        return text
+      }
+
       const popup = (feature, layer) => {
         var popupContent = '<p>GeoJSON ' + feature.geometry.type + " now I'm a Leaflet vector!</p>"
         if (feature.properties && feature.properties.time) {
@@ -321,6 +353,9 @@
         }
         if (feature.properties && feature.properties.segment_num >= 0) {
           popupContent = textPopupLineSegment(feature)
+        }
+        if (feature.properties && feature.properties.in_route) {
+          popupContent = textPopupInRoute(feature)
         }
         layer.bindPopup(popupContent).on('popupopen', () => {
           const saveButton = document.getElementById('saveNoteButton')
@@ -410,6 +445,12 @@
         }
         // Check if the last feature is a LineString with segment_num
         const lastFeature = this.geoJsonFeatures[this.geoJsonFeatures.length - 1]
+        GeoJSONLayer.value =
+          vesselType === 'Sailing'
+            ? GeoJSONbasemapObj.value['Sailboat']
+            : vesselType === 'Pleasure Craft'
+            ? GeoJSONbasemapObj.value['Powerboat']
+            : GeoJSONbasemapObj.value['Dot']
         if (
           lastFeature &&
           lastFeature.geometry.type === 'LineString' &&
@@ -417,18 +458,13 @@
           lastFeature.properties.segment_num >= 0
         ) {
           // Add the segmentsLayer only if the condition is met
-          GeoJSONbasemapObj.value.segmentsLayer = L.geoJSON(geojson, {
+          GeoJSONbasemapObj.value['24HSegments'] = L.geoJSON(geojson, {
             filter: (feature) => feature.properties && feature.properties.segment_num >= 0,
             style: styleSegment, // Unique color per segment
             onEachFeature: popup,
           })
+          GeoJSONLayer.value = GeoJSONbasemapObj.value['24HSegments']
         }
-        GeoJSONLayer.value =
-          vesselType === 'Sailing'
-            ? GeoJSONbasemapObj.value['Sailboat']
-            : vesselType === 'Pleasure Craft'
-            ? GeoJSONbasemapObj.value['Powerboat']
-            : GeoJSONbasemapObj.value['Dot']
         GeoJSONLayer.value.addTo(this.map)
         if (this.controlLayer) {
           L.control.layers(GeoJSONbasemapObj.value).addTo(this.map)
@@ -506,6 +542,10 @@
       if (this.map) {
         this.map.remove()
       }
+    },
+    onUpdated() {
+      console.debug('LeafletMap onUpdated')
+      this.map.invalidateSize()
     },
     methods: {
       refreshLayers() {

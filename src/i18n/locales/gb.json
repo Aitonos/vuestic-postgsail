@@ -112,7 +112,7 @@
       "NetworkGraph": "Routes Network",
       "logEntries": "Log entries",
       "byMonth": "Per month",
-      "byWeek": "Per weekday",
+      "byWeek": "Per week",
       "tripFrequency": "Trip Frequency",
       "totalDistance": "Total Distance",
       "totalDuration": "Total Duration",
@@ -155,7 +155,7 @@
       "moored_at_buoy": "moored at mooring buoy in",
       "moored_at_dock": "moored at dock in",
       "underway": "underway",
-      "no_stay_detected": "No stay detected"
+      "no_status_detected": "No status detected"
     }
   },
   "api": {
@@ -389,7 +389,7 @@
     "title": "Profile",
     "tabs": {
       "overview": {
-        "title": "Overview"
+        "title": "Settings"
       },
       "notifications": {
         "title": "Notifications"
@@ -410,14 +410,33 @@
     },
     "name": "Name",
     "website": "Website",
+    "language": "Language",
+    "sponsor": "Sponsor",
+    "theme": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    },
+    "general_preferences": "General Preferences",
+    "information": "Information",
+    "member_since": "Member since",
+    "social_links": "Social Links",
+    "public_profile_enabled": "Public Profile Enabled",
+    "phone_notifications_enabled": "Phone Notifications Enabled",
     "windy_station": "Windy Station",
     "mcp_integration": "AI agents MCP Integration",
+    "password_protected": "Password Protected",
+    "set_password": "Set Password",
+    "delete_account": "Delete Account",
+    "alerting_enabled": "Alerting Enabled",
     "public_profile": "Public Profile",
     "public_name": "Name",
     "public_logs": "Log Details",
     "public_stats": "Stats",
     "public_logs_list": "Logs List",
     "public_timelapse": "Timelapse",
+    "public_monitoring": "Tracking & Monitoring",
     "instagram_handle": "Instagram Handle",
     "preferred_homepage": "Preferred Homepage",
     "use_imperial_units": "Use Imperial Units",
@@ -449,8 +468,33 @@
     "msg": {
       "website": "Website displayed alongside your stats, please enter the full URL starting with http:// or https://",
       "instagram_handle": "Instagram link displayed alongside your stats, please enter without a leading {'@'} sign",
+      "theme": "Choose your preferred theme for the PostgSail interface. You can select Light, Dark, or Auto mode which adjusts based on your system settings.",
+      "preferred_homepage": "Choose the page you want to see after you login to PostgSail",
+      "use_imperial_units": "When enabled, your statistics and monitoring will be displayed using imperial units (e.g. °F, ft, kts) instead of metric units (e.g. °C, m, km/h).",
+      "language": "Choose your preferred language for the PostgSail interface.",
+      "email_notifications": "E-mail Notifications allow you to receive updates and alerts about your boat's activities, logs, and monitoring data directly to your inbox. You stay informed about important events related to your vessel.",
+      "phone_notifications": "Enabling phone notifications allows you to receive real-time alerts about important events and conditions related to your boat. This feature helps you stay informed and take timely action to ensure the safety and performance of your vessel.",
+      "public_profile_info": "Enabling your public profile allows you to share your sailing adventures and boat information with the world. You can choose to make specific details like your logs, stats, timelapse, and monitoring data publicly accessible. This way, you can connect with other sailors, share your experiences, and even inspire others with your journeys on the water.",
+      "phone_notifications_info": "Enabling phone notifications allows you to receive real-time alerts about important events and conditions related to your boat. This feature helps you stay informed and take timely action to ensure the safety and performance of your vessel.",
+      "alerting": "Alerting allows you to set up custom thresholds for various parameters such as wind speed, temperature, pressure, battery charge, and more. When any of these parameters exceed the defined thresholds, you will receive notifications on your phone or via email, helping you stay proactive in managing your boat's performance and safety.",
+      "alerting_enabled": "Alerting is enabled. You will receive notifications when any of your defined thresholds are exceeded.",
+      "alerting_info": "Alerting allows you to set up custom thresholds for various parameters such as wind speed, temperature, pressure, battery charge, and more. When any of these parameters exceed the defined thresholds, you will receive notifications on your phone or via email, helping you stay proactive in managing your boat's performance and safety.",
+      "pushover": "Pushover is a service that allows you to receive real-time notifications on your phone or desktop. By linking your Pushover account, you can get instant alerts about important events and conditions related to your boat, helping you stay informed and take timely action.",
+      "telegram_bot": "Telegram is a messaging app that allows you to receive real-time notifications on your phone or desktop. By connecting your Telegram account to PostgSail, you can get instant alerts about important events and conditions related to your boat, helping you stay informed and take timely action.",
+      "sponsor_thank_you": "Thank you for sponsoring PostgSail! Your support helps us continue to develop and improve the platform, making it even better for sailors around the world. We truly appreciate your contribution to your sailing community!",
+      "password_protected": "When enabled, you will be required to enter your password to access your public data. This adds an extra layer of security to protect your personal information.",
+      "min_notification_interval": "Min Notification Interval (h)",
+      "high_wind_speed_threshold": "Wind Speed (kts)",
+      "low_outdoor_temperature_threshold": "Minimum Outdoor Temperature (C)",
+      "low_indoor_temperature_threshold": "Minimum Indoor Temperature (C)",
+      "low_water_temperature_threshold": "Minimum Water Temperature (C)",
+      "low_water_depth_threshold": "Minimum Water Depth (m)",
+      "low_pressure_threshold": "Minimum Pressure (hpa)",
+      "high_pressure_drop_threshold": "Maximum Pressure Drop in 12 hours (hpa)",
+      "low_battery_charge_threshold": "Minimum Battery Charge (%)",
+      "low_battery_voltage_threshold": "Minimum Battery Voltage (V)",
       "windy_station": "Windy station identifier as displayed in Windy URL after /station/pws- (e.g. d06efc48)",
-      "public_profile": "When enabled, corresponding pages like stats, timelapse and others can be accessed by anyone without being required to login.",
+      "public_profile": "When enabled, corresponding pages like stats, timelapse and others can be accessed by anyone without being required to login or password protected. It is a read-only mode.",
       "public_logs": "When enabled, your individual log details will be publicly accessible at https://iot.openplotter.cloud/{0}{1}/log/{0}",
       "public_stats": "When enabled, your statistics will be publicly accessible at https://iot.openplotter.cloud/{0}/stats",
       "public_logs_list": "When enabled, list of all your logs will be publicly accessible at https://iot.openplotter.cloud/{0}/logs",
@@ -458,7 +502,7 @@
       "public_monitoring": "When enabled, your monitoring will be publicly accessible at https://iot.openplotter.cloud/{0}/monitoring",
       "public_name": "When you enable your public profile, you will have the option to choose your boat name",
       "public_windy": "When you enable your public profile, you will have the option to transform your boat in a weather station integrate in Windy.",
-      "mcp_integration": "Model Context Protocol (MCP) is an open protocol that allows AI agents in a secure (read-only) and standardized way. When using PostgSail MCP server, you can enable advanced functionalities that enhance the capabilities of your marine data systems, making it easier to manage and optimize your boating experience."
+      "mcp_integration": "Allows AI agents integration in a secure (read-only) and standardized way. When using PostgSail MCP server, you can enable advanced functionalities that enhance the capabilities of your marine data systems, making it easier to manage and optimize your boating experience."
     },
     "url": {
       "public_logs": "https://iot.openplotter.cloud/{0}/log/{1}",

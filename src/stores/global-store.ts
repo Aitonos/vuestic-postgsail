@@ -4,7 +4,7 @@ import PostgSail from '../services/api-client'
 import deepMerge from '../utils/deepMerge'
 import OpenMeteo from '../services/openmeteo'
 import moment from 'moment'
-import { userBadges, WMO } from '../utils/PostgSail'
+import { userBadges } from '../utils/PostgSail'
 
 const demo_pattern = /^[A-Za-z0-9._%+-]+@openplotter.cloud$/
 
@@ -204,8 +204,9 @@ export const useGlobalStore = defineStore('global', {
         this.currentweather = Object.assign({
           tempUnit: this.imperialUnits ? 'F' : 'C',
           temp: this.imperialUnits ? Math.round(temp * 1.8) + 32 : temp || 'n/a',
-          description: WMO[this.openweather['current']['weather_code']]['day']['description'],
-          img: WMO[this.openweather['current']['weather_code']]['day']['image'],
+          weather_code: this.openweather['current']['weather_code'],
+          description: null,
+          img: null,
           sunriseTime: moment.unix(this.openweather['daily']['sunrise'][0]).format('HH:mm'),
           sunsetTime: moment.unix(this.openweather['daily']['sunset'][0]).format('HH:mm'),
         })

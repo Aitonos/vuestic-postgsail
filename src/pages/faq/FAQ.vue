@@ -137,17 +137,19 @@
           <va-collapse header="No metrics, why?">
             <div class="pa-3">
               <p>
-                Postgsail ignores all metrics that do not provide valid GPS coordinates. Ensure your GPS device is
+                PostgSail ignores all metrics that do not provide valid GPS coordinates. Ensure your GPS device is
                 connected to your OpenPlotter and that GPS data is being sent to the SignalK server.
                 <br />
-                Postgsail ignores all metrics with timestamps in the future. Make sure your system time is synchronized
+                PostgSail ignores all metrics with timestamps in the future. Make sure your system time is synchronized
                 with GPS or an NTP server.
                 <br />
-                Postgsail ignores all metrics dated earlier than the last entry.
+                PostgSail ignores all metrics dated earlier than the last entry.
                 <br />
-                Postgsail ignores all metrics with an invalid status.
+                PostgSail ignores all metrics with an invalid status.
                 <br />
-                Postgsail ignores all metrics where the Speed Over Ground (SOG) exceeds 40 knots.<br />
+                PostgSail ignores all metrics where the Speed Over Ground (SOG) exceeds 40 knots.
+                <br />
+                PostgSail ignores all metrics where the Apparent Wind Speed (AWS) exceeds 200 knots.<br />
               </p>
             </div>
           </va-collapse>
@@ -247,12 +249,21 @@
                   >SignalK vessels specification<va-icon name="fa-external-link" size="small" /></a
                 ><br />
                 -
-                <a
-                  href="https://community.windy.com/topic/8168/report-your-weather-station-data-to-windy"
-                  target="_blank"
-                  class="va-text-bold va-link link"
+                <a href="https://stations.windy.com/" target="_blank" class="va-text-bold va-link link"
                   >Report your Weather Station Data to Windy<va-icon name="fa-external-link" size="small"
                 /></a>
+              </p>
+            </div>
+          </va-collapse>
+          <va-collapse header="AI Agent (MCP)">
+            <div class="pa-3">
+              <p>
+                PostgSail provide an AI agent accesible via MCP protocol with read-only access to PostgSail marine data
+                systems. This server enables
+                <a href="https://lechat.ai" target="_blank" class="va-text-bold va-link link"
+                  >LeChat<va-icon name="fa-external-link" size="small" /></a
+                >, Claude and other AI assistants to search and navigate logs, moorages, and stays, monitor and analyze
+                your boat all in one place.
               </p>
             </div>
           </va-collapse>
