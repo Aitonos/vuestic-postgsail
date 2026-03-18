@@ -493,7 +493,7 @@
       "low_pressure_threshold": "Presión mínima (hPa)",
       "high_pressure_drop_threshold": "Caída máxima de presión en 12 horas (hPa)",
       "low_battery_charge_threshold": "Carga mínima de batería (%)",
-      "low_battery_voltage_threshold": "Voltaje mínimo de batería (V)"
+      "low_battery_voltage_threshold": "Voltaje mínimo de batería (V)",
       "windy_station": "Identificador de estación Windy tal y como se muestra en la URL de Windy después de /station/pws- (e.g. d06efc48)",
       "public_profile": "Estando activado, las páginas de estadísticas, líneas de tiempo y otras pueden ser accedidas por otros sin hacer login.",
       "public_logs": "Estando activado, tus registros personales de navegación serán accesibles públicamente en https://iot.openplotter.cloud/{0}/log/{'id'}",
